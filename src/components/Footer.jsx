@@ -157,7 +157,6 @@ export default function Footer() {
           <p className="text-white/25 text-[12px]">
             © {new Date().getFullYear()} Abbas Digital Agency. All Rights Reserved.
           </p>
-          <p className="text-white/25 text-[12px]">Made with ❤️ in Pakistan 🇵🇰</p>
         </div>
       </div>
     </footer>
