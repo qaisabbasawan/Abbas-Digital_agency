@@ -32,7 +32,7 @@ export default function AdminLogin() {
     setError('')
     setLoading(true)
     await new Promise(r => setTimeout(r, 700))
-    const res = login(email, password, role || undefined)
+    const res = await login(email, password, role || undefined)
     setLoading(false)
     if (res.ok) navigate('/admin/dashboard', { replace: true })
     else setError(res.error)

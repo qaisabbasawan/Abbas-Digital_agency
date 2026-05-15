@@ -119,19 +119,24 @@ export default function BlogDetailPage() {
         </motion.div>
 
         {/* Tags */}
-        {blog.tags && blog.tags.length > 0 && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }}
-            className="mt-10 pt-6 border-t border-white/[0.07]">
-            <div className="flex items-center gap-2 flex-wrap">
-              <Tag size={13} className="text-white/25" />
-              {blog.tags.map(tag => (
-                <span key={tag} className="text-[11px] px-2.5 py-1 rounded-full bg-white/[0.05] text-white/40 border border-white/[0.07]">
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </motion.div>
-        )}
+        {(() => {
+          const tagList = blog.tags
+            ? (Array.isArray(blog.tags) ? blog.tags : blog.tags.split(',').map(t => t.trim()).filter(Boolean))
+            : []
+          return tagList.length > 0 ? (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }}
+              className="mt-10 pt-6 border-t border-white/[0.07]">
+              <div className="flex items-center gap-2 flex-wrap">
+                <Tag size={13} className="text-white/25" />
+                {tagList.map(tag => (
+                  <span key={tag} className="text-[11px] px-2.5 py-1 rounded-full bg-white/[0.05] text-white/40 border border-white/[0.07]">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+          ) : null
+        })()}
 
         {/* Back to blog CTA */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
