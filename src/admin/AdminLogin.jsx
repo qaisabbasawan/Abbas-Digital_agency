@@ -20,7 +20,7 @@ export default function AdminLogin() {
     await new Promise(r => setTimeout(r, 700))
     const res = login(email, password)
     setLoading(false)
-    if (res.ok) navigate('/admin/dashboard')
+    if (res.ok) navigate('/admin/dashboard', { replace: true })
     else setError(res.error)
   }
 

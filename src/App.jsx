@@ -27,7 +27,7 @@ function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
   const location = useLocation()
   if (loading) return <div className="min-h-screen bg-[#070C1B]" />
-  if (!user) return <Navigate to="/admin" state={{ from: location }} replace />
+  if (!user) return <Navigate to="/admin/login" state={{ from: location }} replace />
   return children
 }
 
@@ -45,10 +45,13 @@ export default function App() {
   return (
     <AuthProvider>
       <Routes>
-        {/* Admin login */}
-        <Route path="/admin" element={<AdminLogin />} />
+        {/* /admin → redirect to /admin/login (avoids wildcard conflict) */}
+        <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
 
-        {/* Admin dashboard (protected) */}
+        {/* Admin login — public, outside protected layout */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+
+        {/* Protected admin pages */}
         <Route path="/admin/*" element={
           <ProtectedRoute>
             <AdminLayout />
@@ -63,7 +66,7 @@ export default function App() {
           <Route index element={<Navigate to="dashboard" replace />} />
         </Route>
 
-        {/* Public site — layout route (no path) wraps all public pages */}
+        {/* Public site */}
         <Route element={<PublicLayout />}>
           <Route path="/"               element={<LandingPage />} />
           <Route path="/about"          element={<AboutPage />} />

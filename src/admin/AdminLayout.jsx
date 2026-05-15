@@ -36,7 +36,7 @@ export default function AdminLayout() {
   const location = useLocation()
   const navigate  = useNavigate()
 
-  const handleLogout = () => { logout(); navigate('/admin') }
+  const handleLogout = () => { logout(); navigate('/admin/login') }
   const currentPage = nav.find(n => n.path === location.pathname)?.label || 'Dashboard'
 
   const Sidebar = () => (
