@@ -1,7 +1,10 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Save, Send, ArrowLeft, Image, Tag, X } from 'lucide-react'
+import { Save, Send, ArrowLeft, Image, Tag, X, Bold, Italic, Heading1, Heading2, List, Quote, Eye, Edit3, Minus } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import remarkBreaks from 'remark-breaks'
 import { useAuth } from '../context/AuthContext'
 
 const categories = ['Web Development', 'E-Commerce', 'Mobile Apps', 'AI & Chatbots', 'Digital Marketing', 'Branding & Design', 'Case Studies', 'Industry Insights']
@@ -12,32 +15,76 @@ export default function BlogCreate() {
   const [params]  = useSearchParams()
   const editId    = params.get('edit')
   const existing  = editId ? blogs.find(b => b.id === editId) : null
+  const textareaRef = useRef(null)
 
   const [form, setForm] = useState({
-    title:       existing?.title || '',
-    category:    existing?.category || categories[0],
-    tags:        existing?.tags || '',
-    image:       existing?.image || '',
-    content:     existing?.content || '',
-    metaTitle:   existing?.metaTitle || '',
-    metaDesc:    existing?.metaDesc || '',
-    status:      existing?.status || 'draft',
+    title:     existing?.title    || '',
+    category:  existing?.category || categories[0],
+    tags:      existing?.tags     || '',
+    image:     existing?.image    || '',
+    content:   existing?.content  || '',
+    metaTitle: existing?.metaTitle|| '',
+    metaDesc:  existing?.metaDesc || '',
+    status:    existing?.status   || 'draft',
   })
-  const [saved, setSaved] = useState(false)
+  const [saved,    setSaved]    = useState(false)
+  const [preview,  setPreview]  = useState(false)
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
+  // ── markdown toolbar helpers ──────────────────────────────────────────────
+  const insertMarkdown = (before, after = '') => {
+    const el = textareaRef.current
+    if (!el) return
+    const start = el.selectionStart
+    const end   = el.selectionEnd
+    const sel   = form.content.substring(start, end)
+    const newContent =
+      form.content.substring(0, start) +
+      before + sel + after +
+      form.content.substring(end)
+    set('content', newContent)
+    setTimeout(() => {
+      el.focus()
+      el.setSelectionRange(start + before.length, start + before.length + sel.length)
+    }, 0)
+  }
+
+  const insertLinePrefix = (prefix) => {
+    const el = textareaRef.current
+    if (!el) return
+    const start = el.selectionStart
+    const lineStart = form.content.lastIndexOf('\n', start - 1) + 1
+    const newContent = form.content.substring(0, lineStart) + prefix + form.content.substring(lineStart)
+    set('content', newContent)
+    setTimeout(() => {
+      el.focus()
+      el.setSelectionRange(start + prefix.length, start + prefix.length)
+    }, 0)
+  }
+
+  const toolbar = [
+    { icon: Heading1, title: 'Heading 1', action: () => insertLinePrefix('# ') },
+    { icon: Heading2, title: 'Heading 2', action: () => insertLinePrefix('## ') },
+    { icon: Bold,     title: 'Bold',      action: () => insertMarkdown('**', '**') },
+    { icon: Italic,   title: 'Italic',    action: () => insertMarkdown('*', '*') },
+    { icon: Quote,    title: 'Quote',     action: () => insertLinePrefix('> ') },
+    { icon: List,     title: 'List',      action: () => insertLinePrefix('- ') },
+    { icon: Minus,    title: 'Divider',   action: () => insertMarkdown('\n\n---\n\n') },
+  ]
+
+  // ── save ─────────────────────────────────────────────────────────────────
   const handleSave = (status) => {
     const slug = form.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
     const post = {
-      id:       existing?.id || Date.now().toString(),
+      id:        existing?.id || Date.now().toString(),
       ...form,
       status,
       slug,
-      author:   user?.name || 'Admin',
-      date:     existing?.date || new Date().toISOString().split('T')[0],
+      author:    user?.name || 'Admin',
+      date:      existing?.date || new Date().toISOString().split('T')[0],
       updatedAt: new Date().toISOString().split('T')[0],
-      views:    existing?.views || 0,
+      views:     existing?.views || 0,
     }
     const updated = existing
       ? blogs.map(b => b.id === editId ? post : b)
@@ -54,8 +101,12 @@ export default function BlogCreate() {
     </div>
   )
 
+  const wordCount = form.content.split(' ').filter(Boolean).length
+  const readMin   = Math.max(1, Math.ceil(wordCount / 200))
+
   return (
     <div className="max-w-4xl mx-auto space-y-5">
+
       {/* Header */}
       <div className="flex items-center gap-4">
         <button onClick={() => navigate(-1)} className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.07] flex items-center justify-center text-white/40 hover:text-white transition-colors">
@@ -63,7 +114,7 @@ export default function BlogCreate() {
         </button>
         <div>
           <h1 className="text-white font-bold text-lg">{existing ? 'Edit Blog Post' : 'Create New Blog Post'}</h1>
-          <p className="text-white/35 text-[12px]">Fill in the details and publish to the website</p>
+          <p className="text-white/35 text-[12px]">Supports Markdown — use the toolbar or paste formatted content</p>
         </div>
       </div>
 
@@ -71,32 +122,81 @@ export default function BlogCreate() {
         <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
           className="flex items-center gap-2 px-4 py-3 rounded-xl text-[12px] text-green-400"
           style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}>
-          ✓ Blog post saved successfully! Redirecting...
+          ✓ Blog post saved! Redirecting...
         </motion.div>
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
-        {/* Main content */}
+        {/* Main */}
         <div className="lg:col-span-2 space-y-4">
           <div className="p-5 rounded-2xl space-y-4" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
             <Input label="Blog Title" placeholder="Enter a compelling blog title..." value={form.title} onChange={e => set('title', e.target.value)} />
 
             {form.title && (
               <div className="flex items-center gap-2">
-                <span className="text-white/25 text-[11px]">URL slug:</span>
+                <span className="text-white/25 text-[11px]">URL:</span>
                 <span className="text-blue-400 text-[11px] font-mono">/blog/{form.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'your-post-title'}</span>
               </div>
             )}
 
+            {/* Content editor */}
             <div>
-              <label className="block text-white/40 text-[11px] tracking-widest uppercase mb-2">Content</label>
-              <textarea
-                rows={14} value={form.content} onChange={e => set('content', e.target.value)}
-                placeholder="Write your blog content here...&#10;&#10;Use headings, paragraphs and structure your article clearly."
-                className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-all resize-none leading-relaxed"
-              />
-              <p className="text-white/20 text-[11px] mt-1">{form.content.length} characters · ~{Math.ceil(form.content.split(' ').filter(Boolean).length / 200)} min read</p>
+              {/* Tab bar + toolbar */}
+              <div className="flex items-center justify-between mb-2 gap-2 flex-wrap">
+                <div className="flex items-center gap-1 p-1 rounded-lg" style={{ background: 'rgba(255,255,255,0.04)' }}>
+                  <button onClick={() => setPreview(false)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium transition-all ${!preview ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white/60'}`}>
+                    <Edit3 size={11} /> Write
+                  </button>
+                  <button onClick={() => setPreview(true)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium transition-all ${preview ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white/60'}`}>
+                    <Eye size={11} /> Preview
+                  </button>
+                </div>
+
+                {!preview && (
+                  <div className="flex items-center gap-0.5">
+                    {toolbar.map(({ icon: Icon, title, action }) => (
+                      <button key={title} title={title} onClick={action}
+                        className="w-7 h-7 rounded-lg flex items-center justify-center text-white/35 hover:text-white hover:bg-white/[0.07] transition-all">
+                        <Icon size={13} />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {preview ? (
+                /* ── Live preview ── */
+                <div
+                  className="min-h-[320px] rounded-xl px-5 py-4 border border-white/[0.08] overflow-auto"
+                  style={{ background: 'rgba(255,255,255,0.02)', fontFamily: 'Inter, system-ui, sans-serif' }}>
+                  {form.content ? (
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm, remarkBreaks]}
+                      components={mdComponents}>
+                      {form.content}
+                    </ReactMarkdown>
+                  ) : (
+                    <p className="text-white/20 text-[13px] italic">Nothing to preview yet. Switch to Write and add content.</p>
+                  )}
+                </div>
+              ) : (
+                /* ── Textarea ── */
+                <textarea
+                  ref={textareaRef}
+                  rows={18}
+                  value={form.content}
+                  onChange={e => set('content', e.target.value)}
+                  placeholder={`Write your article here...\n\n# Use headings like this\n\nRegular paragraphs work too.\n\n**Bold text** and *italic text* are supported.\n\n- Bullet lists\n- Like this`}
+                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-all resize-none leading-relaxed"
+                  style={{ fontFamily: 'Inter, system-ui, monospace' }}
+                />
+              )}
+              <p className="text-white/20 text-[11px] mt-1.5">
+                {form.content.length} chars · {wordCount} words · ~{readMin} min read
+              </p>
             </div>
           </div>
 
@@ -184,8 +284,50 @@ export default function BlogCreate() {
               </div>
             )}
           </div>
+
+          {/* Markdown quick ref */}
+          <div className="p-4 rounded-2xl space-y-2" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
+            <p className="text-white/30 text-[10px] tracking-widest uppercase font-medium mb-3">Formatting Guide</p>
+            {[
+              ['# Heading 1',   'Big title'],
+              ['## Heading 2',  'Section title'],
+              ['**bold**',      'Bold text'],
+              ['*italic*',      'Italic text'],
+              ['- item',        'Bullet list'],
+              ['> quote',       'Blockquote'],
+              ['---',           'Divider line'],
+            ].map(([syntax, desc]) => (
+              <div key={syntax} className="flex items-center justify-between">
+                <code className="text-blue-400 text-[10px] font-mono">{syntax}</code>
+                <span className="text-white/25 text-[10px]">{desc}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
   )
+}
+
+// ── Shared markdown components (same styles used in BlogDetailPage) ──────────
+export const mdComponents = {
+  h1: ({ children }) => <h1 style={{ fontFamily: 'Inter, system-ui, sans-serif', fontSize: '1.75rem', fontWeight: 700, color: '#fff', marginTop: '2rem', marginBottom: '0.75rem', lineHeight: 1.3 }}>{children}</h1>,
+  h2: ({ children }) => <h2 style={{ fontFamily: 'Inter, system-ui, sans-serif', fontSize: '1.35rem', fontWeight: 700, color: 'rgba(255,255,255,0.92)', marginTop: '1.75rem', marginBottom: '0.6rem', lineHeight: 1.35 }}>{children}</h2>,
+  h3: ({ children }) => <h3 style={{ fontFamily: 'Inter, system-ui, sans-serif', fontSize: '1.1rem', fontWeight: 600, color: 'rgba(255,255,255,0.85)', marginTop: '1.4rem', marginBottom: '0.5rem' }}>{children}</h3>,
+  p:  ({ children }) => <p  style={{ fontFamily: 'Inter, system-ui, sans-serif', color: 'rgba(255,255,255,0.7)', lineHeight: 1.85, marginBottom: '1.1rem', fontSize: '15px' }}>{children}</p>,
+  strong: ({ children }) => <strong style={{ color: '#fff', fontWeight: 600 }}>{children}</strong>,
+  em:     ({ children }) => <em style={{ color: 'rgba(255,255,255,0.65)', fontStyle: 'italic' }}>{children}</em>,
+  ul: ({ children }) => <ul style={{ paddingLeft: '1.4rem', marginBottom: '1rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.8 }}>{children}</ul>,
+  ol: ({ children }) => <ol style={{ paddingLeft: '1.4rem', marginBottom: '1rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.8, listStyleType: 'decimal' }}>{children}</ol>,
+  li: ({ children }) => <li style={{ marginBottom: '0.25rem', fontFamily: 'Inter, system-ui, sans-serif', fontSize: '15px' }}>{children}</li>,
+  blockquote: ({ children }) => (
+    <blockquote style={{ borderLeft: '3px solid #E8155A', paddingLeft: '1rem', margin: '1.5rem 0', color: 'rgba(255,255,255,0.5)', fontStyle: 'italic', fontFamily: 'Inter, system-ui, sans-serif' }}>
+      {children}
+    </blockquote>
+  ),
+  hr: () => <hr style={{ border: 'none', borderTop: '1px solid rgba(255,255,255,0.08)', margin: '2rem 0' }} />,
+  code: ({ inline, children }) => inline
+    ? <code style={{ background: 'rgba(255,255,255,0.08)', padding: '0.15em 0.4em', borderRadius: '4px', fontFamily: 'monospace', fontSize: '13px', color: '#93c5fd' }}>{children}</code>
+    : <pre style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '8px', overflowX: 'auto', marginBottom: '1rem' }}><code style={{ fontFamily: 'monospace', fontSize: '13px', color: '#93c5fd' }}>{children}</code></pre>,
+  a: ({ href, children }) => <a href={href} style={{ color: '#2E55E0', textDecoration: 'underline' }} target="_blank" rel="noopener noreferrer">{children}</a>,
 }
