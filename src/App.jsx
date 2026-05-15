@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -23,6 +24,19 @@ import Settings from './admin/pages/Settings'
 
 gsap.registerPlugin(ScrollTrigger)
 
+const GA_ID = 'G-B7C1MH1KZQ'
+
+function GATracker() {
+  const location = useLocation()
+  useEffect(() => {
+    if (typeof window.gtag !== 'function') return
+    window.gtag('config', GA_ID, {
+      page_path: location.pathname + location.search,
+    })
+  }, [location])
+  return null
+}
+
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
   const location = useLocation()
@@ -44,6 +58,7 @@ function PublicLayout() {
 export default function App() {
   return (
     <AuthProvider>
+      <GATracker />
       <Routes>
         {/* /admin → redirect to /admin/login (avoids wildcard conflict) */}
         <Route path="/admin" element={<Navigate to="/admin/login" replace />} />

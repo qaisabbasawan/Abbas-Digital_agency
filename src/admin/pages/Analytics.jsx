@@ -1,5 +1,8 @@
 import { motion } from 'framer-motion'
-import { TrendingUp, Users, Eye, MousePointer, ArrowUpRight, Globe, Smartphone, Monitor } from 'lucide-react'
+import { TrendingUp, Users, Eye, MousePointer, ExternalLink, Globe, Smartphone, Monitor } from 'lucide-react'
+
+const GA_ID = 'G-B7C1MH1KZQ'
+const GA_LINK = `https://analytics.google.com/analytics/web/#/p${GA_ID.replace('G-','')}/reports/reportinghub`
 
 const monthData = [42, 58, 71, 65, 83, 77, 91, 88, 102, 95, 118, 134]
 const months    = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
@@ -37,12 +40,25 @@ export default function Analytics() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-white font-bold text-lg">Analytics</h1>
-          <p className="text-white/35 text-[12px] mt-0.5">Last 30 days · Updated just now</p>
+          <p className="text-white/35 text-[12px] mt-0.5">Powered by Google Analytics · {GA_ID}</p>
         </div>
-        <span className="flex items-center gap-1.5 text-[11px] px-3 py-1.5 rounded-full bg-green-500/10 text-green-400 border border-green-500/20">
-          <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-          Live
-        </span>
+        <div className="flex items-center gap-3">
+          <span className="flex items-center gap-1.5 text-[11px] px-3 py-1.5 rounded-full bg-green-500/10 text-green-400 border border-green-500/20">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+            Live Tracking
+          </span>
+          <a href={GA_LINK} target="_blank" rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-[11px] px-3 py-1.5 rounded-full bg-white/[0.05] text-white/50 border border-white/[0.08] hover:text-white hover:border-white/20 transition-colors">
+            Open in GA4 <ExternalLink size={10} />
+          </a>
+        </div>
+      </div>
+
+      {/* GA4 info banner */}
+      <div className="p-4 rounded-xl text-[12px] text-white/50" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
+        The numbers below are <span className="text-white/70 font-medium">baseline estimates</span> shown until enough real traffic accumulates in your GA4 property.
+        For live accurate data, click <a href={GA_LINK} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">Open in GA4</a> above.
+        Your site is already being tracked — data appears in GA4 within 24–48 hours.
       </div>
 
       {/* KPI cards */}

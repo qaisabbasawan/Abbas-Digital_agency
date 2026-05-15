@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Users, BookOpen, TrendingUp, ArrowUpRight, PenSquare, ExternalLink, BarChart2, Mail } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
-const GA_ID = '' // paste your GA4 Measurement ID here e.g. 'G-XXXXXXXXXX'
+const GA_ID = 'G-B7C1MH1KZQ'
 
 const statusColors = {
   New:       'bg-blue-500/15 text-blue-400',
@@ -78,27 +78,29 @@ export default function Dashboard() {
         <StatCard icon={Mail}       label="Unread Leads"     value={newLeads}       sub="Awaiting response"         color="#3B82F6" delay={0.24} />
       </div>
 
-      {/* GA4 banner if not connected */}
-      {!GA_ID && (
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-          className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-5 rounded-2xl"
-          style={{ background: 'rgba(46,85,224,0.08)', border: '1px solid rgba(46,85,224,0.2)' }}>
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(46,85,224,0.15)' }}>
-            <BarChart2 size={18} style={{ color: '#3B82F6' }} />
+      {/* GA4 connected status */}
+      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+        className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-5 rounded-2xl"
+        style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.15)' }}>
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(16,185,129,0.12)' }}>
+          <BarChart2 size={18} style={{ color: '#10B981' }} />
+        </div>
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-0.5">
+            <p className="text-white font-semibold text-[14px]">Google Analytics Connected</p>
+            <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-green-500/15 text-green-400">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" /> Live · {GA_ID}
+            </span>
           </div>
-          <div className="flex-1">
-            <p className="text-white font-semibold text-[14px]">Connect Google Analytics for visitor data</p>
-            <p className="text-white/45 text-[12px] mt-0.5">
-              To see real visitors, traffic sources, and device stats — set up a free GA4 property, then share your Measurement ID (G-XXXXXXXXXX) with us.
-            </p>
-          </div>
-          <a href="https://analytics.google.com" target="_blank" rel="noopener noreferrer"
-            className="shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-medium text-white transition-opacity hover:opacity-90"
-            style={{ background: 'rgba(46,85,224,0.3)', border: '1px solid rgba(46,85,224,0.4)' }}>
-            Set up GA4 <ExternalLink size={11} />
-          </a>
-        </motion.div>
-      )}
+          <p className="text-white/40 text-[12px]">All pages are being tracked. View detailed visitor analytics, traffic sources, and devices in Google Analytics.</p>
+        </div>
+        <a href={`https://analytics.google.com/analytics/web/#/p${GA_ID.replace('G-','')}/reports/reportinghub`}
+          target="_blank" rel="noopener noreferrer"
+          className="shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-medium text-white transition-opacity hover:opacity-90"
+          style={{ background: 'rgba(16,185,129,0.2)', border: '1px solid rgba(16,185,129,0.3)' }}>
+          Open Analytics <ExternalLink size={11} />
+        </a>
+      </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
