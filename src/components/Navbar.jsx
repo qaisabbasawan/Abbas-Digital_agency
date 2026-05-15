@@ -58,7 +58,7 @@ export default function Navbar() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 ${
-        scrolled ? 'bg-bg-dark/95 backdrop-blur-xl border-b border-white/[0.06]' : 'bg-transparent'
+        scrolled || menuOpen ? 'bg-bg-dark/95 backdrop-blur-xl border-b border-white/[0.06]' : 'bg-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
