@@ -1,32 +1,63 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Plus, Search, Trash2, PenSquare, X, Shield } from 'lucide-react'
+import { Plus, Search, Trash2, PenSquare, X, Shield, Eye, EyeOff, KeyRound } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { roleColors } from '../AdminLayout'
 
 const roles = ['Super Admin', 'Admin', 'Editor', 'SEO Manager', 'Content Writer', 'Analyst', 'Viewer']
 
-const EMPTY_FORM = { name: '', email: '', role: 'Editor', status: 'Active' }
+const EMPTY_FORM = { name: '', email: '', password: '', role: 'Editor', status: 'Active' }
 
 export default function UserManagement() {
   const { users, persistUsers, user: me } = useAuth()
-  const [search, setSearch]   = useState('')
-  const [modal, setModal]     = useState(false)
+  const [search, setSearch]     = useState('')
+  const [modal, setModal]       = useState(false)
   const [editUser, setEditUser] = useState(null)
-  const [form, setForm]       = useState(EMPTY_FORM)
+  const [form, setForm]         = useState(EMPTY_FORM)
   const [deleteId, setDeleteId] = useState(null)
+  const [showPw, setShowPw]     = useState(false)
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
-  const openAdd  = () => { setForm(EMPTY_FORM); setEditUser(null); setModal(true) }
-  const openEdit = (u) => { setForm({ name: u.name, email: u.email, role: u.role, status: u.status }); setEditUser(u); setModal(true) }
+  const openAdd = () => {
+    setForm(EMPTY_FORM)
+    setEditUser(null)
+    setShowPw(false)
+    setModal(true)
+  }
+
+  const openEdit = (u) => {
+    setForm({ name: u.name, email: u.email, password: u.password || '', role: u.role, status: u.status })
+    setEditUser(u)
+    setShowPw(false)
+    setModal(true)
+  }
 
   const handleSave = () => {
     if (!form.name || !form.email) return
+    if (!editUser && !form.password) return // password required for new users
+
+    const initials = form.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+
     if (editUser) {
-      persistUsers(users.map(u => u.id === editUser.id ? { ...u, ...form } : u))
+      const updated = {
+        ...editUser,
+        name: form.name,
+        email: form.email,
+        role: form.role,
+        status: form.status,
+        initials,
+        // only update password if a new one was typed
+        ...(form.password ? { password: form.password } : {}),
+      }
+      persistUsers(users.map(u => u.id === editUser.id ? updated : u))
     } else {
-      const newUser = { id: Date.now(), ...form, lastLogin: '—', initials: form.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) }
+      const newUser = {
+        id: Date.now(),
+        ...form,
+        lastLogin: '—',
+        initials,
+      }
       persistUsers([...users, newUser])
     }
     setModal(false)
@@ -37,6 +68,8 @@ export default function UserManagement() {
   )
 
   const confirmDelete = (id) => { persistUsers(users.filter(u => u.id !== id)); setDeleteId(null) }
+
+  const canSave = form.name && form.email && (editUser ? true : !!form.password)
 
   return (
     <div className="max-w-6xl mx-auto space-y-5">
@@ -89,7 +122,6 @@ export default function UserManagement() {
           {filtered.map((u, i) => (
             <motion.div key={u.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.04 }}
               className="grid grid-cols-1 sm:grid-cols-5 gap-3 sm:gap-4 px-5 py-4 hover:bg-white/[0.02] transition-colors items-center">
-              {/* Avatar + Name */}
               <div className="flex items-center gap-3 sm:col-span-2">
                 <div className="w-9 h-9 rounded-xl flex items-center justify-center text-[11px] font-bold text-white shrink-0"
                   style={{ background: u.id === 1 ? 'linear-gradient(135deg,#2E55E0,#E8155A)' : 'rgba(255,255,255,0.07)' }}>
@@ -99,21 +131,29 @@ export default function UserManagement() {
                   <p className="text-white/85 text-[13px] font-medium">{u.name}</p>
                   <p className="text-white/30 text-[11px]">{u.email}</p>
                 </div>
-                {u.email === me?.email && <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-white/10 text-white/40">You</span>}
+                <div className="flex items-center gap-1.5">
+                  {u.email === me?.email && <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-white/10 text-white/40">You</span>}
+                  {u.password ? (
+                    <span title="Password set" className="text-[9px] px-1.5 py-0.5 rounded-full bg-green-500/10 text-green-400 flex items-center gap-1">
+                      <KeyRound size={8} /> Login
+                    </span>
+                  ) : (
+                    <span title="No password set" className="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400">
+                      No pwd
+                    </span>
+                  )}
+                </div>
               </div>
-              {/* Role */}
               <div>
                 <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-full border ${roleColors[u.role] || 'bg-white/10 text-white/50 border-white/10'}`}>
                   {u.role}
                 </span>
               </div>
-              {/* Status */}
               <div>
                 <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${u.status === 'Active' ? 'bg-green-500/15 text-green-400' : 'bg-white/10 text-white/40'}`}>
                   {u.status}
                 </span>
               </div>
-              {/* Last login + actions */}
               <div className="flex items-center justify-between">
                 <span className="text-white/30 text-[12px]">{u.lastLogin}</span>
                 <div className="flex gap-1.5">
@@ -147,10 +187,12 @@ export default function UserManagement() {
               </div>
               <button onClick={() => setModal(false)} className="text-white/30 hover:text-white transition-colors"><X size={18} /></button>
             </div>
+
             <div className="space-y-4">
+              {/* Name & Email */}
               {[
-                { label: 'Full Name', key: 'name', type: 'text', placeholder: 'John Doe' },
-                { label: 'Email Address', key: 'email', type: 'email', placeholder: 'john@example.com' },
+                { label: 'Full Name',      key: 'name',  type: 'text',  placeholder: 'John Doe' },
+                { label: 'Email Address',  key: 'email', type: 'email', placeholder: 'john@example.com' },
               ].map(f => (
                 <div key={f.key}>
                   <label className="block text-white/40 text-[11px] tracking-widest uppercase mb-2">{f.label}</label>
@@ -158,6 +200,31 @@ export default function UserManagement() {
                     className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-none focus:border-white/20" />
                 </div>
               ))}
+
+              {/* Password */}
+              <div>
+                <label className="block text-white/40 text-[11px] tracking-widest uppercase mb-2">
+                  Password {editUser && <span className="normal-case tracking-normal text-white/25">(leave blank to keep current)</span>}
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPw ? 'text' : 'password'}
+                    value={form.password}
+                    onChange={e => set('password', e.target.value)}
+                    placeholder={editUser ? '••••••••' : 'Set login password'}
+                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 pr-10 text-white text-[13px] placeholder:text-white/20 focus:outline-none focus:border-white/20"
+                  />
+                  <button type="button" onClick={() => setShowPw(v => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors">
+                    {showPw ? <EyeOff size={14} /> : <Eye size={14} />}
+                  </button>
+                </div>
+                {!editUser && (
+                  <p className="text-white/25 text-[10px] mt-1">This user will use this password to log into the admin panel.</p>
+                )}
+              </div>
+
+              {/* Role & Status */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-white/40 text-[11px] tracking-widest uppercase mb-2">Role</label>
@@ -176,9 +243,10 @@ export default function UserManagement() {
                 </div>
               </div>
             </div>
+
             <div className="flex gap-3 mt-6">
               <button onClick={() => setModal(false)} className="flex-1 py-3 rounded-xl text-[13px] text-white/50 border border-white/[0.1] hover:border-white/25 hover:text-white transition-all">Cancel</button>
-              <button onClick={handleSave} disabled={!form.name || !form.email}
+              <button onClick={handleSave} disabled={!canSave}
                 className="flex-1 py-3 rounded-xl text-[13px] font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
                 style={{ background: 'linear-gradient(135deg,#2E55E0,#E8155A)' }}>
                 {editUser ? 'Save Changes' : 'Add User'}
