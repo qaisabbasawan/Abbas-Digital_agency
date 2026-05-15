@@ -185,6 +185,9 @@ export function AuthProvider({ children }) {
     }
     setLeads(prev => [newLead, ...prev])
     await supabase.from('leads').insert(leadToDb(newLead))
+    // Fire email notification — non-blocking so form doesn't wait
+    supabase.functions.invoke('send-lead-email', { body: { lead: newLead } })
+      .catch(err => console.error('Email notification failed:', err))
   }
 
   const persistLeads = async (newLeads) => {
