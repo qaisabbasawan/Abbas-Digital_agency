@@ -5,7 +5,16 @@ import { Save, Send, ArrowLeft, Image, Tag, X, Bold, Italic, Heading1, Heading2,
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import remarkBreaks from 'remark-breaks'
+import TurndownService from 'turndown'
 import { useAuth } from '../context/AuthContext'
+
+const td = new TurndownService({
+  headingStyle:     'atx',
+  bulletListMarker: '-',
+  codeBlockStyle:   'fenced',
+})
+// Keep line breaks inside list items
+td.keep(['br'])
 
 const categories = ['Web Development', 'E-Commerce', 'Mobile Apps', 'AI & Chatbots', 'Digital Marketing', 'Branding & Design', 'Case Studies', 'Industry Insights']
 
@@ -60,6 +69,23 @@ export default function BlogCreate() {
     setTimeout(() => {
       el.focus()
       el.setSelectionRange(start + prefix.length, start + prefix.length)
+    }, 0)
+  }
+
+  // ── smart paste: auto-convert HTML (from ChatGPT, Word, Docs) → Markdown ──
+  const handlePaste = (e) => {
+    const html = e.clipboardData.getData('text/html')
+    if (!html) return // plain text — let browser handle normally
+    e.preventDefault()
+    const markdown = td.turndown(html)
+    const el = textareaRef.current
+    const start = el.selectionStart
+    const end   = el.selectionEnd
+    const newContent = form.content.substring(0, start) + markdown + form.content.substring(end)
+    set('content', newContent)
+    setTimeout(() => {
+      el.focus()
+      el.setSelectionRange(start + markdown.length, start + markdown.length)
     }, 0)
   }
 
@@ -189,7 +215,8 @@ export default function BlogCreate() {
                   rows={18}
                   value={form.content}
                   onChange={e => set('content', e.target.value)}
-                  placeholder={`Write your article here...\n\n# Use headings like this\n\nRegular paragraphs work too.\n\n**Bold text** and *italic text* are supported.\n\n- Bullet lists\n- Like this`}
+                  onPaste={handlePaste}
+                  placeholder={`Paste content from ChatGPT or write here...\n\nFormatting (headings, bold, lists) is preserved automatically when pasting.`}
                   className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-all resize-none leading-relaxed"
                   style={{ fontFamily: 'Inter, system-ui, monospace' }}
                 />
