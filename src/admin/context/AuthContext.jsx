@@ -18,6 +18,7 @@ export function AuthProvider({ children }) {
   const [user, setUser]     = useState(null)
   const [users, setUsers]   = useState(DEFAULT_USERS)
   const [blogs, setBlogs]   = useState([])
+  const [leads, setLeads]   = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -30,6 +31,9 @@ export function AuthProvider({ children }) {
 
       const savedBlogs = localStorage.getItem('ada_blogs')
       if (savedBlogs) setBlogs(JSON.parse(savedBlogs))
+
+      const savedLeads = localStorage.getItem('ada_leads')
+      if (savedLeads) setLeads(JSON.parse(savedLeads))
     } catch {
       localStorage.removeItem('ada_admin_user')
     } finally {
@@ -39,6 +43,13 @@ export function AuthProvider({ children }) {
 
   const persistBlogs = (b) => { setBlogs(b); localStorage.setItem('ada_blogs', JSON.stringify(b)) }
   const persistUsers = (u) => { setUsers(u); localStorage.setItem('ada_users', JSON.stringify(u)) }
+  const persistLeads = (l) => { setLeads(l); localStorage.setItem('ada_leads', JSON.stringify(l)) }
+
+  const addLead = (lead) => {
+    const newLead = { id: Date.now(), ...lead, status: 'New', date: new Date().toISOString() }
+    const updated = [newLead, ...leads]
+    persistLeads(updated)
+  }
 
   const login = (email, password) => {
     const cred = CREDENTIALS[email.toLowerCase()]
@@ -53,7 +64,7 @@ export function AuthProvider({ children }) {
   const logout = () => { setUser(null); localStorage.removeItem('ada_admin_user') }
 
   return (
-    <AuthContext.Provider value={{ user, users, blogs, login, logout, persistBlogs, persistUsers, loading }}>
+    <AuthContext.Provider value={{ user, users, blogs, leads, login, logout, persistBlogs, persistUsers, persistLeads, addLead, loading }}>
       {children}
     </AuthContext.Provider>
   )
