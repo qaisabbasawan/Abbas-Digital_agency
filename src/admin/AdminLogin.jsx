@@ -1,28 +1,44 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Eye, EyeOff, Lock, Mail, Shield } from 'lucide-react'
+import { Eye, EyeOff, Lock, Mail, Shield, ChevronDown } from 'lucide-react'
 import { useAuth } from './context/AuthContext'
 
+const ROLES = ['Super Admin', 'Admin', 'Editor', 'SEO Manager', 'Content Writer', 'Analyst', 'Viewer']
+
+const roleColors = {
+  'Super Admin':    '#EF4444',
+  'Admin':          '#3B82F6',
+  'Editor':         '#8B5CF6',
+  'SEO Manager':    '#10B981',
+  'Content Writer': '#F59E0B',
+  'Analyst':        '#06B6D4',
+  'Viewer':         '#6B7280',
+}
+
 export default function AdminLogin() {
-  const [email, setEmail]       = useState('')
+  const [email,    setEmail]    = useState('')
   const [password, setPassword] = useState('')
-  const [showPw, setShowPw]     = useState(false)
+  const [role,     setRole]     = useState('')
+  const [showPw,   setShowPw]   = useState(false)
   const [remember, setRemember] = useState(false)
-  const [error, setError]       = useState('')
-  const [loading, setLoading]   = useState(false)
+  const [error,    setError]    = useState('')
+  const [loading,  setLoading]  = useState(false)
   const { login } = useAuth()
   const navigate  = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setError(''); setLoading(true)
+    setError('')
+    setLoading(true)
     await new Promise(r => setTimeout(r, 700))
-    const res = login(email, password)
+    const res = login(email, password, role || undefined)
     setLoading(false)
     if (res.ok) navigate('/admin/dashboard', { replace: true })
     else setError(res.error)
   }
+
+  const selectedColor = role ? (roleColors[role] || '#6B7280') : null
 
   return (
     <div className="min-h-screen bg-[#070C1B] flex">
@@ -47,11 +63,8 @@ export default function AdminLogin() {
 
         {/* Center content */}
         <div className="relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          >
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}>
             <h1 className="font-bold text-white mb-4 leading-tight" style={{ fontSize: 'clamp(2rem,3.5vw,3rem)' }}>
               Manage Your<br />
               <span style={{ backgroundImage: 'linear-gradient(135deg,#2E55E0,#E8155A)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
@@ -65,23 +78,29 @@ export default function AdminLogin() {
 
           <div className="mt-10 space-y-4">
             {[
-              { label: 'Blog Management',    desc: 'Create, edit & publish articles' },
+              { label: 'Blog Management',     desc: 'Create, edit & publish articles' },
               { label: 'Real-time Analytics', desc: 'Track visitors & conversions' },
-              { label: 'User & Role Control', desc: 'Manage team access & permissions' },
+              { label: 'User & Role Control',  desc: 'Manage team access & permissions' },
             ].map((f, i) => (
-              <motion.div
-                key={f.label}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
+              <motion.div key={f.label} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 + i * 0.1, duration: 0.5 }}
-                className="flex items-start gap-3"
-              >
+                className="flex items-start gap-3">
                 <div className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ background: '#E8155A' }} />
                 <div>
                   <p className="text-white/70 text-[13px] font-medium">{f.label}</p>
                   <p className="text-white/30 text-[11px]">{f.desc}</p>
                 </div>
               </motion.div>
+            ))}
+          </div>
+
+          {/* Role badges */}
+          <div className="mt-10 flex flex-wrap gap-2">
+            {ROLES.map(r => (
+              <span key={r} className="text-[10px] px-2.5 py-1 rounded-full font-medium"
+                style={{ background: `${roleColors[r]}18`, color: roleColors[r], border: `1px solid ${roleColors[r]}30` }}>
+                {r}
+              </span>
             ))}
           </div>
         </div>
@@ -93,12 +112,10 @@ export default function AdminLogin() {
 
       {/* Right panel — login form */}
       <div className="flex-1 flex items-center justify-center p-6">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
+        <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full max-w-md"
-        >
+          className="w-full max-w-md">
+
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-2 mb-8">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#2E55E0,#E8155A)' }}>
@@ -111,16 +128,34 @@ export default function AdminLogin() {
           <p className="text-white/40 text-[13px] mb-8">Sign in to your admin account</p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+
+            {/* Role selector */}
+            <div>
+              <label className="block text-white/50 text-[11px] tracking-widest uppercase mb-2">Your Role</label>
+              <div className="relative">
+                {selectedColor && (
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full"
+                    style={{ background: selectedColor }} />
+                )}
+                <select value={role} onChange={e => setRole(e.target.value)}
+                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl py-3 text-white text-[13px] focus:outline-none focus:border-white/20 focus:bg-white/[0.06] transition-all appearance-none"
+                  style={{ paddingLeft: selectedColor ? '2.5rem' : '1rem', paddingRight: '2.5rem' }}>
+                  <option value="">Select your role (optional)</option>
+                  {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
+                </select>
+                <ChevronDown size={14} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none" />
+              </div>
+              <p className="text-white/20 text-[10px] mt-1">Select your role for role-specific access verification</p>
+            </div>
+
             {/* Email */}
             <div>
               <label className="block text-white/50 text-[11px] tracking-widest uppercase mb-2">Email Address</label>
               <div className="relative">
                 <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/25" />
-                <input
-                  type="email" required value={email} onChange={e => setEmail(e.target.value)}
+                <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
                   placeholder="admin@example.com"
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-10 pr-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-none focus:border-white/20 focus:bg-white/[0.06] transition-all"
-                />
+                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-10 pr-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-none focus:border-white/20 focus:bg-white/[0.06] transition-all" />
               </div>
             </div>
 
@@ -129,12 +164,11 @@ export default function AdminLogin() {
               <label className="block text-white/50 text-[11px] tracking-widest uppercase mb-2">Password</label>
               <div className="relative">
                 <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/25" />
-                <input
-                  type={showPw ? 'text' : 'password'} required value={password} onChange={e => setPassword(e.target.value)}
+                <input type={showPw ? 'text' : 'password'} required value={password} onChange={e => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-10 pr-10 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-none focus:border-white/20 focus:bg-white/[0.06] transition-all"
-                />
-                <button type="button" onClick={() => setShowPw(v => !v)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors">
+                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-10 pr-10 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-none focus:border-white/20 focus:bg-white/[0.06] transition-all" />
+                <button type="button" onClick={() => setShowPw(v => !v)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors">
                   {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
@@ -160,14 +194,13 @@ export default function AdminLogin() {
             )}
 
             {/* Submit */}
-            <button
-              type="submit" disabled={loading}
+            <button type="submit" disabled={loading}
               className="w-full py-3.5 rounded-xl text-white text-[13px] font-semibold tracking-wide transition-opacity hover:opacity-90 disabled:opacity-60 flex items-center justify-center gap-2"
-              style={{ background: 'linear-gradient(135deg, #2E55E0, #E8155A)' }}
-            >
-              {loading ? (
-                <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Signing in...</>
-              ) : 'Sign In to Dashboard'}
+              style={{ background: 'linear-gradient(135deg,#2E55E0,#E8155A)' }}>
+              {loading
+                ? <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Signing in...</>
+                : 'Sign In to Dashboard'
+              }
             </button>
           </form>
 

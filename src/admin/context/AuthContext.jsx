@@ -55,40 +55,53 @@ export function AuthProvider({ children }) {
     persistLeads([newLead, ...leads])
   }
 
-  const login = (email, password) => {
+  const login = (email, password, role) => {
     const normalised = email.toLowerCase().trim()
 
-    // Check against users list (passwords set by admin)
+    // Super Admin hardcoded — always works regardless of localStorage state
+    if (normalised === SUPER_ADMIN.email && password === SUPER_ADMIN.password) {
+      if (role && role !== SUPER_ADMIN.role) return { ok: false, error: `This account is ${SUPER_ADMIN.role}, not ${role}.` }
+      const sessionUser = { email: SUPER_ADMIN.email, name: SUPER_ADMIN.name, role: SUPER_ADMIN.role, initials: SUPER_ADMIN.initials }
+      setUser(sessionUser)
+      localStorage.setItem('ada_admin_user', JSON.stringify(sessionUser))
+      return { ok: true }
+    }
+
+    // Check against users list (merged: localStorage overrides defaults)
     const currentUsers = (() => {
       try {
         const saved = localStorage.getItem('ada_users')
-        return saved ? JSON.parse(saved) : users
+        if (!saved) return users
+        const parsed = JSON.parse(saved)
+        // Merge DEFAULT_USERS passwords into localStorage users that are missing passwords
+        return parsed.map(u => {
+          const def = DEFAULT_USERS.find(d => d.email.toLowerCase() === u.email.toLowerCase())
+          return { ...u, password: u.password || def?.password || '' }
+        })
       } catch { return users }
     })()
 
     const match = currentUsers.find(u => u.email.toLowerCase() === normalised)
 
     if (match) {
-      if (match.status === 'Inactive') return { ok: false, error: 'This account is inactive.' }
-      if (!match.password)             return { ok: false, error: 'No password set for this account. Ask your Super Admin.' }
-      if (match.password !== password) return { ok: false, error: 'Invalid email or password.' }
+      if (match.status === 'Inactive')  return { ok: false, error: 'This account is inactive. Contact your Super Admin.' }
+      if (!match.password)              return { ok: false, error: 'No password set for this account. Ask your Super Admin.' }
+      if (match.password !== password)  return { ok: false, error: 'Invalid email or password.' }
+      if (role && match.role !== role)  return { ok: false, error: `This account has role "${match.role}", not "${role}".` }
 
       const sessionUser = {
         email: match.email,
-        name: match.name,
-        role: match.role,
+        name:  match.name,
+        role:  match.role,
         initials: match.initials || match.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2),
       }
       setUser(sessionUser)
       localStorage.setItem('ada_admin_user', JSON.stringify(sessionUser))
 
       // Update lastLogin
-      const updated = currentUsers.map(u =>
-        u.email.toLowerCase() === normalised
-          ? { ...u, lastLogin: new Date().toISOString().split('T')[0] }
-          : u
-      )
-      persistUsers(updated)
+      persistUsers(currentUsers.map(u =>
+        u.email.toLowerCase() === normalised ? { ...u, lastLogin: new Date().toISOString().split('T')[0] } : u
+      ))
 
       return { ok: true }
     }
