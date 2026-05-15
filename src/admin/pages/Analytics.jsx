@@ -1,38 +1,44 @@
 import { motion } from 'framer-motion'
-import { TrendingUp, Users, Eye, MousePointer, ExternalLink, Globe, Smartphone, Monitor } from 'lucide-react'
+import { ExternalLink, Globe, Smartphone, Monitor, BookOpen, TrendingUp, Users, Mail, BarChart2 } from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
 
-const GA_ID = 'G-B7C1MH1KZQ'
-const GA_LINK = `https://analytics.google.com/analytics/web/#/p${GA_ID.replace('G-','')}/reports/reportinghub`
-
-const monthData = [42, 58, 71, 65, 83, 77, 91, 88, 102, 95, 118, 134]
-const months    = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
-const maxMonth  = Math.max(...monthData)
-
-const topPages = [
-  { path: '/',              label: 'Home',              views: 18_420, bounce: '34%', time: '2m 18s' },
-  { path: '/services',      label: 'Services',          views: 9_840,  bounce: '41%', time: '3m 05s' },
-  { path: '/portfolio',     label: 'Portfolio',         views: 7_210,  bounce: '38%', time: '2m 52s' },
-  { path: '/about',         label: 'About',             views: 4_930,  bounce: '29%', time: '1m 44s' },
-  { path: '/contact',       label: 'Contact',           views: 3_760,  bounce: '22%', time: '4m 10s' },
-  { path: '/blog',          label: 'Blog',              views: 2_140,  bounce: '55%', time: '1m 20s' },
-]
-
-const countries = [
-  { name: 'Pakistan',       pct: 52, color: '#2E55E0' },
-  { name: 'United States',  pct: 21, color: '#E8155A' },
-  { name: 'United Kingdom', pct: 9,  color: '#8B5CF6' },
-  { name: 'Canada',         pct: 7,  color: '#10B981' },
-  { name: 'Other',          pct: 11, color: '#6B7280' },
-]
-
-const kpis = [
-  { icon: Eye,          label: 'Total Pageviews',    value: '142,810', change: '+18%', color: '#3B82F6' },
-  { icon: Users,        label: 'Unique Visitors',    value: '48,291',  change: '+12%', color: '#E8155A' },
-  { icon: MousePointer, label: 'Avg. Session',       value: '2m 34s',  change: '+5%',  color: '#8B5CF6' },
-  { icon: TrendingUp,   label: 'Conversion Rate',    value: '3.8%',    change: '+0.4%',color: '#10B981' },
-]
+const GA_ID   = 'G-B7C1MH1KZQ'
+const GA_LINK = 'https://analytics.google.com/analytics/web/'
 
 export default function Analytics() {
+  const { blogs, users, leads } = useAuth()
+
+  const published = blogs.filter(b => b.status === 'published').length
+  const drafts    = blogs.filter(b => b.status === 'draft').length
+  const newLeads  = leads.filter(l => l.status === 'New').length
+
+  // Leads by service (real)
+  const serviceCount = leads.reduce((acc, l) => {
+    if (l.service) acc[l.service] = (acc[l.service] || 0) + 1
+    return acc
+  }, {})
+  const topServices = Object.entries(serviceCount).sort((a, b) => b[1] - a[1]).slice(0, 5)
+
+  // Blog posts by month (real — last 6 months)
+  const months = Array.from({ length: 6 }, (_, i) => {
+    const d = new Date()
+    d.setMonth(d.getMonth() - (5 - i))
+    return { label: d.toLocaleDateString('en', { month: 'short' }), key: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}` }
+  })
+  const blogsByMonth = months.map(m => ({
+    ...m,
+    count: blogs.filter(b => (b.date || b.updatedAt || '').startsWith(m.key)).length,
+  }))
+  const maxBlogs = Math.max(...blogsByMonth.map(m => m.count), 1)
+
+  // Lead status breakdown (real)
+  const leadStatuses = ['New', 'Contacted', 'Qualified', 'Closed']
+  const leadStatusData = leadStatuses.map(s => ({
+    label: s,
+    count: leads.filter(l => l.status === s).length,
+    color: s === 'New' ? '#3B82F6' : s === 'Contacted' ? '#F59E0B' : s === 'Qualified' ? '#10B981' : '#8B5CF6',
+  }))
+
   return (
     <div className="max-w-6xl mx-auto space-y-5">
 
@@ -40,12 +46,11 @@ export default function Analytics() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-white font-bold text-lg">Analytics</h1>
-          <p className="text-white/35 text-[12px] mt-0.5">Powered by Google Analytics · {GA_ID}</p>
+          <p className="text-white/35 text-[12px] mt-0.5">Real data from your website · Powered by Google Analytics {GA_ID}</p>
         </div>
         <div className="flex items-center gap-3">
           <span className="flex items-center gap-1.5 text-[11px] px-3 py-1.5 rounded-full bg-green-500/10 text-green-400 border border-green-500/20">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-            Live Tracking
+            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" /> Live Tracking
           </span>
           <a href={GA_LINK} target="_blank" rel="noopener noreferrer"
             className="flex items-center gap-1.5 text-[11px] px-3 py-1.5 rounded-full bg-white/[0.05] text-white/50 border border-white/[0.08] hover:text-white hover:border-white/20 transition-colors">
@@ -54,58 +59,57 @@ export default function Analytics() {
         </div>
       </div>
 
-      {/* GA4 info banner */}
-      <div className="p-4 rounded-xl text-[12px] text-white/50" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
-        The numbers below are <span className="text-white/70 font-medium">baseline estimates</span> shown until enough real traffic accumulates in your GA4 property.
-        For live accurate data, click <a href={GA_LINK} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">Open in GA4</a> above.
-        Your site is already being tracked — data appears in GA4 within 24–48 hours.
-      </div>
-
-      {/* KPI cards */}
+      {/* Real stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {kpis.map((k, i) => (
-          <motion.div key={k.label} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.07, duration: 0.5 }}
+        {[
+          { icon: BookOpen,   label: 'Published Blogs', value: published,    sub: `${drafts} drafts`,       color: '#8B5CF6' },
+          { icon: TrendingUp, label: 'Total Leads',      value: leads.length, sub: `${newLeads} new`,        color: '#E8155A' },
+          { icon: Users,      label: 'Team Members',     value: users.length, sub: 'Active accounts',        color: '#10B981' },
+          { icon: Mail,       label: 'New Leads',        value: newLeads,     sub: 'Awaiting response',      color: '#3B82F6' },
+        ].map((s, i) => (
+          <motion.div key={s.label} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.07 }}
             className="p-4 rounded-2xl relative overflow-hidden"
             style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
-            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-[40px] pointer-events-none" style={{ background: `${k.color}25` }} />
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3" style={{ background: `${k.color}18`, border: `1px solid ${k.color}30` }}>
-              <k.icon size={16} style={{ color: k.color }} strokeWidth={1.8} />
+            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-[40px] pointer-events-none" style={{ background: `${s.color}25` }} />
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3" style={{ background: `${s.color}18`, border: `1px solid ${s.color}30` }}>
+              <s.icon size={16} style={{ color: s.color }} strokeWidth={1.8} />
             </div>
-            <p className="text-white font-bold text-xl leading-none mb-1">{k.value}</p>
-            <p className="text-white/40 text-[11px] mb-2">{k.label}</p>
-            <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-green-500/10 text-green-400">{k.change}</span>
+            <p className="text-white font-bold text-2xl leading-none mb-0.5">{s.value}</p>
+            <p className="text-white/50 text-[12px]">{s.label}</p>
+            <p className="text-white/25 text-[10px] mt-0.5">{s.sub}</p>
           </motion.div>
         ))}
       </div>
 
-      {/* Monthly traffic chart */}
-      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }}
+      {/* GA4 visitor analytics banner */}
+      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
         className="p-5 rounded-2xl"
-        style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <p className="text-white font-semibold text-[14px]">Monthly Traffic</p>
-            <p className="text-white/35 text-[11px]">Visitor trend over the past 12 months</p>
+        style={{ background: 'rgba(46,85,224,0.07)', border: '1px solid rgba(46,85,224,0.18)' }}>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(46,85,224,0.15)' }}>
+            <BarChart2 size={18} style={{ color: '#3B82F6' }} />
           </div>
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full" style={{ background: '#3B82F6' }} />
-            <span className="text-white/40 text-[11px]">Visitors</span>
+          <div className="flex-1">
+            <p className="text-white font-semibold text-[14px] mb-0.5">Visitor Analytics — View in Google Analytics</p>
+            <p className="text-white/45 text-[12px]">
+              Your site is being tracked with GA4 ({GA_ID}). Pageviews, traffic sources, devices, sessions, bounce rate and geographic data are all collected — open GA4 to view real-time and historical visitor reports.
+            </p>
           </div>
+          <a href={GA_LINK} target="_blank" rel="noopener noreferrer"
+            className="shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-[12px] font-semibold text-white transition-opacity hover:opacity-90"
+            style={{ background: 'linear-gradient(135deg,#2E55E0,#E8155A)' }}>
+            Open Google Analytics <ExternalLink size={12} />
+          </a>
         </div>
-        <div className="flex items-end gap-1.5 h-40">
-          {monthData.map((v, i) => (
-            <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
-              <motion.div
-                initial={{ height: 0 }} animate={{ height: `${(v / maxMonth) * 100}%` }}
-                transition={{ delay: 0.4 + i * 0.05, duration: 0.55, ease: 'easeOut' }}
-                className="w-full rounded-t-md cursor-pointer group relative"
-                style={{ background: i === 11 ? '#3B82F6' : 'rgba(59,130,246,0.25)', minHeight: 4 }}>
-                <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-[#0D1526] border border-white/10 rounded px-1.5 py-0.5 text-[9px] text-white whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
-                  {v.toLocaleString()}
-                </div>
-              </motion.div>
-              <span className="text-white/25 text-[9px]">{months[i]}</span>
+        <div className="mt-4 pt-4 border-t border-white/[0.06] grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+          {['Pageviews', 'Sessions', 'Traffic Sources', 'Device Types'].map(m => (
+            <div key={m}>
+              <p className="text-white/25 text-[10px] uppercase tracking-wide mb-1">{m}</p>
+              <a href={GA_LINK} target="_blank" rel="noopener noreferrer"
+                className="text-blue-400 text-[11px] hover:underline flex items-center justify-center gap-1">
+                View in GA4 <ExternalLink size={9} />
+              </a>
             </div>
           ))}
         </div>
@@ -113,111 +117,118 @@ export default function Analytics() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
-        {/* Top pages */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.5 }}
+        {/* Blog activity chart (real) */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.38 }}
           className="p-5 rounded-2xl"
           style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
-          <p className="text-white font-semibold text-[14px] mb-1">Top Pages</p>
-          <p className="text-white/35 text-[11px] mb-4">Most visited pages this month</p>
-          <div className="space-y-1">
-            {topPages.map((p, i) => (
-              <div key={p.path} className="flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-white/[0.03] transition-colors">
-                <span className="text-white/20 text-[11px] w-4 shrink-0">{i + 1}</span>
-                <div className="flex-1 min-w-0">
-                  <p className="text-white/75 text-[12px] font-medium">{p.label}</p>
-                  <p className="text-white/25 text-[10px] font-mono">{p.path}</p>
+          <p className="text-white font-semibold text-[14px] mb-1">Blog Posts by Month</p>
+          <p className="text-white/35 text-[11px] mb-5">Posts created or updated — last 6 months</p>
+          {blogs.length === 0 ? (
+            <div className="flex items-center justify-center h-28 text-white/25 text-[13px]">No blog posts yet</div>
+          ) : (
+            <div className="flex items-end gap-2 h-28">
+              {blogsByMonth.map((m, i) => (
+                <div key={m.key} className="flex-1 flex flex-col items-center gap-1.5">
+                  <motion.div
+                    initial={{ height: 0 }} animate={{ height: m.count > 0 ? `${(m.count / maxBlogs) * 100}%` : 4 }}
+                    transition={{ delay: 0.45 + i * 0.07, duration: 0.55, ease: 'easeOut' }}
+                    className="w-full rounded-t-md relative group"
+                    style={{ background: m.count > 0 ? '#8B5CF6' : 'rgba(255,255,255,0.05)', minHeight: 4 }}>
+                    {m.count > 0 && (
+                      <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-white/60 font-medium">{m.count}</span>
+                    )}
+                  </motion.div>
+                  <span className="text-white/30 text-[10px]">{m.label}</span>
                 </div>
-                <div className="text-right shrink-0">
-                  <p className="text-white/60 text-[12px] font-medium">{p.views.toLocaleString()}</p>
-                  <p className="text-white/25 text-[10px]">{p.time}</p>
+              ))}
+            </div>
+          )}
+        </motion.div>
+
+        {/* Lead status breakdown (real) */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.42 }}
+          className="p-5 rounded-2xl"
+          style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+          <p className="text-white font-semibold text-[14px] mb-1">Lead Status Breakdown</p>
+          <p className="text-white/35 text-[11px] mb-5">Current status of all contact form submissions</p>
+          {leads.length === 0 ? (
+            <div className="flex items-center justify-center h-28 text-white/25 text-[13px]">No leads yet — submissions will appear here</div>
+          ) : (
+            <div className="space-y-3.5">
+              {leadStatusData.map((s, i) => (
+                <div key={s.label}>
+                  <div className="flex justify-between mb-1.5">
+                    <span className="text-white/60 text-[12px]">{s.label}</span>
+                    <span className="text-white/60 text-[12px] font-medium">{s.count} lead{s.count !== 1 ? 's' : ''}</span>
+                  </div>
+                  <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+                    <motion.div initial={{ width: 0 }}
+                      animate={{ width: leads.length ? `${(s.count / leads.length) * 100}%` : '0%' }}
+                      transition={{ delay: 0.5 + i * 0.08, duration: 0.65, ease: 'easeOut' }}
+                      className="h-full rounded-full" style={{ background: s.color }} />
+                  </div>
                 </div>
-                <span className={`text-[10px] px-1.5 py-0.5 rounded-full shrink-0 ${
-                  parseInt(p.bounce) < 35 ? 'bg-green-500/10 text-green-400' : 'bg-white/[0.06] text-white/35'
-                }`}>{p.bounce}</span>
+              ))}
+            </div>
+          )}
+        </motion.div>
+      </div>
+
+      {/* Top services from leads (real) */}
+      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.46 }}
+        className="p-5 rounded-2xl"
+        style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+        <p className="text-white font-semibold text-[14px] mb-1">Most Requested Services</p>
+        <p className="text-white/35 text-[11px] mb-5">Based on real contact form submissions</p>
+        {leads.length === 0 ? (
+          <div className="text-center py-8 text-white/25 text-[13px]">No leads yet — service data will appear once visitors submit the contact form</div>
+        ) : topServices.length === 0 ? (
+          <div className="text-center py-8 text-white/25 text-[13px]">No service data available yet</div>
+        ) : (
+          <div className="space-y-3">
+            {topServices.map(([service, count], i) => (
+              <div key={service} className="flex items-center gap-4 py-2.5 px-3 rounded-xl hover:bg-white/[0.03] transition-colors">
+                <span className="text-white/25 text-[12px] w-5 shrink-0">{i + 1}</span>
+                <div className="flex-1">
+                  <div className="flex justify-between mb-1">
+                    <span className="text-white/70 text-[13px] font-medium">{service}</span>
+                    <span className="text-white/50 text-[12px]">{count} lead{count !== 1 ? 's' : ''}</span>
+                  </div>
+                  <div className="h-1 rounded-full bg-white/[0.06] overflow-hidden">
+                    <motion.div initial={{ width: 0 }}
+                      animate={{ width: `${(count / leads.length) * 100}%` }}
+                      transition={{ delay: 0.55 + i * 0.08, duration: 0.6, ease: 'easeOut' }}
+                      className="h-full rounded-full" style={{ background: '#E8155A' }} />
+                  </div>
+                </div>
               </div>
             ))}
           </div>
-        </motion.div>
-
-        {/* Right column */}
-        <div className="space-y-4">
-
-          {/* Country breakdown */}
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45, duration: 0.5 }}
-            className="p-5 rounded-2xl"
-            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
-            <div className="flex items-center gap-2 mb-4">
-              <Globe size={14} className="text-white/40" />
-              <p className="text-white font-semibold text-[14px]">Top Countries</p>
-            </div>
-            <div className="space-y-3">
-              {countries.map((c, i) => (
-                <div key={c.name}>
-                  <div className="flex justify-between mb-1">
-                    <span className="text-white/60 text-[12px]">{c.name}</span>
-                    <span className="text-white/60 text-[12px] font-medium">{c.pct}%</span>
-                  </div>
-                  <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
-                    <motion.div initial={{ width: 0 }} animate={{ width: `${c.pct}%` }}
-                      transition={{ delay: 0.55 + i * 0.08, duration: 0.65, ease: 'easeOut' }}
-                      className="h-full rounded-full" style={{ background: c.color }} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Device + referral quick stats */}
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.5 }}
-            className="p-5 rounded-2xl"
-            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
-            <p className="text-white font-semibold text-[14px] mb-4">Device Split</p>
-            <div className="flex items-end gap-3 mb-4">
-              {[
-                { label: 'Mobile',  pct: 58, color: '#E8155A', icon: Smartphone },
-                { label: 'Desktop', pct: 34, color: '#3B82F6', icon: Monitor },
-                { label: 'Tablet',  pct: 8,  color: '#8B5CF6', icon: Globe },
-              ].map(d => (
-                <div key={d.label} className="flex-1 text-center">
-                  <div className="flex flex-col items-center gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `${d.color}18` }}>
-                      <d.icon size={14} style={{ color: d.color }} />
-                    </div>
-                    <p className="text-white font-bold text-lg leading-none" style={{ color: d.color }}>{d.pct}%</p>
-                    <p className="text-white/35 text-[10px]">{d.label}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="flex h-2 rounded-full overflow-hidden gap-0.5">
-              {[{ pct: 58, color: '#E8155A' }, { pct: 34, color: '#3B82F6' }, { pct: 8, color: '#8B5CF6' }].map((d, i) => (
-                <motion.div key={i} initial={{ flex: 0 }} animate={{ flex: d.pct }}
-                  transition={{ delay: 0.6 + i * 0.08, duration: 0.7, ease: 'easeOut' }}
-                  className="h-full rounded-full" style={{ background: d.color }} />
-              ))}
-            </div>
-          </motion.div>
-
-        </div>
-      </div>
-
-      {/* SEO metrics */}
-      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.5 }}
-        className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {[
-          { label: 'Domain Authority',   value: '28',     sub: 'Moz DA score',           color: '#3B82F6' },
-          { label: 'Backlinks',          value: '342',    sub: '+18 this month',          color: '#8B5CF6' },
-          { label: 'Indexed Pages',      value: '47',     sub: 'Google Search Console',   color: '#10B981' },
-          { label: 'Avg. Position',      value: '14.2',   sub: 'Google organic rank',     color: '#F59E0B' },
-        ].map(s => (
-          <div key={s.label} className="p-4 rounded-2xl"
-            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
-            <p className="font-bold text-2xl mb-0.5" style={{ color: s.color }}>{s.value}</p>
-            <p className="text-white/70 text-[12px] font-medium">{s.label}</p>
-            <p className="text-white/30 text-[10px] mt-0.5">{s.sub}</p>
-          </div>
-        ))}
+        )}
       </motion.div>
+
+      {/* Device/geo — redirect to GA4 */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        {[
+          { icon: Smartphone, label: 'Mobile vs Desktop', desc: 'Device breakdown of your visitors', color: '#E8155A' },
+          { icon: Globe,      label: 'Geographic Data',   desc: 'Countries and cities your traffic comes from', color: '#3B82F6' },
+          { icon: BarChart2,  label: 'Traffic Sources',   desc: 'Organic, direct, social, referral split', color: '#8B5CF6' },
+        ].map(c => (
+          <motion.div key={c.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+            className="p-4 rounded-2xl"
+            style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-3" style={{ background: `${c.color}15` }}>
+              <c.icon size={15} style={{ color: c.color }} />
+            </div>
+            <p className="text-white/70 text-[13px] font-medium mb-1">{c.label}</p>
+            <p className="text-white/30 text-[11px] mb-3">{c.desc}</p>
+            <a href={GA_LINK} target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-[11px] text-blue-400 hover:underline">
+              View in Google Analytics <ExternalLink size={9} />
+            </a>
+          </motion.div>
+        ))}
+      </div>
 
     </div>
   )
