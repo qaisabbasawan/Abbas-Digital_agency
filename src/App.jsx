@@ -24,8 +24,9 @@ import Settings from './admin/pages/Settings'
 gsap.registerPlugin(ScrollTrigger)
 
 function ProtectedRoute({ children }) {
-  const { user } = useAuth()
+  const { user, loading } = useAuth()
   const location = useLocation()
+  if (loading) return <div className="min-h-screen bg-[#070C1B]" />
   if (!user) return <Navigate to="/admin" state={{ from: location }} replace />
   return children
 }

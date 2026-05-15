@@ -15,19 +15,26 @@ const DEFAULT_USERS = [
 ]
 
 export function AuthProvider({ children }) {
-  const [user, setUser]   = useState(null)
-  const [users, setUsers] = useState(DEFAULT_USERS)
-  const [blogs, setBlogs] = useState([])
+  const [user, setUser]     = useState(null)
+  const [users, setUsers]   = useState(DEFAULT_USERS)
+  const [blogs, setBlogs]   = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const saved = localStorage.getItem('ada_admin_user')
-    if (saved) setUser(JSON.parse(saved))
+    try {
+      const saved = localStorage.getItem('ada_admin_user')
+      if (saved) setUser(JSON.parse(saved))
 
-    const savedUsers = localStorage.getItem('ada_users')
-    if (savedUsers) setUsers(JSON.parse(savedUsers))
+      const savedUsers = localStorage.getItem('ada_users')
+      if (savedUsers) setUsers(JSON.parse(savedUsers))
 
-    const savedBlogs = localStorage.getItem('ada_blogs')
-    if (savedBlogs) setBlogs(JSON.parse(savedBlogs))
+      const savedBlogs = localStorage.getItem('ada_blogs')
+      if (savedBlogs) setBlogs(JSON.parse(savedBlogs))
+    } catch {
+      localStorage.removeItem('ada_admin_user')
+    } finally {
+      setLoading(false)
+    }
   }, [])
 
   const persistBlogs = (b) => { setBlogs(b); localStorage.setItem('ada_blogs', JSON.stringify(b)) }
@@ -46,7 +53,7 @@ export function AuthProvider({ children }) {
   const logout = () => { setUser(null); localStorage.removeItem('ada_admin_user') }
 
   return (
-    <AuthContext.Provider value={{ user, users, blogs, login, logout, persistBlogs, persistUsers }}>
+    <AuthContext.Provider value={{ user, users, blogs, login, logout, persistBlogs, persistUsers, loading }}>
       {children}
     </AuthContext.Provider>
   )
