@@ -11,6 +11,7 @@ import PortfolioPage from './pages/PortfolioPage'
 import ContactPage from './pages/ContactPage'
 import ServiceDetailPage from './pages/ServiceDetailPage'
 import BlogPage from './pages/BlogPage'
+import BlogDetailPage from './pages/BlogDetailPage'
 
 import { AuthProvider, useAuth } from './admin/context/AuthContext'
 import AdminLogin from './admin/AdminLogin'
@@ -90,6 +91,7 @@ export default function App() {
           <Route path="/portfolio"      element={<PortfolioPage />} />
           <Route path="/contact"        element={<ContactPage />} />
           <Route path="/blog"           element={<BlogPage />} />
+          <Route path="/blog/:slug"     element={<BlogDetailPage />} />
         </Route>
       </Routes>
     </AuthProvider>
