@@ -75,9 +75,10 @@ export default function ContactPage() {
             <motion.div {...fade(0.1)}>
               <div className="space-y-5 mb-10">
                 {[
-                  { icon:'✉', label:'Email',         val:'info@abbasonline.com' },
-                  { icon:'📍', label:'Location',      val:'Islamabad, Pakistan' },
-                  { icon:'🕐', label:'Response Time', val:'Within 24 hours' },
+                  { icon:'✉', label:'Email',            val:'mqaisawan@gmail.com' },
+                  { icon:'📍', label:'Visit Us',         val:'H 1-A, IVY Street, Banigala, Islamabad, Pakistan' },
+                  { icon:'📍', label:'Mailing Address',  val:'1001 S Main St Ste 500, Kalispell, MT 59901, USA' },
+                  { icon:'🕐', label:'Response Time',    val:'Within 24 hours' },
                 ].map(it => (
                   <div key={it.label} className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.07] flex items-center justify-center text-brand-pink text-sm shrink-0">{it.icon}</div>

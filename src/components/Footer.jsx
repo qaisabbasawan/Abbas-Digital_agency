@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { MapPin, Phone } from 'lucide-react'
+import { MapPin, Phone, Mail } from 'lucide-react'
 import Logo from './Logo'
 
 const navLinks = [
@@ -130,6 +130,13 @@ export default function Footer() {
           {/* Addresses */}
           <div>
             <h4 className="text-white/35 text-[11px] uppercase tracking-[0.22em] mb-5">Find Us</h4>
+            {/* Email */}
+            <div className="flex items-center gap-2 mb-5">
+              <Mail size={12} className="text-brand-pink shrink-0" />
+              <a href="mailto:mqaisawan@gmail.com" className="text-white/50 text-[12px] hover:text-white/80 transition-colors">
+                mqaisawan@gmail.com
+              </a>
+            </div>
             <div className="space-y-6">
               {addresses.map((a) => (
                 <div key={a.type}>
