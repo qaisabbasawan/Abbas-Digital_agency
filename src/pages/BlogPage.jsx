@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { Search, Clock, ArrowRight, BookOpen, Tag } from 'lucide-react'
 import Footer from '../components/Footer'
 import { useAuth } from '../admin/context/AuthContext'
+import SEO from '../components/SEO'
 
 const catColors = {
   'Web Development':   '#2E55E0',
@@ -40,6 +41,12 @@ export default function BlogPage() {
 
   return (
     <div className="min-h-screen bg-bg-dark pt-[72px]">
+      <SEO
+        title="Digital Marketing Blog | Abbas Digital Agency Pakistan"
+        description="Expert articles on web development, SEO, digital marketing, AI chatbots, and e-commerce growth strategies. Insights from Abbas Digital Agency Islamabad."
+        keywords="digital marketing blog Pakistan, SEO tips Pakistan, web development blog, digital agency blog Islamabad"
+        path="/blog"
+      />
 
       {/* Hero */}
       <section className="relative py-20 lg:py-28 border-b border-white/[0.06] overflow-hidden">

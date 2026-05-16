@@ -12,6 +12,8 @@ import ContactPage from './pages/ContactPage'
 import ServiceDetailPage from './pages/ServiceDetailPage'
 import BlogPage from './pages/BlogPage'
 import BlogDetailPage from './pages/BlogDetailPage'
+import IslamabadPage from './pages/IslamabadPage'
+import UsaClientsPage from './pages/UsaClientsPage'
 
 import { AuthProvider, useAuth } from './admin/context/AuthContext'
 import AdminLogin from './admin/AdminLogin'
@@ -92,6 +94,8 @@ export default function App() {
           <Route path="/contact"        element={<ContactPage />} />
           <Route path="/blog"           element={<BlogPage />} />
           <Route path="/blog/:slug"     element={<BlogDetailPage />} />
+          <Route path="/islamabad"      element={<IslamabadPage />} />
+          <Route path="/usa-clients"    element={<UsaClientsPage />} />
         </Route>
       </Routes>
     </AuthProvider>

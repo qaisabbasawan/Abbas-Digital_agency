@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /admin/login
+Disallow: /*.json$
+
+Sitemap: https://abbasdigitalagency.com/sitemap.xml

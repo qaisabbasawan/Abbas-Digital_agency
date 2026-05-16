@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowUpRight } from 'lucide-react'
 import Footer from '../components/Footer'
+import SEO from '../components/SEO'
 
 const projects = [
   {
@@ -187,6 +188,12 @@ export default function PortfolioPage() {
 
   return (
     <div className="min-h-screen bg-bg-dark pt-[72px]">
+      <SEO
+        title="Our Work & Portfolio | Abbas Digital Agency Pakistan"
+        description="Explore Abbas Digital Agency's portfolio of web design, SEO and digital marketing projects for clients across Pakistan and the USA."
+        keywords="Abbas Digital Agency portfolio, web design portfolio Pakistan, digital marketing projects Pakistan"
+        path="/portfolio"
+      />
 
       {/* Page hero */}
       <section className="py-20 lg:py-28 border-b border-white/[0.06]">

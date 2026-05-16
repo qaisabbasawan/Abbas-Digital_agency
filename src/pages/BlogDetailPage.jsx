@@ -7,6 +7,7 @@ import remarkBreaks from 'remark-breaks'
 import Footer from '../components/Footer'
 import { useAuth } from '../admin/context/AuthContext'
 import { mdComponents } from '../admin/pages/BlogCreate'
+import SEO from '../components/SEO'
 
 const catColors = {
   'Web Development':   '#2E55E0',
@@ -51,6 +52,14 @@ export default function BlogDetailPage() {
 
   return (
     <div className="min-h-screen bg-bg-dark pt-[72px]">
+      <SEO
+        title={`${blog.title} | Abbas Digital Agency`}
+        description={blog.metaDesc || blog.title}
+        keywords={tagList.join(', ')}
+        path={`/blog/${blog.slug}`}
+        image={blog.image || undefined}
+        type="article"
+      />
 
       {/* Cover image */}
       {blog.image ? (

@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import SEO from '../components/SEO'
 import {
   motion,
   useMotionValue, useTransform, useSpring,
@@ -105,6 +106,12 @@ export default function ServicesPage() {
 
   return (
     <div className="min-h-screen bg-bg-dark overflow-hidden pt-[72px]">
+      <SEO
+        title="Digital Marketing Services Pakistan | Abbas Digital Agency"
+        description="SEO, web design, social media marketing, PPC & branding services for businesses in Pakistan & USA. US-registered agency. Get a free quote today."
+        keywords="digital marketing services Pakistan, SEO services Pakistan, web design company Pakistan, social media marketing Pakistan, PPC advertising Pakistan, branding agency Pakistan"
+        path="/services"
+      />
 
       {/* ══════════════════════════════════
           HERO

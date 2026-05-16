@@ -2,14 +2,25 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#05091A" />
+
     <link rel="icon" type="image/png" href="/Abbas Digital Agency - Favicon.png" />
     <link rel="apple-touch-icon" href="/Abbas Digital Agency - Favicon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Abbas Digital Agency | Your Digital Partner Towards Success</title>
-    <meta name="description" content="Pakistan's #1 Digital Agency since 2012. Web Development, E-Commerce, Mobile Apps, AI Solutions & Digital Marketing. Based in Islamabad." />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Default title (overridden per-page by react-helmet-async) -->
+    <title>Digital Marketing Agency Islamabad | Abbas Digital Agency</title>
+    <meta name="description" content="Abbas Digital Agency delivers SEO, web design &amp; digital marketing for businesses in Pakistan &amp; USA. US-registered. Free consultation." />
+
+    <!-- Preconnects for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="//www.google-analytics.com" />
+    <link rel="dns-prefetch" href="//www.googletagmanager.com" />
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
     <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-B7C1MH1KZQ"></script>
     <script>
@@ -17,6 +28,129 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-B7C1MH1KZQ', { send_page_view: false });
+    </script>
+
+    <!-- LocalBusiness + WebSite Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "LocalBusiness",
+          "@id": "https://abbasdigitalagency.com/#business",
+          "name": "Abbas Digital Agency",
+          "legalName": "Abbas Digital Agency LLC",
+          "url": "https://abbasdigitalagency.com",
+          "logo": "https://abbasdigitalagency.com/logo.png",
+          "image": "https://abbasdigitalagency.com/og-image.jpg",
+          "description": "Full-service digital marketing agency based in Islamabad, Pakistan with US LLC registration in Montana. Services: SEO, Web Design, Social Media Marketing, PPC, Branding.",
+          "telephone": "+92-300-5935125",
+          "email": "mqaisawan@gmail.com",
+          "address": [
+            {
+              "@type": "PostalAddress",
+              "streetAddress": "H 1-A, IVY Street, Banigala",
+              "addressLocality": "Islamabad",
+              "addressRegion": "Punjab",
+              "postalCode": "44000",
+              "addressCountry": "PK"
+            },
+            {
+              "@type": "PostalAddress",
+              "streetAddress": "1001 S Main St Ste 500",
+              "addressLocality": "Kalispell",
+              "addressRegion": "MT",
+              "postalCode": "59901",
+              "addressCountry": "US"
+            }
+          ],
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": 33.6844,
+            "longitude": 73.0479
+          },
+          "areaServed": ["PK", "US"],
+          "priceRange": "$$",
+          "openingHoursSpecification": [
+            {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+              "opens": "09:00",
+              "closes": "18:00"
+            }
+          ],
+          "sameAs": [
+            "https://www.facebook.com/abbasdigitalagency",
+            "https://www.linkedin.com/company/abbasdigitalagency",
+            "https://www.instagram.com/abbasdigitalagency"
+          ],
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Digital Marketing Services",
+            "itemListElement": [
+              {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "SEO Services Pakistan"}},
+              {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Web Design Pakistan"}},
+              {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Social Media Marketing Pakistan"}},
+              {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "PPC Advertising Pakistan"}},
+              {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Branding Pakistan"}}
+            ]
+          }
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://abbasdigitalagency.com/#website",
+          "url": "https://abbasdigitalagency.com",
+          "name": "Abbas Digital Agency",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://abbasdigitalagency.com/?s={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        }
+      ]
+    }
+    </script>
+
+    <!-- FAQPage Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What digital marketing services does Abbas Digital Agency offer?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We offer SEO, web design, social media marketing, PPC advertising, and branding services for businesses in Pakistan and the USA."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Abbas Digital Agency registered in the USA?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Abbas Digital Agency is registered as Abbas Digital Agency LLC in Montana, USA, giving US clients full legal confidence when working with us."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How much do your SEO services cost in Pakistan?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We offer flexible SEO packages for Pakistani and international businesses. Contact us for a custom quote tailored to your budget and goals."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do you serve clients in the USA?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. As a US-registered LLC in Montana, we proudly serve US clients seeking affordable, high-quality digital marketing services delivered by a professional agency."
+          }
+        }
+      ]
+    }
     </script>
   </head>
   <body>

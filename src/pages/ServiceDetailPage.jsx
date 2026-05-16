@@ -1,4 +1,5 @@
 import { useParams, Link, Navigate } from 'react-router-dom'
+import SEO from '../components/SEO'
 import { motion } from 'framer-motion'
 import {
   Globe, ShoppingCart, Smartphone, Bot, TrendingUp, Palette,
@@ -265,6 +266,12 @@ export default function ServiceDetailPage() {
 
   return (
     <div className="min-h-screen bg-bg-dark pt-[72px] overflow-hidden">
+      <SEO
+        title={`${title} in Pakistan | Abbas Digital Agency`}
+        description={`${tagline} — Abbas Digital Agency delivers professional ${title.toLowerCase()} services for businesses in Pakistan & USA. US-registered. Free consultation.`}
+        keywords={`${title.toLowerCase()} Pakistan, ${title.toLowerCase()} Islamabad, Abbas Digital Agency, digital marketing Pakistan`}
+        path={`/services/${slug}`}
+      />
 
       {/* ══════════════ HERO ══════════════ */}
       <section className="relative py-24 lg:py-36 overflow-hidden">

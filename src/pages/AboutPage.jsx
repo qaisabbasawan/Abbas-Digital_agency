@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import Footer from '../components/Footer'
 import useCountUp from '../hooks/useCountUp'
+import SEO from '../components/SEO'
 
 const stats = [
   { value:10,  suffix:'+', label:'Years Experience' },
@@ -39,6 +40,12 @@ function Stat({ s, i }) {
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-bg-dark pt-[72px]">
+      <SEO
+        title="About Abbas Digital Agency — US-Registered, Pakistan-Based"
+        description="Learn about Abbas Digital Agency LLC — a US-registered, Pakistan-based digital marketing agency serving clients since 2012 with world-class SEO, web design and more."
+        keywords="about Abbas Digital Agency, digital agency Pakistan, Abbas Digital Agency LLC Montana, digital marketing Islamabad"
+        path="/about"
+      />
 
       {/* Page hero */}
       <section className="py-20 lg:py-28 border-b border-white/[0.06]">

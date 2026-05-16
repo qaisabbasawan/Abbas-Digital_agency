@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import SEO from '../components/SEO'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -69,6 +70,12 @@ export default function LandingPage() {
 
   return (
     <>
+      <SEO
+        title="Digital Marketing Agency Islamabad | Abbas Digital Agency"
+        description="Abbas Digital Agency delivers SEO, web design & digital marketing for businesses in Pakistan & USA. US-registered LLC. Free consultation."
+        keywords="digital marketing agency Islamabad, SEO services Pakistan, web design company Pakistan, digital agency Islamabad, best SEO company Pakistan, social media marketing Pakistan"
+        path="/"
+      />
       {/* Fixed 3-D background */}
       <div
         ref={canvasRef}

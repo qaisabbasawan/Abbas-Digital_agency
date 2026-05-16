@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import Footer from '../components/Footer'
 import { useAuth } from '../admin/context/AuthContext'
+import SEO from '../components/SEO'
 
 const svcList = [
   'Web Development','E-Commerce','Mobile Apps',
@@ -49,6 +50,12 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-bg-dark pt-[72px]">
+      <SEO
+        title="Contact Abbas Digital Agency — Islamabad & Montana USA"
+        description="Get in touch with Abbas Digital Agency. Contact our offices in Islamabad, Pakistan or Montana, USA. Free consultation for SEO, web design & digital marketing."
+        keywords="contact Abbas Digital Agency, digital marketing agency Islamabad contact, SEO agency Pakistan contact"
+        path="/contact"
+      />
 
       {/* Page hero */}
       <section className="py-20 lg:py-24 border-b border-white/[0.06]">
