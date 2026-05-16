@@ -13,9 +13,10 @@ export default {
         'bg-dark2': '#080E2A',
       },
       fontFamily: {
-        sans: ['Agency', 'sans-serif'],
-        syne: ['Agency', 'sans-serif'],
-        dm:   ['Agency', 'sans-serif'],
+        sans:     ['"DM Sans"', 'sans-serif'],
+        heading:  ['Urbanist', 'sans-serif'],
+        syne:     ['Urbanist', 'sans-serif'],
+        dm:       ['"DM Sans"', 'sans-serif'],
       },
     },
   },

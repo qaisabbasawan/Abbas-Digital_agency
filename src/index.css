@@ -2,11 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Urbanist — headings ─────────────────────────────────────────────────── */
 @font-face {
-  font-family: 'Agency';
-  src: url('/agency.ttf') format('truetype');
-  font-weight: 400 900;
+  font-family: 'Urbanist';
+  src: url('/Urbanist/Urbanist-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
   font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Urbanist';
+  src: url('/Urbanist/Urbanist-Italic-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ── DM Sans — body / normal text ───────────────────────────────────────── */
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/DM_Sans/DMSans-VariableFont_opsz,wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/DM_Sans/DMSans-Italic-VariableFont_opsz,wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
   font-display: swap;
 }
 
@@ -18,25 +42,31 @@
 
 html {
   scroll-behavior: smooth;
-  font-family: 'Agency', sans-serif;
+  font-family: 'DM Sans', sans-serif;
 }
 
 body {
   background-color: #05091A;
   color: #ffffff;
-  font-family: 'Agency', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Force Agency on every element — overrides Tailwind base */
+/* All elements inherit DM Sans from body */
 *, *::before, *::after {
   font-family: inherit;
 }
 
+/* Urbanist for every heading level */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Urbanist', sans-serif;
+}
+
+/* Browsers don't inherit font on form elements — force DM Sans */
 input, textarea, select, button {
-  font-family: 'Agency', sans-serif;
+  font-family: 'DM Sans', sans-serif;
 }
 
 /* Scrollbar */
