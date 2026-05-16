@@ -18,15 +18,25 @@
 
 html {
   scroll-behavior: smooth;
+  font-family: 'Agency', sans-serif;
 }
 
 body {
   background-color: #05091A;
   color: #ffffff;
-  font-family: 'Agency', 'Inter', sans-serif;
+  font-family: 'Agency', sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Force Agency on every element — overrides Tailwind base */
+*, *::before, *::after {
+  font-family: inherit;
+}
+
+input, textarea, select, button {
+  font-family: 'Agency', sans-serif;
 }
 
 /* Scrollbar */

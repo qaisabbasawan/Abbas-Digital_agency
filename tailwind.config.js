@@ -13,8 +13,9 @@ export default {
         'bg-dark2': '#080E2A',
       },
       fontFamily: {
-        syne: ['Agency', '"Plus Jakarta Sans"', 'sans-serif'],
-        dm: ['Agency', '"Plus Jakarta Sans"', 'sans-serif'],
+        sans: ['Agency', 'sans-serif'],
+        syne: ['Agency', 'sans-serif'],
+        dm:   ['Agency', 'sans-serif'],
       },
     },
   },
