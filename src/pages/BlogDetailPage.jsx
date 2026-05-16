@@ -67,8 +67,7 @@ export default function BlogDetailPage() {
         {/* Back */}
         <motion.div initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4 }}>
           <button onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-white/35 text-[13px] hover:text-white/70 transition-colors mb-8"
-            style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+            className="flex items-center gap-2 text-white/35 text-[13px] hover:text-white/70 transition-colors mb-8">
             <ArrowLeft size={14} /> Back to Blog
           </button>
         </motion.div>
@@ -78,12 +77,11 @@ export default function BlogDetailPage() {
           className="flex items-center gap-3 flex-wrap mb-4">
           {blog.category && (
             <span className="text-[11px] font-semibold px-3 py-1 rounded-full"
-              style={{ background: `${color}20`, color, border: `1px solid ${color}30`, fontFamily: 'Inter, system-ui, sans-serif' }}>
+              style={{ background: `${color}20`, color, border: `1px solid ${color}30` }}>
               {blog.category}
             </span>
           )}
-          <span className="flex items-center gap-1.5 text-white/30 text-[12px]"
-            style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+          <span className="flex items-center gap-1.5 text-white/30 text-[12px]">
             <Clock size={11} /> {readTime(blog.content)} min read
           </span>
         </motion.div>
@@ -91,14 +89,13 @@ export default function BlogDetailPage() {
         {/* Title */}
         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08, duration: 0.6 }}
           className="text-white font-bold leading-tight mb-4"
-          style={{ fontSize: 'clamp(1.75rem,4vw,2.75rem)', fontFamily: 'Inter, system-ui, sans-serif' }}>
+          style={{ fontSize: 'clamp(1.75rem,4vw,2.75rem)' }}>
           {blog.title}
         </motion.h1>
 
         {/* Meta */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15, duration: 0.5 }}
-          className="flex flex-wrap items-center gap-4 text-white/30 text-[12px] mb-6 pb-6 border-b border-white/[0.07]"
-          style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+          className="flex flex-wrap items-center gap-4 text-white/30 text-[12px] mb-6 pb-6 border-b border-white/[0.07]">
           {blog.author && <span className="flex items-center gap-1.5"><User size={11} /> {blog.author}</span>}
           {blog.date   && <span className="flex items-center gap-1.5"><Calendar size={11} /> {blog.date}</span>}
         </motion.div>
@@ -107,22 +104,17 @@ export default function BlogDetailPage() {
         {blog.metaDesc && (
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
             className="text-white/55 text-[16px] leading-relaxed mb-8 italic border-l-2 pl-4"
-            style={{ borderColor: color, fontFamily: 'Inter, system-ui, sans-serif' }}>
+            style={{ borderColor: color }}>
             {blog.metaDesc}
           </motion.p>
         )}
 
-        {/* ── Article body ── */}
+        {/* Article body */}
         <motion.article
-          initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.6 }}
-          style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+          initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.6 }}>
           {blog.content
-            ? (
-              <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]} components={mdComponents}>
-                {blog.content}
-              </ReactMarkdown>
-            )
-            : <p style={{ color: 'rgba(255,255,255,0.25)', fontStyle: 'italic' }}>No content available.</p>
+            ? <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]} components={mdComponents}>{blog.content}</ReactMarkdown>
+            : <p className="text-white/25 italic">No content available.</p>
           }
         </motion.article>
 
@@ -133,9 +125,7 @@ export default function BlogDetailPage() {
             <div className="flex items-center gap-2 flex-wrap">
               <Tag size={13} className="text-white/25" />
               {tagList.map(tag => (
-                <span key={tag}
-                  className="text-[11px] px-2.5 py-1 rounded-full bg-white/[0.05] text-white/40 border border-white/[0.07]"
-                  style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+                <span key={tag} className="text-[11px] px-2.5 py-1 rounded-full bg-white/[0.05] text-white/40 border border-white/[0.07]">
                   {tag}
                 </span>
               ))}
@@ -143,15 +133,13 @@ export default function BlogDetailPage() {
           </motion.div>
         )}
 
-        {/* Back to blog CTA */}
+        {/* CTA */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
           className="mt-12 pt-8 border-t border-white/[0.07] text-center">
-          <p className="text-white/30 text-[13px] mb-4" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
-            Want to read more?
-          </p>
+          <p className="text-white/30 text-[13px] mb-4">Want to read more?</p>
           <Link to="/blog"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-[13px] font-semibold text-white transition-opacity hover:opacity-90"
-            style={{ background: 'linear-gradient(135deg,#2E55E0,#E8155A)', fontFamily: 'Inter, system-ui, sans-serif' }}>
+            style={{ background: 'linear-gradient(135deg,#2E55E0,#E8155A)' }}>
             <ArrowLeft size={14} /> Browse All Articles
           </Link>
         </motion.div>
