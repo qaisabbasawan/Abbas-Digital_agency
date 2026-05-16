@@ -90,16 +90,6 @@ export default function ContactPage() {
                 ))}
               </div>
 
-              <div className="pt-7 border-t border-white/[0.07] mb-7">
-                <p className="text-white/30 text-[11px] uppercase tracking-[0.18em] mb-3">Follow Us</p>
-                <div className="flex gap-2">
-                  {['f','in','📸','💬'].map((ic,i) => (
-                    <button key={i} className="w-10 h-10 rounded-lg bg-white/[0.03] border border-white/[0.07] flex items-center justify-center text-white/45 hover:text-white hover:border-white/20 transition-all duration-200 text-xs font-bold">
-                      {ic}
-                    </button>
-                  ))}
-                </div>
-              </div>
 
               <div className="p-6 bg-white/[0.02] border border-white/[0.07] rounded-xl">
                 <p className="text-white/30 text-[11px] uppercase tracking-[0.18em] mb-2">Not ready to reach out?</p>
