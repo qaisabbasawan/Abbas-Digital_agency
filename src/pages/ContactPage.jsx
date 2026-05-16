@@ -82,7 +82,7 @@ export default function ContactPage() {
             <motion.div {...fade(0.1)}>
               <div className="space-y-5 mb-10">
                 {[
-                  { icon:'✉', label:'Email',            val:'mqaisawan@gmail.com' },
+                  { icon:'✉', label:'Email',            val:'info@abbasdigitalagency.com' },
                   { icon:'📍', label:'Visit Us',         val:'H 1-A, IVY Street, Banigala, Islamabad, Pakistan' },
                   { icon:'📍', label:'Mailing Address',  val:'1001 S Main St Ste 500, Kalispell, MT 59901, USA' },
                   { icon:'🕐', label:'Response Time',    val:'Within 24 hours' },

@@ -8,7 +8,7 @@ const svcList = [
 ]
 
 const info = [
-  { icon: '✉', label: 'Email',              val: 'mqaisawan@gmail.com' },
+  { icon: '✉', label: 'Email',              val: 'info@abbasdigitalagency.com' },
   { icon: '📍', label: 'Visit Us',           val: 'H 1-A, IVY Street, Banigala, Islamabad, Pakistan' },
   { icon: '📍', label: 'Mailing Address',    val: '1001 S Main St Ste 500, Kalispell, MT 59901, USA' },
 ]

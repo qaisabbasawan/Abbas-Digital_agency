@@ -72,7 +72,7 @@ serve(async (req) => {
 
     await transporter.sendMail({
       from: '"Abbas Digital Agency" <noreply@abbasdigitalagency.com>',
-      to: "mqaisawan@gmail.com",
+      to: "info@abbasdigitalagency.com",
       subject,
       html,
     })

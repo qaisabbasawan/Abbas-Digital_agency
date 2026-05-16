@@ -116,7 +116,7 @@ export default function IslamabadPage() {
             <div className="space-y-4">
               {[
                 { icon: <MapPin size={15} />, text: 'H 1-A, IVY Street, Banigala, Islamabad, Pakistan' },
-                { icon: <Mail size={15} />, text: 'mqaisawan@gmail.com' },
+                { icon: <Mail size={15} />, text: 'info@abbasdigitalagency.com' },
                 { icon: <Clock size={15} />, text: 'Mon – Sat · 9 AM – 7 PM PKT' },
               ].map((it, i) => (
                 <div key={i} className="flex items-start gap-3 text-white/60 text-[14px]">

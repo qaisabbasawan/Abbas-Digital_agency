@@ -118,7 +118,7 @@ export default function UsaClientsPage() {
             <div className="space-y-4">
               {[
                 { icon: <MapPin size={15} />, text: '1001 S Main St Ste 500, Kalispell, MT 59901, USA' },
-                { icon: <Mail size={15} />, text: 'mqaisawan@gmail.com' },
+                { icon: <Mail size={15} />, text: 'info@abbasdigitalagency.com' },
                 { icon: <Clock size={15} />, text: 'Available during US business hours' },
               ].map((it, i) => (
                 <div key={i} className="flex items-start gap-3 text-white/60 text-[14px]">
