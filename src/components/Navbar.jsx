@@ -236,16 +236,8 @@ export default function Navbar() {
             })}
           </div>
 
-          {/* CTA + Admin */}
+          {/* CTA */}
           <div className="hidden lg:flex items-center gap-3">
-            <Link
-              to="/admin/login"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[11px] tracking-[0.12em] uppercase font-medium text-white/50 border border-white/[0.1] hover:text-white hover:border-white/25 transition-all duration-200"
-            >
-              Admin
-            </Link>
             <Link
               to="/contact"
               className="inline-flex items-center gap-2 shimmer-btn px-5 py-2.5 text-xs tracking-[0.15em] uppercase text-white font-medium hover:opacity-90 transition-opacity duration-200"
