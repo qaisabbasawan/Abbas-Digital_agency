@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Link, useLocation } from 'react-router-dom'
 import {
   Globe, ShoppingCart, Smartphone,
-  Bot, TrendingUp, Palette, ChevronDown,
+  Bot, TrendingUp, Palette, ChevronDown, BarChart2,
 } from 'lucide-react'
 import Logo from './Logo'
 
@@ -239,6 +239,14 @@ export default function Navbar() {
           {/* CTA */}
           <div className="hidden lg:flex items-center gap-3">
             <Link
+              to="/analyzer"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[11px] tracking-[0.1em] font-medium text-brand-pink transition-all duration-200 hover:bg-brand-pink/10"
+              style={{ border: '1px solid rgba(232,21,90,0.4)' }}
+            >
+              <BarChart2 size={12} strokeWidth={2} />
+              AI Business Analyzer
+            </Link>
+            <Link
               to="/contact"
               className="inline-flex items-center gap-2 shimmer-btn px-5 py-2.5 text-xs tracking-[0.15em] uppercase text-white font-medium hover:opacity-90 transition-opacity duration-200"
             >
@@ -343,8 +351,15 @@ export default function Navbar() {
               ))}
 
               <Link
+                to="/analyzer"
+                className="mt-5 flex items-center justify-center gap-2 py-3 rounded-xl text-[12px] font-medium text-brand-pink"
+                style={{ border: '1px solid rgba(232,21,90,0.35)', background: 'rgba(232,21,90,0.07)' }}
+              >
+                <BarChart2 size={13} /> AI Business Analyzer
+              </Link>
+              <Link
                 to="/contact"
-                className="mt-5 shimmer-btn py-3 text-center text-xs tracking-widest uppercase text-white"
+                className="mt-2 shimmer-btn py-3 text-center text-xs tracking-widest uppercase text-white"
               >
                 Start a Project
               </Link>
