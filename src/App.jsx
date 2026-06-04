@@ -15,6 +15,7 @@ import BlogDetailPage from './pages/BlogDetailPage'
 import IslamabadPage from './pages/IslamabadPage'
 import UsaClientsPage from './pages/UsaClientsPage'
 import BusinessAnalyzerPage from './pages/BusinessAnalyzerPage'
+import DynamicSeoPage from './pages/DynamicSeoPage'
 
 import { AuthProvider, useAuth } from './admin/context/AuthContext'
 import AdminLogin from './admin/AdminLogin'
@@ -98,6 +99,7 @@ export default function App() {
           <Route path="/islamabad"      element={<IslamabadPage />} />
           <Route path="/usa-clients"    element={<UsaClientsPage />} />
           <Route path="/analyzer"       element={<BusinessAnalyzerPage />} />
+          <Route path="/:slug"          element={<DynamicSeoPage />} />
         </Route>
       </Routes>
     </AuthProvider>
