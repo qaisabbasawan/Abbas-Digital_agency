@@ -12,6 +12,10 @@ import {
   ArrowRight, ChevronRight,
 } from 'lucide-react'
 import Footer from '../components/Footer'
+import ServiceScene from '../components/ServiceScene'
+import RevealText from '../components/anim/RevealText'
+import TiltCard from '../components/anim/TiltCard'
+import Magnetic from '../components/anim/Magnetic'
 
 const fade = (delay = 0) => ({
   initial: { opacity: 0, y: 24 },
@@ -30,6 +34,7 @@ const services = {
     color: '#2E55E0',
     glow: 'rgba(46,85,224,0.22)',
     Icon: Globe,
+    scene: 'web',
     stats: [
       { value: '200+', label: 'Sites Launched' },
       { value: '10+',  label: 'Years Building' },
@@ -68,6 +73,7 @@ const services = {
     color: '#E8155A',
     glow: 'rgba(232,21,90,0.22)',
     Icon: ShoppingCart,
+    scene: 'commerce',
     stats: [
       { value: '$10M+', label: 'Revenue Generated' },
       { value: '500+',  label: 'Products Managed' },
@@ -106,6 +112,7 @@ const services = {
     color: '#7C3AED',
     glow: 'rgba(124,58,237,0.22)',
     Icon: Smartphone,
+    scene: 'mobile',
     stats: [
       { value: '100K+', label: 'Total App Users' },
       { value: '4.8★',  label: 'Avg Store Rating' },
@@ -144,6 +151,7 @@ const services = {
     color: '#0891B2',
     glow: 'rgba(8,145,178,0.22)',
     Icon: Bot,
+    scene: 'ai',
     stats: [
       { value: '80%',   label: 'Queries Automated' },
       { value: '24/7',  label: 'Uptime Guaranteed' },
@@ -182,6 +190,7 @@ const services = {
     color: '#059669',
     glow: 'rgba(5,150,105,0.22)',
     Icon: TrendingUp,
+    scene: 'marketing',
     stats: [
       { value: '3×',   label: 'Avg Organic Growth' },
       { value: '4.8×', label: 'Avg ROAS' },
@@ -220,6 +229,7 @@ const services = {
     color: '#D97706',
     glow: 'rgba(217,119,6,0.22)',
     Icon: Palette,
+    scene: 'brand',
     stats: [
       { value: '100+', label: 'Brands Created' },
       { value: '30+',  label: 'Industries Served' },
@@ -253,6 +263,58 @@ const services = {
   },
 }
 
+/* Spinning conic energy ring around a feature icon */
+function IconOrb({ Icon, color }) {
+  return (
+    <div className="relative shrink-0 w-[52px] h-[52px]">
+      <div
+        className="absolute inset-0 rounded-full animate-spin-slow"
+        style={{
+          background: `conic-gradient(from 0deg, transparent 15%, ${color} 40%, transparent 65%)`,
+          WebkitMask: 'radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px))',
+          mask: 'radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px))',
+        }}
+      />
+      <div
+        className="absolute inset-[4px] rounded-full flex items-center justify-center transition-transform duration-500 group-hover:scale-110"
+        style={{
+          background: `radial-gradient(circle at 32% 28%, ${color}55, ${color}10 72%)`,
+          boxShadow: `0 0 22px ${color}38`,
+        }}
+      >
+        <Icon size={19} color="#fff" strokeWidth={1.7} />
+      </div>
+    </div>
+  )
+}
+
+/* Floating glass stat chip */
+function StatChip({ value, label, color, i }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24, scale: 0.92 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ delay: 0.6 + i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <motion.div
+        animate={{ y: [0, -6, 0] }}
+        transition={{ duration: 4 + i * 0.7, repeat: Infinity, ease: 'easeInOut', delay: i * 0.4 }}
+        className="px-6 py-4 rounded-2xl text-center"
+        style={{
+          background: 'rgba(8,14,42,0.45)',
+          backdropFilter: 'blur(14px)',
+          WebkitBackdropFilter: 'blur(14px)',
+          border: `1px solid ${color}35`,
+          boxShadow: `0 10px 36px rgba(0,0,0,0.35), 0 0 22px ${color}1C, inset 0 1px 0 rgba(255,255,255,0.07)`,
+        }}
+      >
+        <div className="font-bold text-white text-[22px] tracking-tight leading-none" style={{ color }}>{value}</div>
+        <div className="text-white/35 text-[9.5px] uppercase tracking-[0.2em] mt-2">{label}</div>
+      </motion.div>
+    </motion.div>
+  )
+}
+
 /* ──────────────────────────────────────────
    Page component
 ────────────────────────────────────────── */
@@ -262,10 +324,10 @@ export default function ServiceDetailPage() {
 
   if (!svc) return <Navigate to="/services" replace />
 
-  const { title, tagline, color, glow, Icon, stats, desc, features, steps, tech, caseStudy } = svc
+  const { title, tagline, color, glow, stats, desc, features, steps, tech, caseStudy, scene } = svc
 
   return (
-    <div className="min-h-screen bg-bg-dark pt-[72px] overflow-hidden">
+    <div className="min-h-screen bg-bg-dark overflow-hidden">
       <SEO
         title={`${title} in Pakistan | Abbas Digital Agency`}
         description={`${tagline} — Abbas Digital Agency delivers professional ${title.toLowerCase()} services for businesses in Pakistan & USA. US-registered. Free consultation.`}
@@ -273,133 +335,130 @@ export default function ServiceDetailPage() {
         path={`/services/${slug}`}
       />
 
-      {/* ══════════════ HERO ══════════════ */}
-      <section className="relative py-24 lg:py-36 overflow-hidden">
-        <div className="absolute -top-40 -left-40 w-[700px] h-[700px] rounded-full blur-[180px] pointer-events-none" style={{ background: glow }} />
-        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full blur-[130px] pointer-events-none opacity-50" style={{ background: glow }} />
+      {/* ══════════════ 3D HERO ══════════════ */}
+      <section className="relative min-h-[88vh] flex items-center overflow-hidden pt-[72px]">
+        <div className="absolute inset-0">
+          <ServiceScene variant={scene} color={color} />
+        </div>
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-bg-dark/85 via-bg-dark/35 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-40 pointer-events-none bg-gradient-to-t from-bg-dark to-transparent" />
 
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 relative z-10">
-          <div className="flex flex-col lg:flex-row lg:items-center gap-12 lg:gap-20">
+        <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 w-full py-20">
+          {/* breadcrumb badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-7"
+            style={{ background: `${color}12`, border: `1px solid ${color}38` }}
+          >
+            <Link to="/services" className="text-white/40 text-[11px] tracking-[0.2em] uppercase hover:text-white/70 transition-colors">Services</Link>
+            <ChevronRight size={11} className="text-white/25" />
+            <span className="text-[11px] tracking-[0.2em] uppercase" style={{ color }}>{title}</span>
+          </motion.div>
 
-            {/* Left — headline */}
-            <div className="flex-1">
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45 }}
-                className="flex items-center gap-2 mb-7"
-              >
-                <Link to="/services" className="text-white/30 text-[11px] tracking-widest uppercase hover:text-white/60 transition-colors">Services</Link>
-                <ChevronRight size={11} className="text-white/20" />
-                <span className="text-[11px] tracking-widest uppercase" style={{ color }}>{title}</span>
-              </motion.div>
-
-              <div className="overflow-hidden mb-7">
-                {tagline.map((line, i) => (
-                  <motion.h1
-                    key={line}
-                    initial={{ y: 90, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.08 + i * 0.13, duration: 0.78, ease: [0.22, 1, 0.36, 1] }}
-                    className={`font-bold leading-[0.9] tracking-tight block ${i === 1 ? '' : 'text-white'}`}
-                    style={{
-                      fontSize: 'clamp(2.8rem, 6.5vw, 6rem)',
-                      ...(i === 1 ? {
-                        backgroundImage: `linear-gradient(135deg, ${color}, ${color}99)`,
-                        WebkitBackgroundClip: 'text',
-                        backgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        transform: 'translateZ(0)',
-                      } : {}),
-                    }}
-                  >
-                    {line}
-                  </motion.h1>
-                ))}
-              </div>
-
-              <motion.p
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.38, duration: 0.6 }}
-                className="text-white/50 text-[15px] leading-relaxed max-w-lg mb-10"
-              >
-                {desc}
-              </motion.p>
-
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.55 }}
-                className="flex flex-wrap gap-3"
-              >
-                <Link to="/contact" className="shimmer-btn inline-flex items-center gap-2 px-7 py-3.5 text-sm tracking-wide text-white font-medium hover:opacity-90 transition-opacity">
-                  Get a Free Quote
-                  <ArrowRight size={15} strokeWidth={2} />
-                </Link>
-                <Link to="/portfolio" className="inline-flex items-center gap-2 px-7 py-3.5 text-sm text-white/55 border border-white/[0.14] rounded-sm hover:text-white hover:border-white/30 transition-all duration-250">
-                  View Our Work
-                </Link>
-              </motion.div>
-            </div>
-
-            {/* Right — stats card */}
-            <motion.div
-              initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              className="lg:w-56 flex lg:flex-col gap-px rounded-2xl overflow-hidden"
-              style={{ background: 'rgba(255,255,255,0.05)' }}
-            >
-              {stats.map((s, i) => (
-                <motion.div
-                  key={s.label}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.55 + i * 0.12, duration: 0.5 }}
-                  className="flex-1 lg:flex-none bg-bg-dark/80 px-7 py-6"
+          {/* tagline */}
+          <div className="mb-7" style={{ perspective: 900 }}>
+            {tagline.map((line, i) => (
+              <div key={line} className="overflow-hidden pb-[0.08em] -mb-[0.08em]">
+                <motion.h1
+                  initial={{ y: '110%', rotateX: -70, opacity: 0 }}
+                  animate={{ y: 0, rotateX: 0, opacity: 1 }}
+                  transition={{ delay: 0.12 + i * 0.16, duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
+                  className={`font-bold leading-[0.95] tracking-tight ${i === 1 ? '' : 'text-white'}`}
+                  style={{
+                    fontSize: 'clamp(2.8rem, 6.5vw, 6rem)',
+                    transformOrigin: '50% 100%',
+                    ...(i === 1 ? {
+                      backgroundImage: `linear-gradient(135deg, ${color}, ${color}88)`,
+                      WebkitBackgroundClip: 'text',
+                      backgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                    } : {}),
+                  }}
                 >
-                  <div className="font-bold leading-none mb-2 text-3xl" style={{ color }}>{s.value}</div>
-                  <div className="text-white/35 text-[10.5px] uppercase tracking-[0.2em]">{s.label}</div>
-                </motion.div>
-              ))}
-            </motion.div>
+                  {line}
+                </motion.h1>
+              </div>
+            ))}
+          </div>
+
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.45, duration: 0.6 }}
+            className="text-white/45 text-[15px] leading-relaxed max-w-lg mb-9"
+          >
+            {desc}
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.55, duration: 0.55 }}
+            className="flex flex-wrap items-center gap-4 mb-12"
+          >
+            <Magnetic>
+              <Link to="/contact"
+                className="shimmer-btn inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full text-sm tracking-[0.1em] uppercase text-white font-medium hover:opacity-90 active:scale-[0.98] transition-all duration-200">
+                Get a Free Quote <ArrowRight size={15} strokeWidth={2} />
+              </Link>
+            </Magnetic>
+            <Link to="/portfolio"
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm text-white/55 hover:text-white transition-all duration-300"
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.12)' }}>
+              View Our Work
+            </Link>
+          </motion.div>
+
+          {/* floating stat chips */}
+          <div className="flex flex-wrap gap-4">
+            {stats.map((s, i) => <StatChip key={s.label} {...s} color={color} i={i} />)}
           </div>
         </div>
       </section>
 
       {/* ══════════════ FEATURES ══════════════ */}
-      <section className="py-20 lg:py-28 border-t border-white/[0.06]">
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+      <section className="relative py-20 lg:py-28 overflow-hidden">
+        <div className="absolute top-24 right-0 w-[460px] h-[460px] rounded-full blur-[150px] pointer-events-none opacity-50" style={{ background: glow }} />
+
+        <div className="relative max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
           <motion.p {...fade(0)} className="text-[11px] tracking-[0.28em] uppercase mb-3" style={{ color }}>
             What's Included
           </motion.p>
-          <motion.h2 {...fade(0.08)} className="font-bold text-white mb-14" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>
+          <RevealText as="h2" className="font-bold text-white mb-14" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>
             Everything You Need to Succeed
-          </motion.h2>
+          </RevealText>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {features.map(({ Icon: FIcon, title: ftitle, desc: fdesc }, i) => (
               <motion.div
                 key={ftitle}
                 initial={{ opacity: 0, y: 36 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-60px' }}
-                transition={{ delay: i * 0.09, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ y: -5 }}
-                className="group relative p-6 rounded-2xl overflow-hidden"
-                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ delay: (i % 3) * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="h-full"
               >
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none rounded-2xl"
-                  style={{ background: `radial-gradient(ellipse at 50% 0%, ${color}18, transparent 70%)` }} />
-                <div className="absolute top-0 left-0 right-0 h-[1.5px] rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  style={{ background: `linear-gradient(90deg, ${color}, transparent)` }} />
-                <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-5 relative z-10"
-                  style={{ background: `${color}18`, border: `1px solid ${color}35` }}>
-                  <FIcon size={20} style={{ color }} strokeWidth={1.7} />
-                </div>
-                <h3 className="font-bold text-white text-base mb-2 relative z-10">{ftitle}</h3>
-                <p className="text-white/45 text-[13px] leading-relaxed relative z-10">{fdesc}</p>
+                <TiltCard max={8} glareColor={`${color}20`} glareSize={360}>
+                  <div className="group relative h-full p-6 rounded-2xl overflow-hidden"
+                    style={{
+                      background: 'rgba(8,14,42,0.45)',
+                      backdropFilter: 'blur(14px)',
+                      WebkitBackdropFilter: 'blur(14px)',
+                      border: '1px solid rgba(255,255,255,0.07)',
+                      boxShadow: '0 12px 40px rgba(0,0,0,0.3)',
+                    }}>
+                    <div className="holo-sweep z-20" />
+                    <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                      style={{ border: `1px solid ${color}50`, boxShadow: `0 0 30px ${color}1E, inset 0 0 24px ${color}0A` }} />
+                    <div className="relative z-10 mb-5">
+                      <IconOrb Icon={FIcon} color={color} />
+                    </div>
+                    <h3 className="font-bold text-white text-base mb-2 relative z-10">{ftitle}</h3>
+                    <p className="text-white/45 text-[13px] leading-relaxed relative z-10">{fdesc}</p>
+                  </div>
+                </TiltCard>
               </motion.div>
             ))}
           </div>
@@ -407,22 +466,28 @@ export default function ServiceDetailPage() {
       </section>
 
       {/* ══════════════ PROCESS ══════════════ */}
-      <section className="py-20 lg:py-28 relative overflow-hidden"
-        style={{ background: 'rgba(255,255,255,0.015)', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+      <section className="relative py-20 lg:py-28 overflow-hidden border-y border-white/[0.06]"
+        style={{ background: 'rgba(255,255,255,0.012)' }}>
         <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full blur-[140px] pointer-events-none opacity-35" style={{ background: glow }} />
 
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 relative z-10">
+        <div className="relative max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 z-10">
           <motion.p {...fade(0)} className="text-[11px] tracking-[0.28em] uppercase mb-3" style={{ color }}>
             How We Work
           </motion.p>
-          <motion.h2 {...fade(0.08)} className="font-bold text-white mb-16" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>
+          <RevealText as="h2" className="font-bold text-white mb-16" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>
             Our 5-Step Process
-          </motion.h2>
+          </RevealText>
 
           <div className="relative">
-            {/* Connector line (desktop) */}
-            <div className="hidden lg:block absolute top-8 left-8 right-8 h-px"
-              style={{ background: `linear-gradient(90deg, ${color}50, ${color}20, transparent)` }} />
+            {/* connector line draws itself on scroll (desktop) */}
+            <motion.div
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+              className="hidden lg:block absolute top-8 left-8 right-8 h-px origin-left"
+              style={{ background: `linear-gradient(90deg, ${color}, ${color}30, transparent)` }}
+            />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
               {steps.map(({ n, title: ptitle, desc: pdesc }, i) => (
@@ -430,12 +495,25 @@ export default function ServiceDetailPage() {
                   key={n}
                   initial={{ opacity: 0, y: 36 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-60px' }}
-                  transition={{ delay: i * 0.1, duration: 0.62, ease: [0.22, 1, 0.36, 1] }}
+                  viewport={{ once: true, margin: '-50px' }}
+                  transition={{ delay: i * 0.12, duration: 0.62, ease: [0.22, 1, 0.36, 1] }}
+                  className="group"
                 >
-                  <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5 relative z-10"
-                    style={{ background: `${color}16`, border: `1.5px solid ${color}45` }}>
-                    <span className="font-bold text-sm" style={{ color }}>{n}</span>
+                  <div className="relative w-16 h-16 mb-6">
+                    <motion.span
+                      className="absolute inset-0 rounded-full"
+                      style={{ border: `1px solid ${color}55` }}
+                      animate={{ scale: [1, 1.45], opacity: [0.6, 0] }}
+                      transition={{ duration: 2.2, repeat: Infinity, ease: 'easeOut', delay: i * 0.35 }}
+                    />
+                    <div className="absolute inset-0 rounded-full flex items-center justify-center transition-transform duration-400 group-hover:scale-110"
+                      style={{
+                        background: `radial-gradient(circle at 32% 28%, ${color}40, ${color}0E 72%)`,
+                        border: `1.5px solid ${color}50`,
+                        boxShadow: `0 0 26px ${color}28`,
+                      }}>
+                      <span className="font-bold text-sm" style={{ color }}>{n}</span>
+                    </div>
                   </div>
                   <h3 className="font-bold text-white text-base mb-2">{ptitle}</h3>
                   <p className="text-white/45 text-[13px] leading-relaxed">{pdesc}</p>
@@ -447,26 +525,33 @@ export default function ServiceDetailPage() {
       </section>
 
       {/* ══════════════ TECH STACK ══════════════ */}
-      <section className="py-20 lg:py-24">
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+      <section className="relative py-20 lg:py-24 overflow-hidden">
+        <div className="absolute -left-24 top-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full blur-[130px] pointer-events-none opacity-40" style={{ background: glow }} />
+
+        <div className="relative max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
           <motion.p {...fade(0)} className="text-[11px] tracking-[0.28em] uppercase mb-3" style={{ color }}>
             Tools & Technology
           </motion.p>
-          <motion.h2 {...fade(0.08)} className="font-bold text-white mb-10" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>
+          <RevealText as="h2" className="font-bold text-white mb-10" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>
             Our Tech Stack
-          </motion.h2>
+          </RevealText>
 
           <div className="flex flex-wrap gap-3">
             {tech.map((t, i) => (
               <motion.span
                 key={t}
-                initial={{ opacity: 0, scale: 0.82 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, margin: '-60px' }}
-                transition={{ delay: i * 0.055, duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ scale: 1.06, y: -2 }}
-                className="px-4 py-2 rounded-full text-sm font-medium cursor-default"
-                style={{ background: `${color}14`, border: `1px solid ${color}35`, color }}
+                initial={{ opacity: 0, scale: 0.8, y: 12 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ delay: i * 0.05, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ scale: 1.08, y: -3 }}
+                className="px-5 py-2.5 rounded-full text-sm font-medium cursor-default text-white/80"
+                style={{
+                  background: `${color}10`,
+                  border: `1px solid ${color}38`,
+                  backdropFilter: 'blur(10px)',
+                  boxShadow: `0 0 18px ${color}14, inset 0 1px 0 rgba(255,255,255,0.06)`,
+                }}
               >
                 {t}
               </motion.span>
@@ -476,95 +561,112 @@ export default function ServiceDetailPage() {
       </section>
 
       {/* ══════════════ CASE STUDY ══════════════ */}
-      <section className="py-20 lg:py-28 border-t border-white/[0.06]">
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+      <section className="relative py-20 lg:py-28 overflow-hidden border-t border-white/[0.06]">
+        <div className="relative max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
           <motion.p {...fade(0)} className="text-[11px] tracking-[0.28em] uppercase mb-3" style={{ color }}>
             Featured Project
           </motion.p>
-          <motion.h2 {...fade(0.08)} className="font-bold text-white mb-12" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>
+          <RevealText as="h2" className="font-bold text-white mb-12" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>
             See It in Action
-          </motion.h2>
+          </RevealText>
 
-          <motion.div
-            {...fade(0.16)}
-            className="rounded-2xl overflow-hidden"
-            style={{ border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.025)' }}
-          >
-            <div className="flex flex-col lg:flex-row">
-              {/* Image */}
-              <div className="lg:w-1/2 relative overflow-hidden" style={{ minHeight: 300, background: `linear-gradient(135deg, ${caseStudy.from}, ${caseStudy.to})` }}>
-                <img
-                  src={caseStudy.img} alt={caseStudy.title}
-                  className="w-full h-full object-cover absolute inset-0"
-                  onError={e => { e.target.style.display = 'none' }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/50" />
-              </div>
+          <motion.div {...fade(0.12)}>
+            <TiltCard max={4} glareColor={`${color}18`} glareSize={620}>
+              <div className="group relative rounded-3xl overflow-hidden"
+                style={{
+                  background: 'rgba(8,14,42,0.5)',
+                  backdropFilter: 'blur(16px)',
+                  WebkitBackdropFilter: 'blur(16px)',
+                  border: `1px solid ${color}2E`,
+                  boxShadow: `0 24px 70px rgba(0,0,0,0.45), 0 0 40px ${color}12, inset 0 1px 0 rgba(255,255,255,0.06)`,
+                }}>
+                <div className="holo-sweep z-20" />
+                <div className="flex flex-col lg:flex-row">
+                  {/* Image */}
+                  <div className="lg:w-1/2 relative overflow-hidden" style={{ minHeight: 320, background: `linear-gradient(135deg, ${caseStudy.from}, ${caseStudy.to})` }}>
+                    <img
+                      src={caseStudy.img} alt={caseStudy.title}
+                      className="w-full h-full object-cover absolute inset-0 group-hover:scale-[1.05] transition-transform duration-700 ease-out"
+                      onError={e => { e.target.style.display = 'none' }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent to-bg-dark/60" />
+                    <div className="absolute top-5 left-5 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full backdrop-blur-md"
+                      style={{ background: `${color}30`, border: `1px solid ${color}60`, boxShadow: `0 0 20px ${color}40` }}>
+                      <span className="text-[10.5px] font-bold tracking-widest uppercase text-white">{caseStudy.metric}</span>
+                    </div>
+                  </div>
 
-              {/* Content */}
-              <div className="lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full mb-6 w-fit"
-                  style={{ background: `${color}18`, border: `1px solid ${color}35` }}>
-                  <span className="text-[10.5px] font-semibold tracking-widest uppercase" style={{ color }}>{caseStudy.metric}</span>
+                  {/* Content */}
+                  <div className="lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center relative">
+                    <div className="absolute top-0 right-0 w-56 h-56 rounded-full blur-[90px] pointer-events-none opacity-50" style={{ background: `${color}16` }} />
+                    <h3 className="font-bold text-white text-2xl lg:text-3xl mb-3 relative">{caseStudy.title}</h3>
+                    <p className="text-white/50 text-[14px] leading-relaxed mb-6 relative">{caseStudy.desc}</p>
+
+                    <div className="flex flex-wrap gap-2 mb-8 relative">
+                      {caseStudy.tags.map(tag => (
+                        <span key={tag} className="px-3 py-1 rounded-full text-[11px]"
+                          style={{ background: `${color}14`, border: `1px solid ${color}30`, color }}>
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    <Link
+                      to="/portfolio"
+                      className="inline-flex items-center gap-2 text-sm font-semibold group/link relative w-fit"
+                      style={{ color }}
+                    >
+                      <span>View Full Portfolio</span>
+                      <span className="group-hover/link:translate-x-1.5 transition-transform duration-300">
+                        <ArrowRight size={15} strokeWidth={2} />
+                      </span>
+                    </Link>
+                  </div>
                 </div>
-
-                <h3 className="font-bold text-white text-2xl mb-3">{caseStudy.title}</h3>
-                <p className="text-white/50 text-[14px] leading-relaxed mb-6">{caseStudy.desc}</p>
-
-                <div className="flex flex-wrap gap-2 mb-8">
-                  {caseStudy.tags.map(tag => (
-                    <span key={tag} className="px-2.5 py-1 rounded-full text-[11px]"
-                      style={{ background: `${color}14`, border: `1px solid ${color}30`, color }}>
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                <Link
-                  to="/portfolio"
-                  className="inline-flex items-center gap-2 text-sm font-medium group"
-                  style={{ color }}
-                >
-                  <span>View Full Portfolio</span>
-                  <span className="group-hover:translate-x-1 transition-transform duration-200">
-                    <ArrowRight size={15} strokeWidth={2} />
-                  </span>
-                </Link>
               </div>
-            </div>
+            </TiltCard>
           </motion.div>
         </div>
       </section>
 
       {/* ══════════════ CTA ══════════════ */}
-      <section className="py-24 relative overflow-hidden"
-        style={{ background: 'rgba(255,255,255,0.015)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-        <div className="absolute inset-0 pointer-events-none"
-          style={{ background: `radial-gradient(ellipse 70% 70% at 50% 50%, ${glow}, transparent)` }} />
-
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 text-center relative z-10">
-          <motion.p {...fade(0)} className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-4">
-            Let's Get Started
-          </motion.p>
-          <motion.h2
-            {...fade(0.08)}
-            className="font-bold text-white mb-5 leading-tight"
-            style={{ fontSize: 'clamp(2.2rem, 4.5vw, 3.8rem)' }}
+      <section className="relative py-20 lg:py-24 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+          <motion.div
+            {...fade(0)}
+            className="relative rounded-3xl overflow-hidden p-10 lg:p-16 text-center"
+            style={{
+              background: 'rgba(8,14,42,0.5)',
+              backdropFilter: 'blur(16px)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              boxShadow: '0 24px 70px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)',
+            }}
           >
-            Ready to Grow Your Business<br />with {title}?
-          </motion.h2>
-          <motion.p {...fade(0.16)} className="text-white/45 text-[15px] mb-10 max-w-md mx-auto leading-relaxed">
-            Free consultation, no commitment. We'll get back to you within 24 hours.
-          </motion.p>
-          <motion.div {...fade(0.24)} className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/contact"
-              className="shimmer-btn inline-flex items-center gap-2.5 px-8 py-3.5 text-sm tracking-wide text-white font-medium hover:opacity-90 transition-opacity">
-              Get a Free Quote <ArrowRight size={15} strokeWidth={2} />
-            </Link>
-            <Link to="/services"
-              className="inline-flex items-center gap-2 px-8 py-3.5 text-sm text-white/55 border border-white/[0.14] rounded-sm hover:text-white hover:border-white/30 transition-all duration-250">
-              ← All Services
-            </Link>
+            <div className="absolute top-0 left-1/4 w-80 h-80 rounded-full blur-[120px] pointer-events-none" style={{ background: glow }} />
+            <div className="absolute bottom-0 right-1/4 w-72 h-72 rounded-full blur-[110px] pointer-events-none" style={{ background: 'rgba(232,21,90,0.12)' }} />
+
+            <p className="relative text-[11px] tracking-[0.28em] uppercase mb-4" style={{ color }}>
+              Let's Get Started
+            </p>
+            <RevealText as="h2" className="relative font-bold text-white mb-5 leading-tight" style={{ fontSize: 'clamp(2rem, 4.2vw, 3.4rem)' }}>
+              {`Ready to Grow with ${title}?`}
+            </RevealText>
+            <p className="relative text-white/45 text-[15px] mb-10 max-w-md mx-auto leading-relaxed">
+              Free consultation, no commitment. We'll get back to you within 24 hours.
+            </p>
+            <div className="relative flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Magnetic>
+                <Link to="/contact"
+                  className="shimmer-btn inline-flex items-center gap-2.5 px-9 py-4 rounded-full text-sm tracking-[0.1em] uppercase text-white font-medium hover:opacity-90 active:scale-[0.98] transition-all duration-200">
+                  Get a Free Quote <ArrowRight size={15} strokeWidth={2} />
+                </Link>
+              </Magnetic>
+              <Link to="/services"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-sm text-white/55 hover:text-white transition-all duration-300"
+                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.12)' }}>
+                ← All Services
+              </Link>
+            </div>
           </motion.div>
         </div>
       </section>
