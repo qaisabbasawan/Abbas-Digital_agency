@@ -50,7 +50,7 @@ const team = [
     role: 'Digital Marketing Expert',
     initials: 'UF',
     color: '#059669',
-    img: '/team/umme-farwa.jpeg',
+    img: '/team/umme-farwa-v2.jpeg',
     linkedin: 'https://www.linkedin.com/in/umm-e-farwa-7b057928a/',
   },
 ]
