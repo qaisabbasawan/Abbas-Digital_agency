@@ -94,7 +94,8 @@ export default function LandingPage() {
           <Services />
           <ScrollSection><About /></ScrollSection>
           <ScrollSection><Process /></ScrollSection>
-          <ScrollSection><Portfolio /></ScrollSection>
+          {/* Portfolio uses sticky card-stacking — keep it out of transformed wrappers */}
+          <Portfolio />
           <ScrollSection><Testimonials /></ScrollSection>
           <ScrollSection><Contact /></ScrollSection>
           <Footer />
