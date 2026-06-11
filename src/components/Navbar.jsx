@@ -141,74 +141,140 @@ export default function Navbar() {
               <AnimatePresence>
                 {dropOpen && (
                   <motion.div
-                    initial={{ opacity: 0, y: 8, scale: 0.97 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 6, scale: 0.97 }}
-                    transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                    initial={{ opacity: 0, y: 12, scale: 0.96, filter: 'blur(6px)' }}
+                    animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+                    exit={{ opacity: 0, y: 8, scale: 0.97, filter: 'blur(4px)' }}
+                    transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
                     onMouseEnter={openDrop}
                     onMouseLeave={closeDrop}
-                    className="absolute top-[calc(100%+12px)] left-1/2 -translate-x-1/2 w-[520px] rounded-2xl overflow-hidden"
+                    className="absolute top-[calc(100%+14px)] left-1/2 -translate-x-1/2 w-[660px] rounded-3xl overflow-hidden"
                     style={{
-                      background: 'rgba(5, 9, 26, 0.97)',
-                      backdropFilter: 'blur(24px)',
-                      WebkitBackdropFilter: 'blur(24px)',
-                      border: '1px solid rgba(255,255,255,0.08)',
-                      boxShadow: '0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04)',
+                      background: 'linear-gradient(165deg, rgba(13,20,48,0.98), rgba(5,9,26,0.98))',
+                      backdropFilter: 'blur(28px)',
+                      WebkitBackdropFilter: 'blur(28px)',
+                      border: '1px solid rgba(255,255,255,0.09)',
+                      boxShadow: '0 32px 90px rgba(0,0,0,0.65), 0 0 60px rgba(46,85,224,0.08), 0 0 0 1px rgba(255,255,255,0.04)',
                     }}
                   >
-                    {/* Arrow pointer */}
+                    {/* top sheen */}
                     <div
-                      className="absolute -top-[6px] left-1/2 -translate-x-1/2 w-3 h-3 rotate-45"
+                      className="absolute top-0 left-12 right-12 h-px"
+                      style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)' }}
+                    />
+                    {/* dot grid */}
+                    <div
+                      className="absolute inset-0 pointer-events-none"
                       style={{
-                        background: 'rgba(5,9,26,0.97)',
-                        border: '1px solid rgba(255,255,255,0.08)',
-                        borderBottom: 'none',
-                        borderRight: 'none',
+                        backgroundImage: 'radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)',
+                        backgroundSize: '22px 22px',
+                        maskImage: 'radial-gradient(ellipse 80% 70% at 50% 30%, #000 30%, transparent 80%)',
+                        WebkitMaskImage: 'radial-gradient(ellipse 80% 70% at 50% 30%, #000 30%, transparent 80%)',
                       }}
                     />
 
-                    <div className="p-4 grid grid-cols-2 gap-1">
-                      {serviceItems.map(({ Icon, label, sub, color, path }, i) => (
-                        <motion.div
-                          key={label}
-                          initial={{ opacity: 0, y: 6 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: i * 0.04, duration: 0.22 }}
-                        >
-                          <Link
-                            to={path}
-                            onClick={() => setDropOpen(false)}
-                            className="group flex items-start gap-3 p-3 rounded-xl transition-all duration-200 hover:bg-white/[0.05]"
+                    <div className="relative grid grid-cols-[210px_1fr]">
+                      {/* ── Featured panel ── */}
+                      <div
+                        className="relative p-5 flex flex-col border-r border-white/[0.06] overflow-hidden"
+                        style={{ background: 'linear-gradient(180deg, rgba(46,85,224,0.14), rgba(232,21,90,0.09))' }}
+                      >
+                        <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-brand-pink/20 blur-3xl pointer-events-none" />
+                        <span className="inline-flex self-start px-2.5 py-1 rounded-full text-[9px] font-bold tracking-[0.22em] uppercase text-brand-pink mb-5"
+                          style={{ background: 'rgba(232,21,90,0.12)', border: '1px solid rgba(232,21,90,0.35)' }}>
+                          Featured
+                        </span>
+
+                        {/* mini spinning orb */}
+                        <div className="relative w-14 h-14 mb-4">
+                          <div
+                            className="absolute inset-0 rounded-full animate-spin-slow"
+                            style={{
+                              background: 'conic-gradient(from 0deg, transparent 15%, #E8155A 40%, transparent 65%)',
+                              WebkitMask: 'radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px))',
+                              mask: 'radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px))',
+                            }}
+                          />
+                          <div
+                            className="absolute inset-[5px] rounded-full flex items-center justify-center"
+                            style={{
+                              background: 'radial-gradient(circle at 32% 28%, rgba(232,21,90,0.5), rgba(46,85,224,0.25))',
+                              boxShadow: '0 0 24px rgba(232,21,90,0.35)',
+                            }}
                           >
-                            {/* Icon */}
-                            <div
-                              className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 transition-all duration-200 group-hover:scale-110"
-                              style={{
-                                background: `${color}18`,
-                                border: `1px solid ${color}30`,
-                              }}
+                            <BarChart2 size={20} color="#fff" strokeWidth={1.8} />
+                          </div>
+                        </div>
+
+                        <p className="text-white text-[14px] font-bold leading-snug mb-1.5">AI Business Analyzer</p>
+                        <p className="text-white/45 text-[11.5px] leading-relaxed flex-1">
+                          Get a free AI-generated growth report for your business in 2 minutes.
+                        </p>
+                        <Link
+                          to="/analyzer"
+                          onClick={() => setDropOpen(false)}
+                          className="mt-4 inline-flex items-center gap-1.5 text-brand-pink text-[11.5px] font-semibold tracking-wide hover:gap-3 transition-all duration-300"
+                        >
+                          Try it free →
+                        </Link>
+                      </div>
+
+                      {/* ── Service items ── */}
+                      <div className="p-3 grid grid-cols-2 gap-1 content-start">
+                        {serviceItems.map(({ Icon, label, sub, color, path }, i) => (
+                          <motion.div
+                            key={label}
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.06 + i * 0.045, duration: 0.25 }}
+                          >
+                            <Link
+                              to={path}
+                              onClick={() => setDropOpen(false)}
+                              className="group relative flex items-start gap-3 p-3 rounded-xl transition-all duration-250 hover:bg-white/[0.05]"
                             >
-                              <Icon size={16} style={{ color }} strokeWidth={1.8} />
-                            </div>
-                            {/* Text */}
-                            <div>
-                              <p className="text-white text-[13px] font-semibold leading-tight mb-0.5 group-hover:text-white transition-colors">
-                                {label}
-                              </p>
-                              <p className="text-white/40 text-[11px] leading-snug">{sub}</p>
-                            </div>
-                          </Link>
-                        </motion.div>
-                      ))}
+                              {/* hover accent bar */}
+                              <span
+                                className="absolute left-0 top-2.5 bottom-2.5 w-[2.5px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-250"
+                                style={{ background: color, boxShadow: `0 0 8px ${color}` }}
+                              />
+                              {/* Icon chip */}
+                              <div
+                                className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 transition-all duration-250 group-hover:scale-110 group-hover:-rotate-3"
+                                style={{
+                                  background: `${color}16`,
+                                  border: `1px solid ${color}35`,
+                                  boxShadow: `0 0 14px ${color}1E`,
+                                }}
+                              >
+                                <Icon size={16} style={{ color }} strokeWidth={1.8} />
+                              </div>
+                              {/* Text */}
+                              <div className="flex-1 min-w-0">
+                                <p className="text-white text-[13px] font-semibold leading-tight mb-0.5 flex items-center gap-1.5">
+                                  {label}
+                                  <ChevronDown
+                                    size={11}
+                                    className="-rotate-90 opacity-0 -translate-x-1 group-hover:opacity-60 group-hover:translate-x-0 transition-all duration-250"
+                                  />
+                                </p>
+                                <p className="text-white/40 text-[11px] leading-snug">{sub}</p>
+                              </div>
+                            </Link>
+                          </motion.div>
+                        ))}
+                      </div>
                     </div>
 
                     {/* Footer strip */}
-                    <div className="px-4 py-3 border-t border-white/[0.06] flex items-center justify-between">
-                      <span className="text-white/30 text-[11px]">All 6 services available</span>
+                    <div className="relative px-5 py-3 border-t border-white/[0.06] flex items-center justify-between">
+                      <span className="text-white/30 text-[11px] inline-flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                        All 6 services · available now
+                      </span>
                       <Link
                         to="/services"
                         onClick={() => setDropOpen(false)}
-                        className="text-brand-pink text-[11px] tracking-wide hover:underline"
+                        className="group inline-flex items-center gap-1.5 text-brand-pink text-[11px] tracking-wide font-semibold hover:gap-3 transition-all duration-300"
                       >
                         View all services →
                       </Link>
