@@ -205,11 +205,12 @@ function Junctions({ store }) {
   return Array.from({ length: 6 }).map((_, i) => {
     const side = i % 2 === 0 ? -1 : 1
     const [cA, cB] = JUNCTION_COLORS[i]
+    /* cards orbit the spine, so eruptions sit close to the centre */
     return (
       <group
         key={i}
         ref={el => { groups.current[i] = el }}
-        position={[side * 0.85, -i * CARD_STEP, 0.3]}
+        position={[side * 0.35, -i * CARD_STEP, 0.4]}
       >
         <mesh position={[0.25, 0.15, 0]}>
           <icosahedronGeometry args={[0.85, 24]} />

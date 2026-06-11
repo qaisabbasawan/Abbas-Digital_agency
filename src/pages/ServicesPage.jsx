@@ -11,7 +11,7 @@ import {
 } from 'lucide-react'
 import Footer from '../components/Footer'
 import ServicesScene from '../components/ServicesScene'
-import NeuralSpine, { CARD_STEP, DROP, CAM_Z, FOV } from '../components/NeuralSpine'
+import NeuralSpine from '../components/NeuralSpine'
 import RevealText from '../components/anim/RevealText'
 import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
@@ -313,54 +313,79 @@ function CardPanel({ svc, active }) {
   )
 }
 
-/* ── One spine card — rides the camera travel, crystallizes near centre ── */
+/* ── One spine card — orbits around the spine as it takes the stage ──
+   u = p*5 - i is the card's local progress: it swings in from behind one
+   side, rolls around the FRONT of the spine at full size at u=0, then
+   rolls away behind the other side as the next card arrives. */
 const CARD_W = 470
 const CARD_H = 360
-const CARD_X = 358          // distance of card centre from the spine
+const ORBIT_R = 440          // orbit radius in px
 
-function SpineCard({ svc, i, p, ppu, active }) {
-  const side = i % 2 === 0 ? -1 : 1
+function SpineCard({ svc, i, p, active }) {
+  const u = useTransform(p, v => v * 5 - i)
+  const theta = useTransform(u, v => v * Math.PI * 1.1)
 
-  /* px offset from screen centre: card sits at world y = -i*CARD_STEP while
-     the camera sits at -p*DROP — the difference maps to screen pixels */
-  const y = useTransform(p, v => (CARD_STEP * i - DROP * v) * ppu)
-  const opacity = useTransform(y, v => Math.max(0, 1 - Math.abs(v) / 430))
-  const scale = useTransform(y, v => 0.82 + 0.18 * Math.max(0, 1 - Math.abs(v) / 430))
-  const blurPx = useTransform(y, v => Math.min(Math.abs(v) / 110, 9))
+  const x = useTransform(theta, t => Math.sin(t) * ORBIT_R)
+  const depth = useTransform(theta, t => Math.cos(t))            // 1 = front, -1 = behind
+  const y = useTransform(u, v => -v * 150)                       // slight helix climb
+
+  const scale = useTransform(depth, d => 0.62 + ((d + 1) / 2) * 0.43)
+  const opacity = useTransform([u, depth], ([v, d]) => {
+    const edge = Math.max(0, 1 - Math.max(0, Math.abs(v) - 0.72) / 0.2)
+    return edge * (0.28 + ((d + 1) / 2) * 0.72)
+  })
+  const blurPx = useTransform([u, depth], ([v, d]) =>
+    (1 - (d + 1) / 2) * 5 + Math.max(0, Math.abs(v) - 0.72) * 10
+  )
   const filter = useTransform(blurPx, v => `blur(${v}px)`)
+  const rotateY = useTransform(theta, t => -Math.sin(t) * 24)    // card faces the spine
+  const zIndex = useTransform(depth, d => Math.round(60 + d * 40))
+
+  /* neural threads — reach from the card's inner edge back to the spine,
+     switching sides as the card orbits */
+  const threadRightW = useTransform(x, v => Math.max(-v - CARD_W / 2 - 12, 0))
+  const threadLeftW  = useTransform(x, v => Math.max(v - CARD_W / 2 - 12, 0))
 
   return (
     <motion.div
       style={{
-        y, opacity, scale, filter,
-        rotateY: side * -8,
-        left: `calc(50% + ${side * CARD_X - CARD_W / 2}px)`,
+        x, y, opacity, scale, rotateY, filter, zIndex,
+        left: '50%',
+        marginLeft: -CARD_W / 2,
         width: CARD_W,
         height: CARD_H,
         marginTop: -CARD_H / 2,
       }}
-      className="absolute top-1/2 z-20"
+      className="absolute top-1/2"
     >
-      {/* neural thread tethering the card to the spine */}
-      <div
+      {/* thread to the right of the card (card is left of the spine) */}
+      <motion.div
         className="absolute top-1/2 -translate-y-1/2 h-px pointer-events-none"
         style={{
-          [side === -1 ? 'left' : 'right']: '100%',
-          width: CARD_X - CARD_W / 2 + 30,
-          background: side === -1
-            ? `linear-gradient(90deg, ${svc.color}AA, transparent)`
-            : `linear-gradient(270deg, ${svc.color}AA, transparent)`,
+          left: '100%',
+          width: threadRightW,
+          background: `linear-gradient(90deg, ${svc.color}AA, transparent)`,
         }}
       >
         <span
           className="thread-dot absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full"
-          style={{
-            background: svc.color,
-            boxShadow: `0 0 10px ${svc.color}`,
-            animationDirection: side === -1 ? 'reverse' : 'normal',
-          }}
+          style={{ background: svc.color, boxShadow: `0 0 10px ${svc.color}`, animationDirection: 'reverse' }}
         />
-      </div>
+      </motion.div>
+      {/* thread to the left of the card (card is right of the spine) */}
+      <motion.div
+        className="absolute top-1/2 -translate-y-1/2 h-px pointer-events-none"
+        style={{
+          right: '100%',
+          width: threadLeftW,
+          background: `linear-gradient(270deg, ${svc.color}AA, transparent)`,
+        }}
+      >
+        <span
+          className="thread-dot absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full"
+          style={{ background: svc.color, boxShadow: `0 0 10px ${svc.color}` }}
+        />
+      </motion.div>
 
       <motion.div whileHover={{ scale: 1.035 }} transition={{ duration: 0.3 }} className="w-full h-full">
         <CardPanel svc={svc} active={active} />
@@ -374,12 +399,6 @@ function NeuralServices() {
   const ref = useRef(null)
   const storeRef = useRef({ p: 0 })
   const [active, setActive] = useState(0)
-  const [ppu] = useState(() =>
-    typeof window === 'undefined'
-      ? 130
-      : (window.innerHeight / 2) / (Math.tan((FOV / 2) * Math.PI / 180) * CAM_Z)
-  )
-
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start start', 'end end'],
@@ -445,7 +464,7 @@ function NeuralServices() {
 
         {/* the six cards riding the spine */}
         {services.map((svc, i) => (
-          <SpineCard key={svc.n} svc={svc} i={i} p={p} ppu={ppu} active={active === i} />
+          <SpineCard key={svc.n} svc={svc} i={i} p={p} active={active === i} />
         ))}
 
         {/* side progress dots */}
