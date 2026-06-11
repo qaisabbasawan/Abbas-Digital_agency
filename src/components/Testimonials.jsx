@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
+import RevealText from './anim/RevealText'
 
 const list = [
   {
@@ -51,15 +52,10 @@ export default function Testimonials() {
             >
               Testimonials
             </motion.p>
-            <motion.h2
-              initial={{ opacity: 0, y: 24 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.1, duration: 0.62 }}
-              className="font-bold text-white leading-tight mb-8"
-              style={{ fontSize: 'clamp(2rem, 3.5vw, 3rem)' }}
-            >
+            <RevealText as="h2" className="font-bold text-white leading-tight mb-8"
+              style={{ fontSize: 'clamp(2rem, 3.5vw, 3rem)' }} delay={0.1} stagger={0.07}>
               What Our Clients Say
-            </motion.h2>
+            </RevealText>
 
             {/* Dot navigation */}
             <div className="flex items-center gap-3">

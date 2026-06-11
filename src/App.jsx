@@ -4,6 +4,8 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Navbar from './components/Navbar'
 import CustomCursor from './components/CustomCursor'
+import SmoothScroll from './components/SmoothScroll'
+import ScrollProgress from './components/ScrollProgress'
 import LandingPage from './pages/LandingPage'
 import AboutPage from './pages/AboutPage'
 import ServicesPage from './pages/ServicesPage'
@@ -52,11 +54,14 @@ function ProtectedRoute({ children }) {
 
 function PublicLayout() {
   return (
-    <div className="min-h-screen bg-bg-dark text-white">
-      <CustomCursor />
-      <Navbar />
-      <Outlet />
-    </div>
+    <SmoothScroll>
+      <div className="min-h-screen bg-bg-dark text-white">
+        <ScrollProgress />
+        <CustomCursor />
+        <Navbar />
+        <Outlet />
+      </div>
+    </SmoothScroll>
   )
 }
 

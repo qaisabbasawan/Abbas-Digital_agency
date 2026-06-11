@@ -5,6 +5,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import HeroScene    from '../components/HeroScene'
 import Hero         from '../components/Hero'
+import Marquee      from '../components/Marquee'
 import Services     from '../components/Services'
 import About        from '../components/About'
 import Process      from '../components/Process'
@@ -95,6 +96,7 @@ export default function LandingPage() {
 
         {/* Every section below gets the same push-into-background scroll animation */}
         <div style={{ background: '#05091A', position: 'relative', zIndex: 2 }}>
+          <Marquee />
           <ScrollSection><Services /></ScrollSection>
           <ScrollSection><About /></ScrollSection>
           <ScrollSection><Process /></ScrollSection>

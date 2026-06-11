@@ -5,6 +5,54 @@ import {
   Globe, ShoppingCart, Smartphone,
   Bot, TrendingUp, Palette,
 } from 'lucide-react'
+import Magnetic from './anim/Magnetic'
+
+/* ── Per-character 3D flip-up reveal for the headline.
+     Gradient lines clip the gradient per character (background-clip: text
+     breaks on transformed children), offsetting background-position so the
+     gradient still flows continuously across the word. ── */
+function HeadlineLine({ text, gradient, lineIdx }) {
+  const charStyle = (i) => gradient
+    ? {
+        backgroundImage: 'linear-gradient(135deg, #2E55E0, #E8155A)',
+        backgroundSize: `${text.length * 100}% 100%`,
+        backgroundPosition: `${(i / Math.max(text.length - 1, 1)) * 100}% 0`,
+        WebkitBackgroundClip: 'text',
+        backgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        color: 'transparent',
+      }
+    : {}
+
+  return (
+    <h1
+      aria-label={text}
+      className="font-bold leading-[0.92] tracking-tight text-white"
+      style={{ fontSize: 'clamp(3rem, 7.5vw, 7.2rem)', perspective: 900 }}
+    >
+      {[...text].map((ch, i) => (
+        <span
+          key={i}
+          aria-hidden
+          style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom', paddingBottom: '0.1em', marginBottom: '-0.1em' }}
+        >
+          <motion.span
+            initial={{ y: '115%', rotateX: -90, opacity: 0 }}
+            animate={{ y: 0, rotateX: 0, opacity: 1 }}
+            transition={{
+              delay: 0.15 + lineIdx * 0.14 + i * 0.028,
+              duration: 0.8,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            style={{ display: 'inline-block', transformOrigin: '50% 100%', willChange: 'transform', ...charStyle(i) }}
+          >
+            {ch === ' ' ? ' ' : ch}
+          </motion.span>
+        </span>
+      ))}
+    </h1>
+  )
+}
 
 /* ── Typewriter words ── */
 const words = ['Web Development', 'E-Commerce', 'Mobile Apps', 'AI Solutions', 'Digital Marketing']
@@ -162,24 +210,11 @@ export default function Hero() {
             </span>
           </motion.div>
 
-          {/* Headline */}
-          <div className="mb-6 space-y-0 overflow-hidden">
-            {[
-              { text: 'We Build',    cls: 'text-white' },
-              { text: 'Digital',     cls: 'gradient-text' },
-              { text: 'Excellence.', cls: 'text-white' },
-            ].map(({ text, cls }, i) => (
-              <motion.h1
-                key={text}
-                initial={{ opacity: 0, y: 56 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.12 + i * 0.13, duration: 0.72, ease: [0.22, 1, 0.36, 1] }}
-                className={`font-bold leading-[0.92] tracking-tight ${cls}`}
-                style={{ fontSize: 'clamp(3rem, 7.5vw, 7.2rem)' }}
-              >
-                {text}
-              </motion.h1>
-            ))}
+          {/* Headline — cinematic per-character 3D reveal */}
+          <div className="mb-6 space-y-0">
+            <HeadlineLine text="We Build"    lineIdx={0} />
+            <HeadlineLine text="Digital"     lineIdx={1} gradient />
+            <HeadlineLine text="Excellence." lineIdx={2} />
           </div>
 
           {/* Typewriter */}
@@ -213,21 +248,25 @@ export default function Hero() {
             transition={{ delay: 0.78, duration: 0.5 }}
             className="flex flex-wrap gap-3"
           >
-            <Link
-              to="/contact"
-              className="shimmer-btn inline-flex items-center gap-2 px-7 py-3.5 text-sm tracking-wide text-white font-medium hover:opacity-90 transition-opacity"
-            >
-              Start a Project
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </Link>
-            <Link
-              to="/portfolio"
-              className="inline-flex items-center gap-2 px-7 py-3.5 text-sm tracking-wide text-white/65 border border-white/15 hover:text-white hover:border-white/35 transition-all duration-250"
-            >
-              View Our Work
-            </Link>
+            <Magnetic>
+              <Link
+                to="/contact"
+                className="shimmer-btn inline-flex items-center gap-2 px-7 py-3.5 text-sm tracking-wide text-white font-medium hover:opacity-90 transition-opacity"
+              >
+                Start a Project
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </Link>
+            </Magnetic>
+            <Magnetic>
+              <Link
+                to="/portfolio"
+                className="inline-flex items-center gap-2 px-7 py-3.5 text-sm tracking-wide text-white/65 border border-white/15 hover:text-white hover:border-white/35 transition-all duration-250"
+              >
+                View Our Work
+              </Link>
+            </Magnetic>
           </motion.div>
 
           {/* Mobile services hint */}

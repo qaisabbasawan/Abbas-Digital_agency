@@ -139,3 +139,33 @@ input, textarea, select, button {
 
 /* Section fade-up base (used by GSAP/Framer) */
 .reveal-section { opacity: 0; transform: translateY(48px); }
+
+/* Infinite marquee */
+@keyframes marquee-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-33.3333%); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 30s linear infinite;
+  will-change: transform;
+}
+.marquee-wrapper:hover .marquee-track { animation-play-state: paused; }
+
+/* Soft pulsing glow (used behind hero / CTAs) */
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.06); }
+}
+.animate-glow-pulse { animation: glow-pulse 4.5s ease-in-out infinite; }
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+}

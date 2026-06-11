@@ -1,6 +1,8 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Search, Paintbrush, Code2, Rocket } from 'lucide-react'
+import RevealText from './anim/RevealText'
+import TiltCard from './anim/TiltCard'
 
 const steps = [
   {
@@ -60,15 +62,10 @@ export default function Process() {
           >
             How We Work
           </motion.p>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.1, duration: 0.62 }}
-            className="font-bold text-white leading-tight"
-            style={{ fontSize: 'clamp(2.2rem, 4.5vw, 3.8rem)' }}
-          >
+          <RevealText as="h2" className="font-bold text-white leading-tight"
+            style={{ fontSize: 'clamp(2.2rem, 4.5vw, 3.8rem)' }} delay={0.1} stagger={0.09}>
             Our Process
-          </motion.h2>
+          </RevealText>
         </div>
 
         {/* Cards */}
@@ -79,9 +76,10 @@ export default function Process() {
               initial={{ opacity: 0, y: 48 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.15 + i * 0.13, duration: 0.68, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={{ y: -6, transition: { duration: 0.25 } }}
-              className="group relative flex flex-col rounded-2xl overflow-hidden border border-white/[0.07] bg-white/[0.03] p-7 cursor-default"
+              className="relative h-full"
             >
+              <TiltCard max={8} glareColor={`${step.color}22`}>
+              <div className="group relative flex flex-col h-full rounded-2xl overflow-hidden border border-white/[0.07] bg-white/[0.03] p-7 cursor-default">
               {/* Hover glow bg */}
               <div
                 className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"
@@ -131,6 +129,8 @@ export default function Process() {
 
               {/* Desc */}
               <p className="text-white/45 text-[14px] leading-relaxed flex-1">{step.desc}</p>
+              </div>
+              </TiltCard>
 
               {/* Bottom connector arrow (not on last) */}
               {i < steps.length - 1 && (

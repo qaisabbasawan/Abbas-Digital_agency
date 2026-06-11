@@ -4,6 +4,8 @@ import {
   Globe, ShoppingCart, Smartphone,
   Bot, TrendingUp, Palette,
 } from 'lucide-react'
+import RevealText from './anim/RevealText'
+import TiltCard from './anim/TiltCard'
 
 const services = [
   {
@@ -68,10 +70,10 @@ export default function Services() {
             <motion.p {...fade(0)} className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-3">
               What We Do
             </motion.p>
-            <motion.h2 {...fade(1)} className="font-bold text-white leading-tight"
-              style={{ fontSize: 'clamp(2.2rem, 4.5vw, 3.8rem)' }}>
+            <RevealText as="h2" className="font-bold text-white leading-tight"
+              style={{ fontSize: 'clamp(2.2rem, 4.5vw, 3.8rem)' }} delay={0.1} stagger={0.09}>
               Our Services
-            </motion.h2>
+            </RevealText>
           </div>
           <motion.div {...fade(2)}>
             <Link
@@ -87,7 +89,8 @@ export default function Services() {
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {services.map(({ Icon, title, desc, link, color }, i) => (
-            <motion.div key={title} {...fade(i + 2)}>
+            <motion.div key={title} {...fade(i + 2)} className="h-full">
+              <TiltCard glareColor={`${color}1F`}>
               <Link
                 to={link}
                 className="group relative flex flex-col h-full p-8 bg-white/[0.03] border border-white/[0.07] hover:bg-white/[0.06] hover:border-white/[0.14] transition-all duration-300 rounded-2xl overflow-hidden"
@@ -124,6 +127,7 @@ export default function Services() {
                   </svg>
                 </span>
               </Link>
+              </TiltCard>
             </motion.div>
           ))}
         </div>

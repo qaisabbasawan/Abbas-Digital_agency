@@ -43,7 +43,9 @@ export default function Navbar() {
   useEffect(() => {
     setMenuOpen(false)
     setDropOpen(false)
-    window.scrollTo(0, 0)
+    // Lenis owns the scroll position when smooth scrolling is active
+    if (window.__lenis) window.__lenis.scrollTo(0, { immediate: true, force: true })
+    else window.scrollTo(0, 0)
   }, [location.pathname])
 
   /* Slight delay on close so user can move into the panel */

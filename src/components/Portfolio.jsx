@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowUpRight } from 'lucide-react'
+import RevealText from './anim/RevealText'
+import TiltCard from './anim/TiltCard'
 
 const featured = [
   {
@@ -108,16 +110,10 @@ export default function Portfolio() {
           >
             Our Work
           </motion.p>
-          <motion.h2
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ delay: 0.1, duration: 0.62 }}
-            className="font-bold text-white leading-tight"
-            style={{ fontSize: 'clamp(2.2rem, 4.5vw, 3.8rem)' }}
-          >
+          <RevealText as="h2" className="font-bold text-white leading-tight"
+            style={{ fontSize: 'clamp(2.2rem, 4.5vw, 3.8rem)' }} delay={0.1} stagger={0.09}>
             Selected Projects
-          </motion.h2>
+          </RevealText>
         </div>
 
         {/* Grid */}
@@ -129,12 +125,12 @@ export default function Portfolio() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-60px' }}
               transition={{ delay: i * 0.09, duration: 0.55 }}
-              whileHover={{ y: -6 }}
-              className="group bg-white/[0.03] border border-white/[0.07] rounded-2xl overflow-hidden hover:border-white/[0.14] transition-all duration-300 cursor-pointer"
-              style={{
-                '--glow': p.from,
-              }}
+              className="h-full"
             >
+              <TiltCard max={7} glareColor={`${p.from}26`}>
+              <div
+                className="group h-full bg-white/[0.03] border border-white/[0.07] rounded-2xl overflow-hidden hover:border-white/[0.14] transition-all duration-300 cursor-pointer"
+              >
               {/* Image area */}
               <div
                 className="relative h-48 overflow-hidden"
@@ -143,7 +139,7 @@ export default function Portfolio() {
                 <img
                   src={p.img}
                   alt={p.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                   loading="lazy"
                   onError={e => { e.target.style.display = 'none' }}
                 />
@@ -210,6 +206,8 @@ export default function Portfolio() {
                 </div>
 
               </div>
+              </div>
+              </TiltCard>
             </motion.div>
           ))}
         </div>

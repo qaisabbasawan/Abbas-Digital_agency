@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import useCountUp from '../hooks/useCountUp'
+import Magnetic from './anim/Magnetic'
 
 const stats = [
   { value: 10,  suffix: '+', label: 'Years Experience' },
@@ -100,18 +101,22 @@ export default function About() {
             </motion.p>
 
             <motion.div {...slide(0.38)} className="flex flex-wrap gap-3">
-              <Link
-                to="/about"
-                className="shimmer-btn inline-flex items-center gap-2 px-7 py-3.5 text-sm text-white hover:opacity-90 transition-opacity"
-              >
-                Our Full Story
-              </Link>
-              <Link
-                to="/contact"
-                className="inline-flex items-center gap-2 px-7 py-3.5 text-sm text-white/60 border border-white/15 hover:text-white hover:border-white/35 transition-all duration-250"
-              >
-                Work With Us
-              </Link>
+              <Magnetic>
+                <Link
+                  to="/about"
+                  className="shimmer-btn inline-flex items-center gap-2 px-7 py-3.5 text-sm text-white hover:opacity-90 transition-opacity"
+                >
+                  Our Full Story
+                </Link>
+              </Magnetic>
+              <Magnetic>
+                <Link
+                  to="/contact"
+                  className="inline-flex items-center gap-2 px-7 py-3.5 text-sm text-white/60 border border-white/15 hover:text-white hover:border-white/35 transition-all duration-250"
+                >
+                  Work With Us
+                </Link>
+              </Magnetic>
             </motion.div>
           </div>
         </div>
