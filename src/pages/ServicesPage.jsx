@@ -1,7 +1,9 @@
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import SEO from '../components/SEO'
 import { motion, useInView } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
   Globe, ShoppingCart, Smartphone, Bot, TrendingUp, Palette,
   ArrowRight, ArrowUpRight, Zap, Users, Award, Clock,
@@ -72,29 +74,94 @@ function IconOrb({ Icon, color, size = 60, iconSize = 22 }) {
   )
 }
 
-/* ── Hero stat with count-up ── */
+/* ── Floating glass stat panel with count-up ── */
 function HeroStat({ value, suffix, label, color, i }) {
   const { count, ref } = useCountUp(value, 1800)
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 26, scale: 0.92 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true }}
-      transition={{ delay: 0.5 + i * 0.1, duration: 0.6 }}
-      className="bg-white/[0.03] px-6 py-5 text-center"
+      transition={{ delay: 0.5 + i * 0.12, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div className="font-bold text-white text-2xl tracking-tight">
-        {count}<span style={{ color }}>{suffix}</span>
-      </div>
-      <div className="text-white/30 text-[10px] uppercase tracking-[0.2em] mt-1">{label}</div>
+      {/* idle levitation, each panel on its own rhythm */}
+      <motion.div
+        animate={{ y: [0, -7, 0] }}
+        transition={{ duration: 4.2 + i * 0.6, repeat: Infinity, ease: 'easeInOut', delay: i * 0.45 }}
+        className="px-7 py-5 rounded-2xl text-center"
+        style={{
+          background: 'rgba(8,14,42,0.45)',
+          backdropFilter: 'blur(14px)',
+          WebkitBackdropFilter: 'blur(14px)',
+          border: `1px solid ${color}35`,
+          boxShadow: `0 10px 36px rgba(0,0,0,0.35), 0 0 22px ${color}1C, inset 0 1px 0 rgba(255,255,255,0.07)`,
+        }}
+      >
+        <div className="font-bold text-white text-[26px] tracking-tight leading-none">
+          {count}<span style={{ color }}>{suffix}</span>
+        </div>
+        <div className="text-white/35 text-[10px] uppercase tracking-[0.2em] mt-2">{label}</div>
+      </motion.div>
     </motion.div>
+  )
+}
+
+/* ── CTA button that fires a particle burst on hover ── */
+function BurstButton({ children }) {
+  const [bursts, setBursts] = useState([])
+  const fire = () => {
+    const id = Date.now()
+    setBursts(b => [...b, id])
+    setTimeout(() => setBursts(b => b.filter(x => x !== id)), 900)
+  }
+  return (
+    <span className="relative inline-block" onMouseEnter={fire}>
+      {children}
+      {bursts.map(id =>
+        Array.from({ length: 14 }).map((_, i) => {
+          const a = (i / 14) * Math.PI * 2
+          const d = 52 + (i % 3) * 16
+          return (
+            <motion.span
+              key={`${id}-${i}`}
+              initial={{ opacity: 1, x: 0, y: 0, scale: 1 }}
+              animate={{ opacity: 0, x: Math.cos(a) * d, y: Math.sin(a) * d, scale: 0.2 }}
+              transition={{ duration: 0.8, ease: 'easeOut' }}
+              className="absolute left-1/2 top-1/2 w-1.5 h-1.5 rounded-full pointer-events-none z-20"
+              style={{
+                background: i % 2 ? '#FF2D72' : '#7C3AED',
+                boxShadow: `0 0 10px ${i % 2 ? '#FF2D72' : '#7C3AED'}`,
+              }}
+            />
+          )
+        })
+      )}
+    </span>
   )
 }
 
 export default function ServicesPage() {
   const heroRef    = useRef(null)
   const heroInView = useInView(heroRef, { once: true })
+  const canvasRef  = useRef(null)
+
+  /* The universe stays visible across the whole page, dimming after the hero
+     so the content reads while particles keep drifting behind everything */
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.to(canvasRef.current, {
+        opacity: 0.3,
+        ease: 'none',
+        scrollTrigger: {
+          start: () => window.innerHeight * 0.35,
+          end:   () => window.innerHeight * 1.2,
+          scrub: 1,
+        },
+      })
+    })
+    return () => ctx.revert()
+  }, [])
 
   return (
     <div className="min-h-screen bg-bg-dark overflow-hidden pt-[72px]">
@@ -105,15 +172,17 @@ export default function ServicesPage() {
         path="/services"
       />
 
+      {/* ── Fixed full-page digital universe (solar system + particle field) ── */}
+      <div ref={canvasRef} style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
+        <ServicesScene />
+      </div>
+
+      <div style={{ position: 'relative', zIndex: 10 }}>
+
       {/* ══════════════════════════════════
           HERO
       ══════════════════════════════════ */}
-      <section className="relative pt-20 pb-24 lg:pt-24 lg:pb-32 overflow-hidden min-h-[82vh]" ref={heroRef}>
-
-        {/* ── 3D atom scene: six electron services orbiting one nucleus ── */}
-        <div className="absolute inset-0 z-0 pointer-events-none">
-          <ServicesScene />
-        </div>
+      <section className="relative pt-20 pb-24 lg:pt-24 lg:pb-32 overflow-hidden min-h-[86vh]" ref={heroRef}>
 
         {/* Text-protection gradient (left) + bottom fade */}
         <div
@@ -122,12 +191,8 @@ export default function ServicesPage() {
         />
         <div
           className="absolute bottom-0 left-0 right-0 h-36 pointer-events-none z-[1]"
-          style={{ background: 'linear-gradient(to top, #05091A, transparent)' }}
+          style={{ background: 'linear-gradient(to top, rgba(5,9,26,0.85), transparent)' }}
         />
-
-        {/* Ambient blobs */}
-        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full bg-brand-blue/[0.07] blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full bg-brand-pink/[0.05] blur-[120px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 relative z-10">
           <motion.p
@@ -158,8 +223,8 @@ export default function ServicesPage() {
             digital experiences that deliver real business results.
           </motion.p>
 
-          {/* Stats row — counts up */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-white/[0.06] rounded-2xl overflow-hidden max-w-2xl">
+          {/* Stats — floating glass panels, each levitating on its own rhythm */}
+          <div className="flex flex-wrap gap-3 sm:gap-4 max-w-2xl">
             <HeroStat value={500} suffix="+" label="Projects" color="#2E55E0" i={0} />
             <HeroStat value={10}  suffix="+" label="Years"    color="#E8155A" i={1} />
             <HeroStat value={50}  suffix="+" label="Clients"  color="#7C3AED" i={2} />
@@ -221,6 +286,28 @@ export default function ServicesPage() {
                         backgroundSize: '40px 40px',
                       }}
                     />
+                    {/* holographic light sweep on hover */}
+                    <div className="holo-sweep" />
+                    {/* rotating shimmer wash on hover */}
+                    <div
+                      className="absolute -inset-[150%] animate-spin-slower opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
+                      style={{ background: `conic-gradient(from 0deg, transparent 70%, ${svc.color}14 85%, transparent 100%)` }}
+                    />
+                    {/* hover-activated particle cluster — this service's colour */}
+                    <div className="svc-dots absolute inset-0 pointer-events-none">
+                      {Array.from({ length: 7 }).map((_, d) => (
+                        <span
+                          key={d}
+                          style={{
+                            left: `${(12 + d * 13) % 82}%`,
+                            top: `${(16 + d * 23) % 66}%`,
+                            background: svc.color,
+                            boxShadow: `0 0 9px ${svc.color}`,
+                            animationDelay: `${d * 0.18}s`,
+                          }}
+                        />
+                      ))}
+                    </div>
 
                     {/* Header — orb + ghost number */}
                     <div className="relative flex items-start justify-between mb-7">
@@ -290,6 +377,26 @@ export default function ServicesPage() {
         <div className="absolute inset-0 pointer-events-none"
           style={{ background: 'rgba(255,255,255,0.013)', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)' }} />
         <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-brand-pink/[0.05] blur-[120px] pointer-events-none" />
+
+        {/* Rotating holographic rings behind the section */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[760px] h-[760px] pointer-events-none hidden md:block" aria-hidden>
+          <div
+            className="absolute inset-0 rounded-full animate-spin-slower"
+            style={{
+              border: '1px solid rgba(255,255,255,0.05)',
+              borderTopColor: 'rgba(232,21,90,0.3)',
+              borderRightColor: 'rgba(46,85,224,0.22)',
+            }}
+          />
+          <div
+            className="absolute inset-20 rounded-full animate-spin-slow"
+            style={{
+              animationDirection: 'reverse',
+              border: '1px dashed rgba(255,255,255,0.05)',
+              borderBottomColor: 'rgba(124,58,237,0.28)',
+            }}
+          />
+        </div>
 
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 relative z-10">
           <div className="text-center mb-16">
@@ -422,6 +529,26 @@ export default function ServicesPage() {
                     boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.07)',
                   }}
                 >
+                  {/* nebula fluid backdrop */}
+                  <div
+                    className="nebula-blob absolute -top-24 -left-20 w-[420px] h-[320px] rounded-full"
+                    style={{ background: 'radial-gradient(circle at 35% 40%, rgba(46,85,224,0.28), transparent 60%)' }}
+                  />
+                  <div
+                    className="nebula-blob absolute -bottom-28 -right-16 w-[460px] h-[340px] rounded-full"
+                    style={{
+                      background: 'radial-gradient(circle at 60% 55%, rgba(232,21,90,0.22), transparent 60%)',
+                      animationDelay: '-8s',
+                      animationDirection: 'reverse',
+                    }}
+                  />
+                  <div
+                    className="nebula-blob absolute top-1/3 left-1/3 w-[340px] h-[260px] rounded-full"
+                    style={{
+                      background: 'radial-gradient(circle at 50% 50%, rgba(124,58,237,0.18), transparent 60%)',
+                      animationDelay: '-4s',
+                    }}
+                  />
                   {/* inner glow + dot grid */}
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[420px] h-[200px] bg-brand-pink/[0.08] blur-[90px] rounded-full pointer-events-none" />
                   <div
@@ -461,15 +588,17 @@ export default function ServicesPage() {
                       transition={{ delay: 0.4, duration: 0.6 }}
                       className="flex flex-col sm:flex-row items-center justify-center gap-4"
                     >
-                      <Magnetic>
-                        <Link
-                          to="/contact"
-                          className="shimmer-btn inline-flex items-center gap-2.5 px-8 py-3.5 text-sm tracking-wide text-white font-medium hover:opacity-90 transition-opacity"
-                        >
-                          Get a Free Quote
-                          <ArrowRight size={15} strokeWidth={2} />
-                        </Link>
-                      </Magnetic>
+                      <BurstButton>
+                        <Magnetic>
+                          <Link
+                            to="/contact"
+                            className="shimmer-btn inline-flex items-center gap-2.5 px-8 py-3.5 text-sm tracking-wide text-white font-medium hover:opacity-90 transition-opacity"
+                          >
+                            Get a Free Quote
+                            <ArrowRight size={15} strokeWidth={2} />
+                          </Link>
+                        </Magnetic>
+                      </BurstButton>
                       <Magnetic>
                         <Link
                           to="/portfolio"
@@ -488,6 +617,7 @@ export default function ServicesPage() {
       </section>
 
       <Footer />
+      </div>
     </div>
   )
 }

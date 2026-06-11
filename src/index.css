@@ -160,6 +160,51 @@ input, textarea, select, button {
 .animate-spin-slow { animation: spin360 8s linear infinite; }
 .animate-spin-slower { animation: spin360 18s linear infinite; }
 
+/* Holographic light sweep — runs once when the card is hovered */
+@keyframes holo-sweep {
+  0%   { transform: translateX(-140%) skewX(-14deg); }
+  100% { transform: translateX(340%)  skewX(-14deg); }
+}
+.holo-sweep {
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  width: 40%;
+  background: linear-gradient(105deg, transparent, rgba(255,255,255,0.09), transparent);
+  transform: translateX(-140%) skewX(-14deg);
+  pointer-events: none;
+}
+.group:hover .holo-sweep { animation: holo-sweep 0.9s ease; }
+
+/* Hover-activated particle cluster inside service cards */
+@keyframes dot-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-18px); }
+}
+.svc-dots span {
+  position: absolute;
+  width: 4px; height: 4px;
+  border-radius: 9999px;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  animation: dot-float 2.4s ease-in-out infinite;
+  animation-play-state: paused;
+}
+.group:hover .svc-dots span {
+  opacity: 0.9;
+  animation-play-state: running;
+}
+
+/* Nebula fluid drift (CTA backdrop) */
+@keyframes nebula-drift {
+  0%, 100% { transform: translate(-6%, -4%) scale(1); }
+  50%      { transform: translate(7%, 5%)  scale(1.18); }
+}
+.nebula-blob {
+  animation: nebula-drift 16s ease-in-out infinite;
+  filter: blur(46px);
+  pointer-events: none;
+}
+
 /* Soft expanding ping (timeline nodes) */
 @keyframes ping-soft {
   0%        { transform: scale(1);   opacity: 0.8; }
