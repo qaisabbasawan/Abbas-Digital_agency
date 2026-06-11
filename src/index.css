@@ -233,6 +233,15 @@ input, textarea, select, button {
   animation: bar-rise 2.8s ease-in-out infinite;
 }
 
+/* Neural thread — light pulse travelling between spine and card */
+@keyframes thread-travel {
+  0%   { left: 0;                  opacity: 0; }
+  12%  { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { left: calc(100% - 6px);   opacity: 0; }
+}
+.thread-dot { animation: thread-travel 1.7s ease-in-out infinite; }
+
 /* Nebula fluid drift (CTA backdrop) */
 @keyframes nebula-drift {
   0%, 100% { transform: translate(-6%, -4%) scale(1); }

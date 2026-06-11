@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react'
 import SEO from '../components/SEO'
 import {
   motion, useInView, useScroll, useTransform,
-  useMotionValueEvent, useMotionTemplate,
+  useMotionValueEvent,
 } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import {
@@ -11,7 +11,7 @@ import {
 } from 'lucide-react'
 import Footer from '../components/Footer'
 import ServicesScene from '../components/ServicesScene'
-import FluidBurst from '../components/FluidBurst'
+import NeuralSpine, { CARD_STEP, DROP, CAM_Z, FOV } from '../components/NeuralSpine'
 import RevealText from '../components/anim/RevealText'
 import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
@@ -313,86 +313,117 @@ function CardPanel({ svc, active }) {
   )
 }
 
-/* ── One carousel card — position derived from the carousel pos ── */
-function CarouselCard({ svc, i, pos, active }) {
-  const d = useTransform(pos, v => i - v)
-  const x = useTransform(d, v => v * 620)
-  const y = useTransform(d, v => Math.abs(v) * 26)
-  const scale = useTransform(d, v => 1 - Math.min(Math.abs(v), 2.4) * 0.15)
-  const rotateY = useTransform(d, v => -Math.max(Math.min(v, 1.6), -1.6) * 16)
-  const opacity = useTransform(d, v => 1 - Math.min(Math.abs(v), 1.9) * 0.48)
-  const blurPx = useTransform(d, v => Math.min(Math.abs(v) * 2.2, 6))
+/* ── One spine card — rides the camera travel, crystallizes near centre ── */
+const CARD_W = 470
+const CARD_H = 360
+const CARD_X = 358          // distance of card centre from the spine
+
+function SpineCard({ svc, i, p, ppu, active }) {
+  const side = i % 2 === 0 ? -1 : 1
+
+  /* px offset from screen centre: card sits at world y = -i*CARD_STEP while
+     the camera sits at -p*DROP — the difference maps to screen pixels */
+  const y = useTransform(p, v => (CARD_STEP * i - DROP * v) * ppu)
+  const opacity = useTransform(y, v => Math.max(0, 1 - Math.abs(v) / 430))
+  const scale = useTransform(y, v => 0.82 + 0.18 * Math.max(0, 1 - Math.abs(v) / 430))
+  const blurPx = useTransform(y, v => Math.min(Math.abs(v) / 110, 9))
   const filter = useTransform(blurPx, v => `blur(${v}px)`)
-  const zIndex = useTransform(d, v => 100 - Math.round(Math.abs(v) * 10))
 
   return (
     <motion.div
-      style={{ x, y, scale, rotateY, opacity, filter, zIndex, transformStyle: 'preserve-3d' }}
-      className="absolute left-1/2 top-1/2 -ml-[260px] sm:-ml-[290px] -mt-[235px] w-[520px] sm:w-[580px] h-[440px]"
+      style={{
+        y, opacity, scale, filter,
+        rotateY: side * -8,
+        left: `calc(50% + ${side * CARD_X - CARD_W / 2}px)`,
+        width: CARD_W,
+        height: CARD_H,
+        marginTop: -CARD_H / 2,
+      }}
+      className="absolute top-1/2 z-20"
     >
-      <CardPanel svc={svc} active={active} />
+      {/* neural thread tethering the card to the spine */}
+      <div
+        className="absolute top-1/2 -translate-y-1/2 h-px pointer-events-none"
+        style={{
+          [side === -1 ? 'left' : 'right']: '100%',
+          width: CARD_X - CARD_W / 2 + 30,
+          background: side === -1
+            ? `linear-gradient(90deg, ${svc.color}AA, transparent)`
+            : `linear-gradient(270deg, ${svc.color}AA, transparent)`,
+        }}
+      >
+        <span
+          className="thread-dot absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full"
+          style={{
+            background: svc.color,
+            boxShadow: `0 0 10px ${svc.color}`,
+            animationDirection: side === -1 ? 'reverse' : 'normal',
+          }}
+        />
+      </div>
+
+      <motion.div whileHover={{ scale: 1.035 }} transition={{ duration: 0.3 }} className="w-full h-full">
+        <CardPanel svc={svc} active={active} />
+      </motion.div>
     </motion.div>
   )
 }
 
-/* ── The pinned 3D horizontal carousel ── */
-function ServicesCarousel() {
+/* ── The pinned neural spine experience ── */
+function NeuralServices() {
   const ref = useRef(null)
-  const storeRef = useRef({ pos: 0 })
+  const storeRef = useRef({ p: 0 })
   const [active, setActive] = useState(0)
+  const [ppu] = useState(() =>
+    typeof window === 'undefined'
+      ? 130
+      : (window.innerHeight / 2) / (Math.tan((FOV / 2) * Math.PI / 180) * CAM_Z)
+  )
 
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start start', 'end end'],
   })
-  const pos = useTransform(scrollYProgress, [0.03, 0.97], [0, 5], { clamp: true })
+  const p = useTransform(scrollYProgress, [0.02, 0.97], [0, 1], { clamp: true })
 
-  useMotionValueEvent(pos, 'change', v => {
-    storeRef.current.pos = v
-    const idx = Math.min(5, Math.max(0, Math.round(v)))
+  useMotionValueEvent(p, 'change', v => {
+    storeRef.current.p = v
+    const idx = Math.min(5, Math.max(0, Math.round(v * 5)))
     setActive(prev => (prev === idx ? prev : idx))
   })
-
-  /* halo colour follows the active card */
-  const halo = useTransform(pos, [0, 1, 2, 3, 4, 5], COLORS)
-  const haloBg = useMotionTemplate`radial-gradient(560px circle at 50% 52%, ${halo}30, transparent 70%)`
 
   const jumpTo = (i) => {
     const el = ref.current
     if (!el) return
     const top = el.getBoundingClientRect().top + window.scrollY
     const travel = el.offsetHeight - window.innerHeight
-    const progress = 0.03 + (i / 5) * 0.94
-    const target = top + progress * travel
+    const target = top + (0.02 + (i / 5) * 0.95) * travel
     if (window.__lenis) window.__lenis.scrollTo(target, { duration: 1.4 })
     else window.scrollTo({ top: target, behavior: 'smooth' })
   }
 
   return (
-    <section ref={ref} className="relative hidden lg:block bg-bg-dark" style={{ height: '640vh' }}>
-      <div className="sticky top-0 h-screen overflow-hidden">
+    <section ref={ref} className="relative hidden lg:block bg-bg-dark" style={{ height: '680vh' }}>
+      <div className="sticky top-0 h-screen overflow-hidden" style={{ perspective: 1500 }}>
 
-        {/* sci-fi grid floor */}
+        {/* faint sci-fi grid */}
         <div
-          className="absolute inset-0 pointer-events-none opacity-[0.5]"
+          className="absolute inset-0 pointer-events-none opacity-50"
           style={{
-            backgroundImage: 'linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px)',
+            backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
             backgroundSize: '72px 72px',
             maskImage: 'radial-gradient(ellipse 75% 70% at 50% 50%, #000 20%, transparent 78%)',
             WebkitMaskImage: 'radial-gradient(ellipse 75% 70% at 50% 50%, #000 20%, transparent 78%)',
           }}
         />
 
-        {/* fluid explosion + starfield */}
+        {/* the neural spine */}
         <div className="absolute inset-0 z-0 pointer-events-none">
-          <FluidBurst store={storeRef.current} />
+          <NeuralSpine store={storeRef.current} />
         </div>
 
-        {/* colour halo behind the active card */}
-        <motion.div className="absolute inset-0 pointer-events-none" style={{ background: haloBg }} />
-
         {/* heading */}
-        <div className="absolute top-12 left-1/2 -translate-x-1/2 text-center z-30 w-full px-6">
+        <div className="absolute top-10 left-1/2 -translate-x-1/2 text-center z-30 w-full px-6 pointer-events-none">
           <motion.p
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -402,49 +433,48 @@ function ServicesCarousel() {
           >
             What We Do
           </motion.p>
-          <h2 className="font-bold leading-[1.04]" style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)' }}>
+          <h2 className="font-bold leading-[1.04]" style={{ fontSize: 'clamp(1.7rem, 2.8vw, 2.4rem)' }}>
             <RevealText as="span" className="text-white inline-block" stagger={0.07}>
-              Scroll Through
+              One Brain.
             </RevealText>{' '}
             <RevealText as="span" className="inline-block" gradient delay={0.22} stagger={0.09}>
-              Our Universe.
+              Six Services.
             </RevealText>
           </h2>
         </div>
 
-        {/* the six cards in 3D space */}
-        <div className="absolute inset-0 z-10" style={{ perspective: 1600 }}>
-          {services.map((svc, i) => (
-            <CarouselCard key={svc.n} svc={svc} i={i} pos={pos} active={active === i} />
+        {/* the six cards riding the spine */}
+        {services.map((svc, i) => (
+          <SpineCard key={svc.n} svc={svc} i={i} p={p} ppu={ppu} active={active === i} />
+        ))}
+
+        {/* side progress dots */}
+        <div className="absolute right-8 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-3">
+          {services.map((s, i) => (
+            <button
+              key={s.n}
+              onClick={() => jumpTo(i)}
+              aria-label={`Go to ${s.title}`}
+              className="relative rounded-full transition-all duration-400"
+              style={{
+                width: 8,
+                height: active === i ? 30 : 8,
+                background: active === i ? s.color : 'rgba(255,255,255,0.18)',
+                boxShadow: active === i ? `0 0 14px ${s.color}` : 'none',
+              }}
+            />
           ))}
         </div>
 
-        {/* nav dots + counter */}
-        <div className="absolute bottom-9 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-4">
-          <div className="flex items-center gap-3">
-            {services.map((s, i) => (
-              <button
-                key={s.n}
-                onClick={() => jumpTo(i)}
-                aria-label={`Go to ${s.title}`}
-                className="relative rounded-full transition-all duration-400"
-                style={{
-                  width: active === i ? 30 : 8,
-                  height: 8,
-                  background: active === i ? s.color : 'rgba(255,255,255,0.18)',
-                  boxShadow: active === i ? `0 0 14px ${s.color}` : 'none',
-                }}
-              />
-            ))}
-          </div>
-          <span className="text-white/30 text-[10px] tracking-[0.3em] uppercase">
-            0{active + 1} / 06 — {services[active].title}
-          </span>
-        </div>
+        {/* counter */}
+        <span className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 text-white/30 text-[10px] tracking-[0.3em] uppercase">
+          0{active + 1} / 06 — {services[active].title}
+        </span>
       </div>
     </section>
   )
 }
+
 
 /* ── Mobile: stacked glass panels ── */
 function MobileServices() {
@@ -553,7 +583,7 @@ export default function ServicesPage() {
       {/* ══════════════════════════════════
           SERVICES — 3D horizontal carousel
       ══════════════════════════════════ */}
-      <ServicesCarousel />
+      <NeuralServices />
       <MobileServices />
 
       {/* ══════════════════════════════════
