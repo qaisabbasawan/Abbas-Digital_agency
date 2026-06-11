@@ -7,6 +7,7 @@ import {
   ArrowRight, ArrowUpRight, Zap, Users, Award, Clock,
 } from 'lucide-react'
 import Footer from '../components/Footer'
+import ServicesScene from '../components/ServicesScene'
 import RevealText from '../components/anim/RevealText'
 import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
@@ -107,55 +108,26 @@ export default function ServicesPage() {
       {/* ══════════════════════════════════
           HERO
       ══════════════════════════════════ */}
-      <section className="relative py-24 lg:py-32 overflow-hidden" ref={heroRef}>
+      <section className="relative py-24 lg:py-32 overflow-hidden min-h-[88vh] flex items-center" ref={heroRef}>
 
-        {/* Dot grid + ambient blobs */}
+        {/* ── 3D atom scene: six electron services orbiting one nucleus ── */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <ServicesScene />
+        </div>
+
+        {/* Text-protection gradient (left) + bottom fade */}
         <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            backgroundImage: 'radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)',
-            backgroundSize: '30px 30px',
-            maskImage: 'radial-gradient(ellipse 70% 75% at 40% 45%, #000 25%, transparent 75%)',
-            WebkitMaskImage: 'radial-gradient(ellipse 70% 75% at 40% 45%, #000 25%, transparent 75%)',
-          }}
+          className="absolute inset-0 pointer-events-none z-[1]"
+          style={{ background: 'linear-gradient(100deg, rgba(5,9,26,0.88) 35%, rgba(5,9,26,0.45) 62%, rgba(5,9,26,0.05) 100%)' }}
         />
-        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full bg-brand-blue/[0.08] blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full bg-brand-pink/[0.06] blur-[120px] pointer-events-none" />
+        <div
+          className="absolute bottom-0 left-0 right-0 h-36 pointer-events-none z-[1]"
+          style={{ background: 'linear-gradient(to top, #05091A, transparent)' }}
+        />
 
-        {/* Ghost watermark */}
-        <span
-          aria-hidden
-          className="absolute right-4 lg:right-12 top-16 font-bold leading-none select-none pointer-events-none hidden md:block"
-          style={{
-            fontSize: 'clamp(140px, 16vw, 260px)',
-            color: 'transparent',
-            WebkitTextStroke: '1.5px rgba(255,255,255,0.055)',
-          }}
-        >
-          06
-        </span>
-
-        {/* Floating service icons */}
-        {services.map((s, i) => (
-          <motion.div
-            key={s.n}
-            className="absolute hidden lg:flex items-center justify-center rounded-2xl pointer-events-none"
-            style={{
-              width: 60, height: 60,
-              background: `${s.color}12`,
-              border: `1px solid ${s.color}30`,
-              boxShadow: `0 0 24px ${s.color}18`,
-              opacity: 0.35,
-              top:  `${14 + i * 13}%`,
-              left: i % 2 === 0 ? `${3 + i * 2}%` : undefined,
-              right: i % 2 !== 0 ? `${3 + i * 1.6}%` : undefined,
-            }}
-            animate={{ y: [0, -20, 0], rotate: [0, 5, -5, 0] }}
-            transition={{ duration: 5 + i * 0.7, repeat: Infinity, ease: 'easeInOut', delay: i * 0.4 }}
-          >
-            <s.Icon size={24} style={{ color: s.color }} />
-          </motion.div>
-        ))}
+        {/* Ambient blobs */}
+        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full bg-brand-blue/[0.07] blur-[140px] pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full bg-brand-pink/[0.05] blur-[120px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 relative z-10">
           <motion.p
