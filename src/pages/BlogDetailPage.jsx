@@ -1,12 +1,14 @@
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Clock, Calendar, User, Tag, BookOpen } from 'lucide-react'
+import { ArrowLeft, ArrowRight, ArrowUpRight, Clock, Calendar, User, Tag, BookOpen, Sparkles } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import remarkBreaks from 'remark-breaks'
 import Footer from '../components/Footer'
+import TiltCard from '../components/anim/TiltCard'
+import Magnetic from '../components/anim/Magnetic'
 import { useAuth } from '../admin/context/AuthContext'
-import { mdComponents } from '../admin/pages/BlogCreate'
+import { mdComponents } from '../lib/mdComponents'
 import SEO from '../components/SEO'
 
 const catColors = {
@@ -25,20 +27,103 @@ function readTime(content = '') {
   return Math.max(1, Math.ceil(words / 200))
 }
 
+/* Small glass meta chip in the hero */
+function MetaChip({ Icon, children, color }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12px] text-white/70"
+      style={{
+        background: 'rgba(8,14,42,0.55)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        border: '1px solid rgba(255,255,255,0.1)',
+      }}>
+      <Icon size={12} style={{ color }} /> {children}
+    </span>
+  )
+}
+
+/* Compact related-article tilt card */
+function RelatedCard({ blog, i }) {
+  const color = catColors[blog.category] || '#6366F1'
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className="h-full"
+    >
+      <TiltCard max={8} glareColor={`${color}22`} glareSize={340}>
+        <Link
+          to={`/blog/${blog.slug}`}
+          className="group relative flex flex-col h-full rounded-2xl overflow-hidden"
+          style={{
+            background: 'rgba(8,14,42,0.45)',
+            backdropFilter: 'blur(14px)',
+            WebkitBackdropFilter: 'blur(14px)',
+            border: '1px solid rgba(255,255,255,0.07)',
+          }}
+        >
+          <div className="holo-sweep z-20" />
+          <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+            style={{ border: `1px solid ${color}55`, boxShadow: `0 0 28px ${color}1E` }} />
+          <div className="h-36 relative overflow-hidden shrink-0"
+            style={{ background: `linear-gradient(135deg, ${color}26, ${color}08)` }}>
+            {blog.image
+              ? <img src={blog.image} alt={blog.title}
+                  className="w-full h-full object-cover group-hover:scale-[1.07] transition-transform duration-700 ease-out"
+                  onError={e => e.target.style.display = 'none'} />
+              : <div className="w-full h-full flex items-center justify-center">
+                  <BookOpen size={28} style={{ color: `${color}70` }} strokeWidth={1.5} />
+                </div>
+            }
+            <div className="absolute inset-0 bg-gradient-to-t from-bg-dark/45 to-transparent" />
+          </div>
+          <div className="p-4 flex flex-col flex-1">
+            <span className="self-start text-[9.5px] font-semibold px-2 py-0.5 rounded-full mb-2.5"
+              style={{ background: `${color}1C`, color, border: `1px solid ${color}38` }}>
+              {blog.category}
+            </span>
+            <h3 className="text-white/90 font-semibold text-[14px] leading-snug group-hover:text-white transition-colors line-clamp-2 mb-3">
+              {blog.title}
+            </h3>
+            <div className="mt-auto flex items-center justify-between">
+              <span className="flex items-center gap-1 text-white/25 text-[11px]">
+                <Clock size={10} /> {readTime(blog.content)} min
+              </span>
+              <ArrowUpRight size={13} className="text-white/25 group-hover:rotate-45 transition-all duration-300" style={{ color: undefined }} />
+            </div>
+          </div>
+        </Link>
+      </TiltCard>
+    </motion.div>
+  )
+}
+
 export default function BlogDetailPage() {
   const { slug } = useParams()
   const { blogs } = useAuth()
   const navigate = useNavigate()
 
-  const blog = blogs.find(b => b.slug === slug && b.status === 'published')
+  const published = blogs.filter(b => b.status === 'published')
+  const blog = published.find(b => b.slug === slug)
 
   if (!blog) {
     return (
       <div className="min-h-screen bg-bg-dark pt-[72px] flex flex-col items-center justify-center text-center px-5">
-        <BookOpen size={52} className="text-white/10 mb-5" />
+        <div className="relative mb-7">
+          <div className="absolute inset-[-22px] rounded-full animate-spin-slower"
+            style={{
+              background: 'conic-gradient(from 0deg, transparent 20%, rgba(46,85,224,0.5) 45%, transparent 70%)',
+              WebkitMask: 'radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px))',
+              mask: 'radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px))',
+            }} />
+          <BookOpen size={48} className="text-white/15" strokeWidth={1.3} />
+        </div>
         <h1 className="text-white font-bold text-2xl mb-2">Article not found</h1>
-        <p className="text-white/40 text-[14px] mb-6">This article may have been removed or is not published yet.</p>
-        <Link to="/blog" className="flex items-center gap-2 text-brand-pink text-[13px] hover:underline">
+        <p className="text-white/40 text-[14px] mb-7">This article may have been removed or is not published yet.</p>
+        <Link to="/blog"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-[13px] font-semibold text-white shimmer-btn hover:opacity-90 transition-opacity">
           <ArrowLeft size={14} /> Back to Blog
         </Link>
       </div>
@@ -50,8 +135,13 @@ export default function BlogDetailPage() {
     ? (Array.isArray(blog.tags) ? blog.tags : blog.tags.split(',').map(t => t.trim()).filter(Boolean))
     : []
 
+  const related = [
+    ...published.filter(b => b.slug !== slug && b.category === blog.category),
+    ...published.filter(b => b.slug !== slug && b.category !== blog.category),
+  ].slice(0, 3)
+
   return (
-    <div className="min-h-screen bg-bg-dark pt-[72px]">
+    <div className="min-h-screen bg-bg-dark">
       <SEO
         title={`${blog.title} | Abbas Digital Agency`}
         description={blog.metaDesc || blog.title}
@@ -61,96 +151,199 @@ export default function BlogDetailPage() {
         type="article"
       />
 
-      {/* Cover image */}
-      {blog.image ? (
-        <div className="relative w-full h-[300px] md:h-[420px] overflow-hidden">
-          <img src={blog.image} alt={blog.title} className="w-full h-full object-cover" />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(7,12,27,0.2) 0%, rgba(7,12,27,0.9) 100%)' }} />
+      {/* ── Cinematic cover hero ── */}
+      <section className="relative overflow-hidden pt-[72px]">
+        <div className="relative w-full h-[46vh] min-h-[340px] md:h-[56vh] overflow-hidden">
+          {blog.image ? (
+            <motion.img
+              src={blog.image} alt={blog.title}
+              initial={{ scale: 1.12 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
+              className="w-full h-full object-cover"
+              onError={e => e.target.style.display = 'none'}
+            />
+          ) : (
+            <div className="w-full h-full" style={{ background: `radial-gradient(ellipse 80% 90% at 50% 10%, ${color}30, transparent 70%)` }} />
+          )}
+          {/* readability gradients */}
+          <div className="absolute inset-0 bg-gradient-to-t from-bg-dark via-bg-dark/55 to-bg-dark/20" />
+          <div className="absolute inset-0 opacity-50 pointer-events-none"
+            style={{ background: `radial-gradient(ellipse 60% 50% at 50% 100%, ${color}1E, transparent 70%)` }} />
+
+          {/* hero content pinned to bottom */}
+          <div className="absolute inset-x-0 bottom-0 pb-10">
+            <div className="max-w-4xl mx-auto px-5 sm:px-8">
+              <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
+                className="flex items-center gap-2.5 flex-wrap mb-5">
+                <button onClick={() => navigate(-1)}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12px] text-white/60 hover:text-white transition-colors"
+                  style={{
+                    background: 'rgba(8,14,42,0.55)',
+                    backdropFilter: 'blur(12px)',
+                    WebkitBackdropFilter: 'blur(12px)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                  }}>
+                  <ArrowLeft size={12} /> Back
+                </button>
+                {blog.category && (
+                  <span className="text-[11px] font-bold px-3.5 py-1.5 rounded-full text-white"
+                    style={{ background: color, boxShadow: `0 0 18px ${color}60` }}>
+                    {blog.category}
+                  </span>
+                )}
+              </motion.div>
+
+              <div className="overflow-hidden pb-[0.1em] -mb-[0.1em]" style={{ perspective: 900 }}>
+                <motion.h1
+                  initial={{ y: '105%', rotateX: -55, opacity: 0 }}
+                  animate={{ y: 0, rotateX: 0, opacity: 1 }}
+                  transition={{ delay: 0.12, duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
+                  className="text-white font-bold leading-[1.12] mb-5"
+                  style={{ fontSize: 'clamp(1.8rem,4.2vw,3.2rem)', transformOrigin: '50% 100%' }}
+                >
+                  {blog.title}
+                </motion.h1>
+              </div>
+
+              <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.5 }}
+                className="flex flex-wrap gap-2.5">
+                {blog.author && <MetaChip Icon={User} color={color}>{blog.author}</MetaChip>}
+                {blog.date && <MetaChip Icon={Calendar} color={color}>{blog.date}</MetaChip>}
+                <MetaChip Icon={Clock} color={color}>{readTime(blog.content)} min read</MetaChip>
+              </motion.div>
+            </div>
+          </div>
         </div>
-      ) : (
-        <div className="w-full h-[160px]" style={{ background: `linear-gradient(135deg, ${color}18, ${color}06)` }} />
+      </section>
+
+      {/* ── Article body ── */}
+      <div className="relative overflow-hidden">
+        <div className="absolute top-40 -left-32 w-[420px] h-[420px] rounded-full blur-[140px] pointer-events-none opacity-40" style={{ background: `${color}14` }} />
+        <div className="absolute bottom-40 -right-32 w-[380px] h-[380px] rounded-full blur-[130px] pointer-events-none opacity-40" style={{ background: 'rgba(232,21,90,0.08)' }} />
+
+        <div className="relative max-w-3xl mx-auto px-5 sm:px-8 py-12">
+
+          {/* Lead / standfirst */}
+          {blog.metaDesc && (
+            <motion.div
+              initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }}
+              className="relative mb-10 p-6 rounded-2xl overflow-hidden"
+              style={{
+                background: 'rgba(8,14,42,0.45)',
+                backdropFilter: 'blur(14px)',
+                WebkitBackdropFilter: 'blur(14px)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                boxShadow: `inset 3px 0 0 ${color}`,
+              }}
+            >
+              <Sparkles size={14} className="mb-2.5" style={{ color }} />
+              <p className="text-white/65 text-[16px] leading-relaxed">{blog.metaDesc}</p>
+            </motion.div>
+          )}
+
+          {/* Markdown content */}
+          <motion.article
+            initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.6 }}>
+            {blog.content
+              ? <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]} components={mdComponents}>{blog.content}</ReactMarkdown>
+              : <p className="text-white/25 italic">No content available.</p>
+            }
+          </motion.article>
+
+          {/* Tags */}
+          {tagList.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+              className="mt-12 pt-7 border-t border-white/[0.07]">
+              <div className="flex items-center gap-2 flex-wrap">
+                <Tag size={13} style={{ color }} />
+                {tagList.map(tag => (
+                  <span key={tag} className="text-[11px] px-3 py-1.5 rounded-full text-white/55 transition-colors hover:text-white"
+                    style={{ background: `${color}10`, border: `1px solid ${color}30` }}>
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Author card */}
+          {blog.author && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.6 }}
+              className="mt-10 flex items-center gap-4 p-5 rounded-2xl"
+              style={{
+                background: 'rgba(8,14,42,0.45)',
+                backdropFilter: 'blur(14px)',
+                WebkitBackdropFilter: 'blur(14px)',
+                border: '1px solid rgba(255,255,255,0.07)',
+              }}
+            >
+              <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 font-bold text-white text-lg"
+                style={{ background: `radial-gradient(circle at 32% 28%, ${color}66, ${color}1A 75%)`, border: `1px solid ${color}45`, boxShadow: `0 0 20px ${color}30` }}>
+                {blog.author.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <p className="text-white/35 text-[10px] uppercase tracking-[0.2em] mb-0.5">Written by</p>
+                <p className="text-white text-[15px] font-semibold">{blog.author}</p>
+                <p className="text-white/35 text-[12px]">Abbas Digital Agency</p>
+              </div>
+            </motion.div>
+          )}
+        </div>
+      </div>
+
+      {/* ── Related articles ── */}
+      {related.length > 0 && (
+        <section className="relative max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 pb-6">
+          <motion.div
+            initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.6 }}
+            className="flex items-end justify-between mb-8"
+          >
+            <div>
+              <p className="text-[11px] tracking-[0.28em] uppercase mb-2" style={{ color }}>Keep Reading</p>
+              <h2 className="text-white font-bold" style={{ fontSize: 'clamp(1.4rem,2.6vw,2rem)' }}>Related Articles</h2>
+            </div>
+            <Link to="/blog" className="hidden sm:inline-flex items-center gap-1.5 text-[13px] text-white/45 hover:text-white transition-colors">
+              All articles <ArrowRight size={13} />
+            </Link>
+          </motion.div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {related.map((b, i) => <RelatedCard key={b.id} blog={b} i={i} />)}
+          </div>
+        </section>
       )}
 
-      <div className="max-w-3xl mx-auto px-5 sm:px-8 py-10">
-
-        {/* Back */}
-        <motion.div initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4 }}>
-          <button onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-white/35 text-[13px] hover:text-white/70 transition-colors mb-8">
-            <ArrowLeft size={14} /> Back to Blog
-          </button>
-        </motion.div>
-
-        {/* Category + read time */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-          className="flex items-center gap-3 flex-wrap mb-4">
-          {blog.category && (
-            <span className="text-[11px] font-semibold px-3 py-1 rounded-full"
-              style={{ background: `${color}20`, color, border: `1px solid ${color}30` }}>
-              {blog.category}
-            </span>
-          )}
-          <span className="flex items-center gap-1.5 text-white/30 text-[12px]">
-            <Clock size={11} /> {readTime(blog.content)} min read
-          </span>
-        </motion.div>
-
-        {/* Title */}
-        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08, duration: 0.6 }}
-          className="text-white font-bold leading-tight mb-4"
-          style={{ fontSize: 'clamp(1.75rem,4vw,2.75rem)' }}>
-          {blog.title}
-        </motion.h1>
-
-        {/* Meta */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15, duration: 0.5 }}
-          className="flex flex-wrap items-center gap-4 text-white/30 text-[12px] mb-6 pb-6 border-b border-white/[0.07]">
-          {blog.author && <span className="flex items-center gap-1.5"><User size={11} /> {blog.author}</span>}
-          {blog.date   && <span className="flex items-center gap-1.5"><Calendar size={11} /> {blog.date}</span>}
-        </motion.div>
-
-        {/* Meta description as lead */}
-        {blog.metaDesc && (
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
-            className="text-white/55 text-[16px] leading-relaxed mb-8 italic border-l-2 pl-4"
-            style={{ borderColor: color }}>
-            {blog.metaDesc}
-          </motion.p>
-        )}
-
-        {/* Article body */}
-        <motion.article
-          initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.6 }}>
-          {blog.content
-            ? <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]} components={mdComponents}>{blog.content}</ReactMarkdown>
-            : <p className="text-white/25 italic">No content available.</p>
-          }
-        </motion.article>
-
-        {/* Tags */}
-        {tagList.length > 0 && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }}
-            className="mt-10 pt-6 border-t border-white/[0.07]">
-            <div className="flex items-center gap-2 flex-wrap">
-              <Tag size={13} className="text-white/25" />
-              {tagList.map(tag => (
-                <span key={tag} className="text-[11px] px-2.5 py-1 rounded-full bg-white/[0.05] text-white/40 border border-white/[0.07]">
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {/* CTA */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
-          className="mt-12 pt-8 border-t border-white/[0.07] text-center">
-          <p className="text-white/30 text-[13px] mb-4">Want to read more?</p>
-          <Link to="/blog"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-[13px] font-semibold text-white transition-opacity hover:opacity-90"
-            style={{ background: 'linear-gradient(135deg,#2E55E0,#E8155A)' }}>
-            <ArrowLeft size={14} /> Browse All Articles
-          </Link>
+      {/* ── CTA ── */}
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-16">
+        <motion.div
+          initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }} transition={{ duration: 0.7 }}
+          className="relative rounded-3xl overflow-hidden p-10 lg:p-14 text-center"
+          style={{
+            background: 'rgba(8,14,42,0.5)',
+            backdropFilter: 'blur(16px)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            boxShadow: '0 24px 70px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)',
+          }}
+        >
+          <div className="absolute top-0 left-1/4 w-72 h-72 rounded-full blur-[110px] pointer-events-none" style={{ background: `${color}1E` }} />
+          <div className="absolute bottom-0 right-1/4 w-72 h-72 rounded-full blur-[110px] pointer-events-none" style={{ background: 'rgba(232,21,90,0.12)' }} />
+          <h2 className="relative font-bold text-white mb-4" style={{ fontSize: 'clamp(1.5rem,3vw,2.3rem)' }}>
+            Want results like the ones you just read about?
+          </h2>
+          <p className="relative text-white/40 text-[15px] max-w-lg mx-auto mb-8 leading-relaxed">
+            Let's talk about your project — free consultation, reply within 24 hours.
+          </p>
+          <Magnetic>
+            <Link to="/contact"
+              className="relative inline-flex items-center gap-2.5 shimmer-btn px-9 py-4 rounded-full text-sm tracking-[0.12em] uppercase text-white font-medium hover:opacity-90 active:scale-[0.98] transition-all duration-200">
+              Start a Project <ArrowRight size={15} />
+            </Link>
+          </Magnetic>
         </motion.div>
       </div>
 
