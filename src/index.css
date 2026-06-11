@@ -153,6 +153,12 @@ input, textarea, select, button {
 }
 .marquee-wrapper:hover .marquee-track { animation-play-state: paused; }
 
+/* Slow continuous rotation (icon energy rings) */
+@keyframes spin360 {
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow { animation: spin360 8s linear infinite; }
+
 /* Soft pulsing glow (used behind hero / CTAs) */
 @keyframes glow-pulse {
   0%, 100% { opacity: 0.5; transform: scale(1); }

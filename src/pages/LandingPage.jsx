@@ -17,31 +17,24 @@ import Footer       from '../components/Footer'
 gsap.registerPlugin(ScrollTrigger)
 
 /* ─────────────────────────────────────────────────────────────────────────
-   ScrollSection — wraps any section with the hero-style push-into-background
-   scroll animation:
-     • Entry  (0 → 10 %)  : scales up from 0.92, fades in, de-blurs
-     • In-view (10 → 68 %) : fully normal — no transform
-     • Exit   (68 → 100 %) : scales to 0.84, fades to 0, blurs to 10 px
-   offset ['start end','end start'] so the full enter-to-exit range is tracked
+   ScrollSection — clean scroll-linked entrance: each section rises, fades
+   and settles as it enters the viewport. Reversible (scrubbed by scroll),
+   no exit animation, no blur — keeps the page light and the rhythm varied.
 ───────────────────────────────────────────────────────────────────────── */
 function ScrollSection({ children }) {
   const ref = useRef(null)
 
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ['start end', 'end start'],
+    offset: ['start 0.96', 'start 0.45'],
   })
 
-  const scale   = useTransform(scrollYProgress, [0, 0.10, 0.68, 1], [0.92, 1,   1,   0.84])
-  const opacity = useTransform(scrollYProgress, [0, 0.08, 0.70, 1], [0,    1,   1,   0   ])
-  const blurPx  = useTransform(scrollYProgress, [0, 0.08, 0.66, 1], [5,    0,   0,   10  ])
-  const filter  = useTransform(blurPx, v => `blur(${v}px)`)
+  const y       = useTransform(scrollYProgress, [0, 1], [64, 0])
+  const opacity = useTransform(scrollYProgress, [0, 1], [0.25, 1])
+  const scale   = useTransform(scrollYProgress, [0, 1], [0.965, 1])
 
   return (
-    <motion.div
-      ref={ref}
-      style={{ scale, opacity, filter, transformOrigin: 'center center' }}
-    >
+    <motion.div ref={ref} style={{ y, opacity, scale, transformOrigin: 'center top' }}>
       {children}
     </motion.div>
   )
@@ -54,7 +47,6 @@ export default function LandingPage() {
   const canvasRef = useRef(null)
 
   useEffect(() => {
-    ScrollTrigger.getAll().forEach(t => t.kill())
     const ctx = gsap.context(() => {
       gsap.to(canvasRef.current, {
         opacity: 0,
@@ -97,7 +89,9 @@ export default function LandingPage() {
         {/* Every section below gets the same push-into-background scroll animation */}
         <div style={{ background: '#05091A', position: 'relative', zIndex: 2 }}>
           <Marquee />
-          <ScrollSection><Services /></ScrollSection>
+          {/* Services pins itself for the horizontal showcase — must NOT be
+              inside a transformed wrapper or the pin breaks */}
+          <Services />
           <ScrollSection><About /></ScrollSection>
           <ScrollSection><Process /></ScrollSection>
           <ScrollSection><Portfolio /></ScrollSection>
