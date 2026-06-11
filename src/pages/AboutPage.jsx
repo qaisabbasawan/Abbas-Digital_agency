@@ -5,6 +5,7 @@ import {
   CalendarDays, FolderCheck, Users, Star,
   Gem, Clock3, MessagesSquare, TrendingUp,
 } from 'lucide-react'
+import LinkedInIcon from '../components/icons/LinkedInIcon'
 import Footer from '../components/Footer'
 import useCountUp from '../hooks/useCountUp'
 import SEO from '../components/SEO'
@@ -25,7 +26,8 @@ const team = [
     role: 'MERN-Stack Developer',
     initials: 'MY',
     color: '#2E55E0',
-    img: '/team/muhammad-yasin.jpg',
+    img: '/team/muhammad-yasin.jpeg',
+    linkedin: 'https://www.linkedin.com/in/muhammad-yasin-86b417413/',
   },
   {
     name: 'Nabeel Faisal',
@@ -33,20 +35,23 @@ const team = [
     initials: 'NF',
     color: '#7C3AED',
     img: '/team/nabeel-faisal.jpg',
+    linkedin: 'https://www.linkedin.com/in/nabeel-faisal-sheikh/',
   },
   {
     name: 'Gohar Abbas',
     role: 'Project Manager',
     initials: 'GA',
     color: '#E8155A',
-    img: '/team/gohar-abbas.jpg',
+    img: '/team/gohar-abbas.jpeg',
+    linkedin: 'https://www.linkedin.com/in/gohar-abbas-a95288409/',
   },
   {
     name: 'Umme Farwa',
     role: 'Digital Marketing Expert',
     initials: 'UF',
     color: '#059669',
-    img: '/team/umme-farwa.jpg',
+    img: '/team/umme-farwa.jpeg',
+    linkedin: 'https://www.linkedin.com/in/umm-e-farwa-7b057928a/',
   },
 ]
 
@@ -171,15 +176,34 @@ function TeamCard({ m, i }) {
           </div>
 
           {/* ── Info ── */}
-          <div className="relative px-6 pb-7 -mt-3">
-            <h3 className="text-white font-bold text-[19px] leading-tight mb-1.5">{m.name}</h3>
-            <p
-              className="text-[12px] font-semibold tracking-[0.14em] uppercase inline-flex items-center gap-2"
-              style={{ color: m.color }}
+          <div className="relative px-6 pb-7 -mt-3 flex items-end justify-between gap-3">
+            <div>
+              <h3 className="text-white font-bold text-[19px] leading-tight mb-1.5">{m.name}</h3>
+              <p
+                className="text-[12px] font-semibold tracking-[0.14em] uppercase inline-flex items-center gap-2"
+                style={{ color: m.color }}
+              >
+                <span className="w-4 h-px" style={{ background: m.color }} />
+                {m.role}
+              </p>
+            </div>
+            <motion.a
+              href={m.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${m.name} on LinkedIn`}
+              whileHover={{ scale: 1.15, y: -3 }}
+              whileTap={{ scale: 0.95 }}
+              className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center mb-0.5"
+              style={{
+                background: `${m.color}16`,
+                border: `1px solid ${m.color}45`,
+                color: m.color,
+                boxShadow: `0 0 16px ${m.color}25`,
+              }}
             >
-              <span className="w-4 h-px" style={{ background: m.color }} />
-              {m.role}
-            </p>
+              <LinkedInIcon size={15} />
+            </motion.a>
           </div>
         </div>
       </TiltCard>
@@ -299,7 +323,7 @@ export default function AboutPage() {
                 </span>
 
                 <div className="flex items-center gap-4 mb-7 pb-7 border-b border-white/[0.07]">
-                  {/* avatar with spinning energy ring */}
+                  {/* photo with spinning energy ring */}
                   <div className="relative w-16 h-16 shrink-0">
                     <div
                       className="absolute inset-0 rounded-full animate-spin-slower"
@@ -309,14 +333,33 @@ export default function AboutPage() {
                         mask: 'radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px))',
                       }}
                     />
-                    <div className="absolute inset-[5px] rounded-full bg-gradient-to-br from-brand-blue to-brand-pink flex items-center justify-center font-bold text-white text-lg">
-                      MQ
-                    </div>
+                    <img
+                      src="/team/qais-abbas.png"
+                      alt="Muhammad Qais Abbas"
+                      className="absolute inset-[5px] w-[calc(100%-10px)] h-[calc(100%-10px)] rounded-full object-cover bg-white"
+                    />
                   </div>
                   <div>
                     <p className="text-white font-semibold">Muhammad Qais Abbas</p>
                     <p className="text-white/40 text-[13px] mt-0.5">Founder & CEO · Islamabad, Pakistan</p>
                   </div>
+                  <motion.a
+                    href="https://www.linkedin.com/in/qaisabbas/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Muhammad Qais Abbas on LinkedIn"
+                    whileHover={{ scale: 1.15, y: -3 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="ml-auto shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
+                    style={{
+                      background: 'rgba(232,21,90,0.12)',
+                      border: '1px solid rgba(232,21,90,0.4)',
+                      color: '#FF2D72',
+                      boxShadow: '0 0 18px rgba(232,21,90,0.25)',
+                    }}
+                  >
+                    <LinkedInIcon size={16} />
+                  </motion.a>
                 </div>
                 <blockquote className="text-white/65 text-[15px] leading-relaxed italic">
                   "My goal from day one has been to make premium digital services accessible to every

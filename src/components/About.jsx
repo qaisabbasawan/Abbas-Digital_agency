@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import {
   CalendarDays, FolderCheck, Users, Star, ArrowUpRight,
 } from 'lucide-react'
+import LinkedInIcon from './icons/LinkedInIcon'
 import useCountUp from '../hooks/useCountUp'
 import Magnetic from './anim/Magnetic'
 import TiltCard from './anim/TiltCard'
@@ -243,18 +244,34 @@ export default function About() {
                   style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)' }}
                 >
                   <div className="relative shrink-0">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-brand-blue to-brand-pink flex items-center justify-center text-white font-bold text-sm">
-                      MQ
-                    </div>
+                    <img
+                      src="/team/qais-abbas.png"
+                      alt="Muhammad Qais Abbas"
+                      className="w-12 h-12 rounded-full object-cover bg-white"
+                    />
                     <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-green-400 border-2 border-[#0A1130]" />
                   </div>
                   <div className="flex-1">
                     <p className="text-white text-sm font-semibold">Muhammad Qais Abbas</p>
                     <p className="text-white/40 text-xs mt-0.5">Founder & CEO · Est. 2012</p>
                   </div>
-                  <span className="hidden sm:inline-flex text-[10px] tracking-[0.18em] uppercase text-white/30">
-                    Leading since day one
-                  </span>
+                  <motion.a
+                    href="https://www.linkedin.com/in/qaisabbas/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Muhammad Qais Abbas on LinkedIn"
+                    whileHover={{ scale: 1.15, y: -3 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center"
+                    style={{
+                      background: 'rgba(232,21,90,0.12)',
+                      border: '1px solid rgba(232,21,90,0.4)',
+                      color: '#FF2D72',
+                      boxShadow: '0 0 16px rgba(232,21,90,0.25)',
+                    }}
+                  >
+                    <LinkedInIcon size={15} />
+                  </motion.a>
                 </motion.div>
               </div>
             </TiltCard>

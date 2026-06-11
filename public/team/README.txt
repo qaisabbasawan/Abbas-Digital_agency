@@ -1,13 +1,15 @@
 TEAM PHOTOS
 ===========
 
-Drop the team member photos in this folder with EXACTLY these file names:
+Current photos (referenced by the site — keep these exact names):
 
-  muhammad-yasin.jpg   -> Muhammad Yasin  (MERN-Stack Developer)
-  nabeel-faisal.jpg    -> Nabeel Faisal   (AI Automation Specialist)
-  gohar-abbas.jpg      -> Gohar Abbas     (Project Manager)
-  umme-farwa.jpg       -> Umme Farwa      (Digital Marketing Expert)
+  muhammad-yasin.jpeg  -> Muhammad Yasin       (MERN-Stack Developer)
+  nabeel-faisal.jpg    -> Nabeel Faisal        (AI Automation Specialist)
+  gohar-abbas.jpeg     -> Gohar Abbas          (Project Manager)
+  umme-farwa.jpeg      -> Umme Farwa           (Digital Marketing Expert)
+  qais-abbas.png       -> Muhammad Qais Abbas  (Founder & CEO)
 
-Recommended: portrait orientation, at least 600x700px, JPG format.
-Until a photo is added, the site shows a styled placeholder with the
-person's initials automatically — nothing breaks.
+To replace a photo, overwrite the file keeping the same name.
+Recommended: portrait orientation, at least 600x700px.
+If a file is missing, the site automatically shows a styled placeholder
+with the person's initials — nothing breaks.
