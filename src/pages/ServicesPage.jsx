@@ -1,15 +1,14 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState } from 'react'
 import SEO from '../components/SEO'
-import { motion, useInView } from 'framer-motion'
+import { motion, useInView, useScroll, useTransform } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
   Globe, ShoppingCart, Smartphone, Bot, TrendingUp, Palette,
   ArrowRight, ArrowUpRight, Zap, Users, Award, Clock,
 } from 'lucide-react'
 import Footer from '../components/Footer'
 import ServicesScene from '../components/ServicesScene'
+import CoreElement from '../components/CoreElement'
 import RevealText from '../components/anim/RevealText'
 import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
@@ -20,32 +19,26 @@ const services = [
   {
     n: '01', Icon: Globe,        title: 'Web Development',   color: '#2E55E0', slug: 'web-development',
     desc: 'Custom WordPress, WooCommerce and React/Next.js websites built for performance, SEO and conversions.',
-    includes: ['WordPress', 'WooCommerce', 'React / Next.js', 'Landing Pages', 'SEO Structure', 'Speed Optimisation'],
   },
   {
     n: '02', Icon: ShoppingCart, title: 'E-Commerce',         color: '#E8155A', slug: 'ecommerce',
     desc: 'End-to-end online stores on Shopify, WooCommerce, Amazon and eBay — from setup to conversion optimisation.',
-    includes: ['Shopify', 'WooCommerce', 'Amazon / eBay', 'Payment Gateways', 'Product Catalogue', 'CRO'],
   },
   {
     n: '03', Icon: Smartphone,   title: 'Mobile Apps',        color: '#7C3AED', slug: 'mobile-apps',
     desc: 'Native iOS and Android apps from concept to App Store with clean code and ongoing post-launch support.',
-    includes: ['iOS Development', 'Android', 'React Native', 'UI/UX Design', 'App Store Launch', 'Maintenance'],
   },
   {
     n: '04', Icon: Bot,          title: 'AI & Chatbots',      color: '#0891B2', slug: 'ai-chatbots',
     desc: 'WhatsApp and Facebook chatbots, ChatGPT integrations and workflow automations saving hours every day.',
-    includes: ['WhatsApp Bot', 'Messenger', 'ChatGPT API', 'Lead Generation', 'Automation', 'CRM Integration'],
   },
   {
     n: '05', Icon: TrendingUp,   title: 'Digital Marketing',  color: '#059669', slug: 'digital-marketing',
     desc: 'SEO, Google Ads, social media and email campaigns designed to drive qualified traffic and real ROI.',
-    includes: ['SEO', 'Google Ads', 'Facebook Ads', 'Social Media', 'Email Marketing', 'Analytics'],
   },
   {
     n: '06', Icon: Palette,      title: 'Branding & Design',  color: '#D97706', slug: 'branding-design',
     desc: 'Logo design, full brand identity, UI/UX and marketing materials that make your business unforgettable.',
-    includes: ['Logo Design', 'Brand Identity', 'UI/UX', 'Social Graphics', 'Print', 'Brand Guidelines'],
   },
 ]
 
@@ -85,7 +78,6 @@ function HeroStat({ value, suffix, label, color, i }) {
       viewport={{ once: true }}
       transition={{ delay: 0.5 + i * 0.12, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
     >
-      {/* idle levitation, each panel on its own rhythm */}
       <motion.div
         animate={{ y: [0, -7, 0] }}
         transition={{ duration: 4.2 + i * 0.6, repeat: Infinity, ease: 'easeInOut', delay: i * 0.45 }}
@@ -141,30 +133,219 @@ function BurstButton({ children }) {
   )
 }
 
+/* ── Compact holographic service card (orbit + mobile stack) ── */
+function CompactCard({ svc }) {
+  return (
+    <TiltCard max={8} glareColor={`${svc.color}29`}>
+      <Link
+        to={`/services/${svc.slug}`}
+        className="group relative flex flex-col gap-2.5 p-5 rounded-2xl overflow-hidden"
+        style={{
+          background: `linear-gradient(160deg, ${svc.color}1A, transparent 50%), linear-gradient(#0A1130, #0A1130)`,
+          border: `1px solid ${svc.color}38`,
+          boxShadow: `0 18px 50px rgba(0,0,0,0.5), 0 0 28px ${svc.color}16, inset 0 1px 0 rgba(255,255,255,0.06)`,
+        }}
+      >
+        <div className="holo-sweep" />
+        <div
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-600 pointer-events-none"
+          style={{ background: `radial-gradient(110% 70% at 50% 0%, ${svc.color}22, transparent 65%)` }}
+        />
+
+        <div className="flex items-center justify-between">
+          <IconOrb Icon={svc.Icon} color={svc.color} size={46} iconSize={17} />
+          <span
+            className="font-bold leading-none select-none"
+            style={{ fontSize: 34, color: 'transparent', WebkitTextStroke: `1.2px ${svc.color}50` }}
+          >
+            {svc.n}
+          </span>
+        </div>
+
+        <h3 className="text-white font-bold text-[16.5px] leading-tight">{svc.title}</h3>
+        <p className="text-white/45 text-[12px] leading-relaxed line-clamp-2">{svc.desc}</p>
+
+        <span
+          className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.2em] uppercase font-semibold transition-all duration-300 group-hover:gap-3"
+          style={{ color: svc.color }}
+        >
+          Explore
+          <ArrowUpRight size={11} strokeWidth={2.2} />
+        </span>
+      </Link>
+    </TiltCard>
+  )
+}
+
+/* ── Orbit showcase — cards emerge from the 3D core one by one on scroll ── */
+const SLOTS = [
+  { x: -480, y: -218 },  // 01 left top
+  { x: 480,  y: -218 },  // 02 right top
+  { x: -555, y: 22 },    // 03 left mid
+  { x: 555,  y: 22 },    // 04 right mid
+  { x: -440, y: 258 },   // 05 left bottom
+  { x: 440,  y: 258 },   // 06 right bottom
+]
+
+const slotTiming = (i) => {
+  const start = 0.06 + i * 0.145
+  return [start, start + 0.115]
+}
+
+function OrbitCard({ svc, i, progress }) {
+  const [start, end] = slotTiming(i)
+  const slot = SLOTS[i]
+  const opacity = useTransform(progress, [start, start + 0.03, end], [0, 0.55, 1])
+  const scale   = useTransform(progress, [start, end], [0.22, 1])
+  const x       = useTransform(progress, [start, end], [0, slot.x])
+  const y       = useTransform(progress, [start, end], [0, slot.y])
+  const blur    = useTransform(progress, [start, end], [8, 0])
+  const filter  = useTransform(blur, v => `blur(${v}px)`)
+
+  return (
+    <motion.div
+      style={{ opacity, scale, x, y, filter }}
+      className="absolute left-1/2 top-1/2 -ml-[150px] -mt-[86px] w-[300px] z-20"
+    >
+      <CompactCard svc={svc} />
+    </motion.div>
+  )
+}
+
+function OrbitLine({ i, progress }) {
+  const [start, end] = slotTiming(i)
+  const slot = SLOTS[i]
+  const pathLength = useTransform(progress, [start, end], [0, 1])
+  const opacity    = useTransform(progress, [start, end], [0, 0.45])
+  return (
+    <motion.line
+      x1={620} y1={420}
+      x2={620 + slot.x} y2={420 + slot.y}
+      stroke={services[i].color}
+      strokeWidth="1.2"
+      style={{ pathLength, opacity }}
+    />
+  )
+}
+
+function OrbitShowcase() {
+  const ref = useRef(null)
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start start', 'end end'],
+  })
+
+  const hintOpacity = useTransform(scrollYProgress, [0, 0.05, 0.85, 0.95], [1, 1, 1, 0])
+
+  return (
+    <section ref={ref} className="relative hidden lg:block bg-bg-dark" style={{ height: '340vh' }}>
+      <div className="sticky top-0 h-screen overflow-hidden flex items-center justify-center">
+
+        {/* ambient */}
+        <div className="absolute top-1/4 left-0 w-[460px] h-[460px] bg-brand-blue/[0.06] rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-[420px] h-[420px] bg-brand-pink/[0.05] rounded-full blur-[120px] pointer-events-none" />
+
+        {/* heading */}
+        <div className="absolute top-14 left-1/2 -translate-x-1/2 text-center z-30 w-full px-6">
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-3"
+          >
+            What We Do
+          </motion.p>
+          <h2 className="font-bold leading-[1.04]" style={{ fontSize: 'clamp(2rem, 3.6vw, 3.2rem)' }}>
+            <RevealText as="span" className="text-white inline-block" stagger={0.07}>
+              One Core.
+            </RevealText>{' '}
+            <RevealText as="span" className="inline-block" gradient delay={0.22} stagger={0.09}>
+              Six Services.
+            </RevealText>
+          </h2>
+        </div>
+
+        {/* connection lines — drawn from the core to each card */}
+        <svg
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10"
+          width="1240" height="840" viewBox="0 0 1240 840" fill="none"
+        >
+          {services.map((_, i) => <OrbitLine key={i} i={i} progress={scrollYProgress} />)}
+        </svg>
+
+        {/* central 3D core */}
+        <div className="relative w-[460px] h-[460px] z-10 mt-10">
+          {/* pulsing glow behind */}
+          <div
+            className="animate-glow-pulse absolute inset-6 rounded-full pointer-events-none"
+            style={{ background: 'radial-gradient(circle, rgba(46,85,224,0.22), rgba(232,21,90,0.08) 55%, transparent 72%)', filter: 'blur(14px)' }}
+          />
+          <CoreElement />
+        </div>
+
+        {/* the six cards, emerging one by one */}
+        {services.map((svc, i) => (
+          <OrbitCard key={svc.n} svc={svc} i={i} progress={scrollYProgress} />
+        ))}
+
+        {/* scroll hint */}
+        <motion.div
+          style={{ opacity: hintOpacity }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2"
+        >
+          <span className="text-white/25 text-[10px] uppercase tracking-[0.25em]">Keep scrolling</span>
+          <motion.div
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+            className="w-px h-7 bg-gradient-to-b from-white/25 to-transparent"
+          />
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
+/* ── Mobile: simple stacked cards ── */
+function MobileServices() {
+  return (
+    <section className="lg:hidden py-16 bg-bg-dark relative">
+      <div className="max-w-xl mx-auto px-5 sm:px-8">
+        <div className="text-center mb-10">
+          <p className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-3">What We Do</p>
+          <h2 className="font-bold leading-[1.05]" style={{ fontSize: 'clamp(2rem, 8vw, 2.6rem)' }}>
+            <RevealText as="span" className="text-white inline-block" stagger={0.07}>
+              One Core.
+            </RevealText>{' '}
+            <RevealText as="span" className="inline-block" gradient delay={0.22} stagger={0.09}>
+              Six Services.
+            </RevealText>
+          </h2>
+        </div>
+        <div className="space-y-4">
+          {services.map((svc, i) => (
+            <motion.div
+              key={svc.n}
+              initial={{ opacity: 0, y: 36 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ delay: (i % 2) * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <CompactCard svc={svc} />
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 export default function ServicesPage() {
   const heroRef    = useRef(null)
   const heroInView = useInView(heroRef, { once: true })
-  const canvasRef  = useRef(null)
-
-  /* The universe stays visible across the whole page, dimming after the hero
-     so the content reads while particles keep drifting behind everything */
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.to(canvasRef.current, {
-        opacity: 0.3,
-        ease: 'none',
-        scrollTrigger: {
-          start: () => window.innerHeight * 0.35,
-          end:   () => window.innerHeight * 1.2,
-          scrub: 1,
-        },
-      })
-    })
-    return () => ctx.revert()
-  }, [])
 
   return (
-    <div className="min-h-screen bg-bg-dark overflow-hidden pt-[72px]">
+    <div className="min-h-screen bg-bg-dark pt-[72px]">
       <SEO
         title="Digital Marketing Services Pakistan | Abbas Digital Agency"
         description="SEO, web design, social media marketing, PPC & branding services for businesses in Pakistan & USA. US-registered agency. Get a free quote today."
@@ -172,26 +353,24 @@ export default function ServicesPage() {
         path="/services"
       />
 
-      {/* ── Fixed full-page digital universe (solar system + particle field) ── */}
-      <div ref={canvasRef} style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
-        <ServicesScene />
-      </div>
-
-      <div style={{ position: 'relative', zIndex: 10 }}>
-
       {/* ══════════════════════════════════
-          HERO
+          HERO — atom scene contained here
       ══════════════════════════════════ */}
       <section className="relative pt-20 pb-24 lg:pt-24 lg:pb-32 overflow-hidden min-h-[86vh]" ref={heroRef}>
 
-        {/* Text-protection gradient (left) + bottom fade */}
+        {/* 3D atom: six electron services orbiting one nucleus */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <ServicesScene />
+        </div>
+
+        {/* Text-protection gradient (left) + bottom fade into solid bg */}
         <div
           className="absolute inset-0 pointer-events-none z-[1]"
           style={{ background: 'linear-gradient(100deg, rgba(5,9,26,0.88) 35%, rgba(5,9,26,0.45) 62%, rgba(5,9,26,0.05) 100%)' }}
         />
         <div
-          className="absolute bottom-0 left-0 right-0 h-36 pointer-events-none z-[1]"
-          style={{ background: 'linear-gradient(to top, rgba(5,9,26,0.85), transparent)' }}
+          className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none z-[1]"
+          style={{ background: 'linear-gradient(to top, #05091A, transparent)' }}
         />
 
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 relative z-10">
@@ -223,7 +402,7 @@ export default function ServicesPage() {
             digital experiences that deliver real business results.
           </motion.p>
 
-          {/* Stats — floating glass panels, each levitating on its own rhythm */}
+          {/* Stats — floating glass panels */}
           <div className="flex flex-wrap gap-3 sm:gap-4 max-w-2xl">
             <HeroStat value={500} suffix="+" label="Projects" color="#2E55E0" i={0} />
             <HeroStat value={10}  suffix="+" label="Years"    color="#E8155A" i={1} />
@@ -234,146 +413,15 @@ export default function ServicesPage() {
       </section>
 
       {/* ══════════════════════════════════
-          SERVICES GRID
+          SERVICES — pinned orbit showcase
       ══════════════════════════════════ */}
-      <section className="py-16 lg:py-24 relative">
-        <div className="absolute inset-0 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(46,85,224,0.06), transparent)' }} />
-
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
-          {/* perspective stage — cards stand up from the floor in 3D */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" style={{ perspective: 1600 }}>
-            {services.map((svc, i) => (
-              <motion.div
-                key={svc.n}
-                initial={{ opacity: 0, y: 110, rotateX: -32, scale: 0.92 }}
-                whileInView={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
-                viewport={{ once: true, margin: '-60px' }}
-                transition={{ delay: (i % 3) * 0.14, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-                style={{ transformStyle: 'preserve-3d', transformOrigin: '50% 100%' }}
-                className="h-full"
-              >
-                {/* idle levitation — each card breathes on its own rhythm */}
-                <motion.div
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{ duration: 5 + i * 0.55, repeat: Infinity, ease: 'easeInOut', delay: i * 0.35 }}
-                  className="h-full"
-                >
-                <TiltCard max={8} glareColor={`${svc.color}26`}>
-                  <Link
-                    to={`/services/${svc.slug}`}
-                    className="group relative flex flex-col h-full p-7 rounded-3xl overflow-hidden"
-                    style={{
-                      background: `linear-gradient(165deg, ${svc.color}16 0%, transparent 45%), linear-gradient(#0A1130, #0A1130)`,
-                      border: `1px solid ${svc.color}30`,
-                    }}
-                  >
-                    {/* hover bloom */}
-                    <div
-                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
-                      style={{ background: `radial-gradient(120% 60% at 50% 0%, ${svc.color}24, transparent 65%)` }}
-                    />
-                    {/* accent line */}
-                    <div
-                      className="absolute top-0 left-0 right-0 h-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                      style={{ background: `linear-gradient(90deg, transparent, ${svc.color}, transparent)` }}
-                    />
-                    {/* faint grid texture */}
-                    <div
-                      className="absolute inset-0 pointer-events-none opacity-[0.03]"
-                      style={{
-                        backgroundImage: `linear-gradient(${svc.color}50 1px, transparent 1px), linear-gradient(90deg, ${svc.color}50 1px, transparent 1px)`,
-                        backgroundSize: '40px 40px',
-                      }}
-                    />
-                    {/* holographic light sweep on hover */}
-                    <div className="holo-sweep" />
-                    {/* rotating shimmer wash on hover */}
-                    <div
-                      className="absolute -inset-[150%] animate-spin-slower opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
-                      style={{ background: `conic-gradient(from 0deg, transparent 70%, ${svc.color}14 85%, transparent 100%)` }}
-                    />
-                    {/* hover-activated particle cluster — this service's colour */}
-                    <div className="svc-dots absolute inset-0 pointer-events-none">
-                      {Array.from({ length: 7 }).map((_, d) => (
-                        <span
-                          key={d}
-                          style={{
-                            left: `${(12 + d * 13) % 82}%`,
-                            top: `${(16 + d * 23) % 66}%`,
-                            background: svc.color,
-                            boxShadow: `0 0 9px ${svc.color}`,
-                            animationDelay: `${d * 0.18}s`,
-                          }}
-                        />
-                      ))}
-                    </div>
-
-                    {/* Header — orb + ghost number */}
-                    <div className="relative flex items-start justify-between mb-7">
-                      <IconOrb Icon={svc.Icon} color={svc.color} />
-                      <span
-                        className="font-bold leading-none select-none transition-transform duration-500 group-hover:scale-110"
-                        style={{
-                          fontSize: 56,
-                          color: 'transparent',
-                          WebkitTextStroke: `1.2px ${svc.color}45`,
-                        }}
-                      >
-                        {svc.n}
-                      </span>
-                    </div>
-
-                    <h2 className="font-bold text-white text-[21px] mb-3 leading-snug">{svc.title}</h2>
-                    <p className="text-white/45 text-[13.5px] leading-relaxed mb-6 flex-1">{svc.desc}</p>
-
-                    {/* Include tags — staggered pop */}
-                    <div className="flex flex-wrap gap-1.5 mb-7">
-                      {svc.includes.map((tag, j) => (
-                        <motion.span
-                          key={tag}
-                          initial={{ opacity: 0, scale: 0.7 }}
-                          whileInView={{ opacity: 1, scale: 1 }}
-                          viewport={{ once: true, margin: '-40px' }}
-                          transition={{ delay: 0.25 + j * 0.05, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                          className="px-2.5 py-1 rounded-full text-[10.5px] tracking-wide font-medium"
-                          style={{
-                            background: `${svc.color}14`,
-                            border: `1px solid ${svc.color}30`,
-                            color: svc.color,
-                          }}
-                        >
-                          {tag}
-                        </motion.span>
-                      ))}
-                    </div>
-
-                    {/* CTA */}
-                    <span
-                      className="inline-flex items-center gap-2 text-[11.5px] tracking-[0.18em] uppercase font-semibold transition-all duration-300 group-hover:gap-3.5"
-                      style={{ color: svc.color }}
-                    >
-                      Explore Service
-                      <span
-                        className="flex items-center justify-center w-7 h-7 rounded-full transition-transform duration-300 group-hover:rotate-45"
-                        style={{ border: `1px solid ${svc.color}55`, background: `${svc.color}14` }}
-                      >
-                        <ArrowUpRight size={13} strokeWidth={2} />
-                      </span>
-                    </span>
-                  </Link>
-                </TiltCard>
-                </motion.div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <OrbitShowcase />
+      <MobileServices />
 
       {/* ══════════════════════════════════
           WHY CHOOSE US
       ══════════════════════════════════ */}
-      <section className="py-20 lg:py-28 relative overflow-hidden">
+      <section className="py-20 lg:py-28 relative overflow-hidden bg-bg-dark">
         <div className="absolute inset-0 pointer-events-none"
           style={{ background: 'rgba(255,255,255,0.013)', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)' }} />
         <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-brand-pink/[0.05] blur-[120px] pointer-events-none" />
@@ -438,7 +486,6 @@ export default function ServicesPage() {
                 style={{ transformStyle: 'preserve-3d' }}
                 className="h-full"
               >
-                {/* idle hologram float */}
                 <motion.div
                   animate={{ y: [0, -7, 0] }}
                   transition={{ duration: 4.5 + i * 0.6, repeat: Infinity, ease: 'easeInOut', delay: i * 0.4 }}
@@ -471,9 +518,9 @@ export default function ServicesPage() {
       </section>
 
       {/* ══════════════════════════════════
-          CTA
+          CTA — hologram panel
       ══════════════════════════════════ */}
-      <section className="py-20 lg:py-28 relative overflow-hidden">
+      <section className="py-20 lg:py-28 relative overflow-hidden bg-bg-dark">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{ background: 'linear-gradient(135deg, rgba(46,85,224,0.08) 0%, rgba(232,21,90,0.06) 100%)' }}
@@ -505,7 +552,7 @@ export default function ServicesPage() {
             transition={{ duration: 11, repeat: Infinity, ease: 'linear' }}
           />
 
-          {/* 3D hologram panel — flips up, tilts toward cursor, spinning border */}
+          {/* 3D hologram panel */}
           <motion.div
             initial={{ opacity: 0, y: 90, rotateX: -22, scale: 0.94 }}
             whileInView={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
@@ -549,8 +596,7 @@ export default function ServicesPage() {
                       animationDelay: '-4s',
                     }}
                   />
-                  {/* inner glow + dot grid */}
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[420px] h-[200px] bg-brand-pink/[0.08] blur-[90px] rounded-full pointer-events-none" />
+                  {/* dot grid */}
                   <div
                     className="absolute inset-0 pointer-events-none"
                     style={{
@@ -617,7 +663,6 @@ export default function ServicesPage() {
       </section>
 
       <Footer />
-      </div>
     </div>
   )
 }
