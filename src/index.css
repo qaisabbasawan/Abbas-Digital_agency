@@ -158,6 +158,7 @@ input, textarea, select, button {
   to { transform: rotate(360deg); }
 }
 .animate-spin-slow { animation: spin360 8s linear infinite; }
+.animate-spin-slower { animation: spin360 18s linear infinite; }
 
 /* Soft pulsing glow (used behind hero / CTAs) */
 @keyframes glow-pulse {

@@ -14,10 +14,25 @@ export default function RevealText({
   per = 'word',          // 'word' | 'char'
   stagger = 0.05,
   once = true,
+  gradient = false,      // brand gradient flowing across the whole text
 }) {
   const text = typeof children === 'string' ? children : String(children)
   const units = per === 'char' ? [...text] : text.split(' ')
   const MotionTag = motion.create(Tag)
+
+  /* background-clip: text breaks on transformed children, so the gradient is
+     applied per unit with an offset background-position to stay continuous */
+  const gradientStyle = (i) => gradient
+    ? {
+        backgroundImage: 'linear-gradient(135deg, #2E55E0, #E8155A)',
+        backgroundSize: `${units.length * 100}% 100%`,
+        backgroundPosition: `${(i / Math.max(units.length - 1, 1)) * 100}% 0`,
+        WebkitBackgroundClip: 'text',
+        backgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        color: 'transparent',
+      }
+    : {}
 
   const container = {
     hidden: {},
@@ -36,6 +51,7 @@ export default function RevealText({
       className={className}
       style={style}
       aria-label={text}
+      variants={container}
       initial="hidden"
       whileInView="show"
       viewport={{ once, margin: '-60px' }}
@@ -48,7 +64,7 @@ export default function RevealText({
           >
             <motion.span
               variants={unit}
-              style={{ display: 'inline-block', transformOrigin: '50% 100%', willChange: 'transform' }}
+              style={{ display: 'inline-block', transformOrigin: '50% 100%', willChange: 'transform', ...gradientStyle(i) }}
             >
               {u === ' ' ? ' ' : u}
               {per === 'word' && i < units.length - 1 ? '\u00A0' : ''}
