@@ -1,6 +1,9 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import SEO from '../components/SEO'
-import { motion, useInView, useScroll, useTransform } from 'framer-motion'
+import {
+  motion, useInView, useScroll, useTransform,
+  useMotionValueEvent, useMotionTemplate,
+} from 'framer-motion'
 import { Link } from 'react-router-dom'
 import {
   Globe, ShoppingCart, Smartphone, Bot, TrendingUp, Palette,
@@ -8,7 +11,7 @@ import {
 } from 'lucide-react'
 import Footer from '../components/Footer'
 import ServicesScene from '../components/ServicesScene'
-import CoreElement from '../components/CoreElement'
+import FluidBurst from '../components/FluidBurst'
 import RevealText from '../components/anim/RevealText'
 import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
@@ -17,30 +20,38 @@ import useCountUp from '../hooks/useCountUp'
 /* ── Service data ── */
 const services = [
   {
-    n: '01', Icon: Globe,        title: 'Web Development',   color: '#2E55E0', slug: 'web-development',
+    n: '01', Icon: Globe, title: 'Web Development', sub: 'WordPress, React & Next.js',
+    color: '#2E55E0', slug: 'web-development', ambient: 'rain',
     desc: 'Custom WordPress, WooCommerce and React/Next.js websites built for performance, SEO and conversions.',
   },
   {
-    n: '02', Icon: ShoppingCart, title: 'E-Commerce',         color: '#E8155A', slug: 'ecommerce',
+    n: '02', Icon: ShoppingCart, title: 'E-Commerce', sub: 'Shopify, WooCommerce & Amazon',
+    color: '#E8155A', slug: 'ecommerce', ambient: 'gold',
     desc: 'End-to-end online stores on Shopify, WooCommerce, Amazon and eBay — from setup to conversion optimisation.',
   },
   {
-    n: '03', Icon: Smartphone,   title: 'Mobile Apps',        color: '#7C3AED', slug: 'mobile-apps',
+    n: '03', Icon: Smartphone, title: 'Mobile Apps', sub: 'Native iOS & Android',
+    color: '#7C3AED', slug: 'mobile-apps', ambient: 'phone',
     desc: 'Native iOS and Android apps from concept to App Store with clean code and ongoing post-launch support.',
   },
   {
-    n: '04', Icon: Bot,          title: 'AI & Chatbots',      color: '#0891B2', slug: 'ai-chatbots',
+    n: '04', Icon: Bot, title: 'AI & Chatbots', sub: 'WhatsApp Bots & GPT Integrations',
+    color: '#0891B2', slug: 'ai-chatbots', ambient: 'neural',
     desc: 'WhatsApp and Facebook chatbots, ChatGPT integrations and workflow automations saving hours every day.',
   },
   {
-    n: '05', Icon: TrendingUp,   title: 'Digital Marketing',  color: '#059669', slug: 'digital-marketing',
+    n: '05', Icon: TrendingUp, title: 'Digital Marketing', sub: 'SEO, Google Ads & Social Media',
+    color: '#059669', slug: 'digital-marketing', ambient: 'bars',
     desc: 'SEO, Google Ads, social media and email campaigns designed to drive qualified traffic and real ROI.',
   },
   {
-    n: '06', Icon: Palette,      title: 'Branding & Design',  color: '#D97706', slug: 'branding-design',
+    n: '06', Icon: Palette, title: 'Branding & Design', sub: 'Logo, Identity & UI/UX',
+    color: '#D97706', slug: 'branding-design', ambient: 'blobs',
     desc: 'Logo design, full brand identity, UI/UX and marketing materials that make your business unforgettable.',
   },
 ]
+
+const COLORS = services.map(s => s.color)
 
 /* ── Spinning energy ring icon orb ── */
 function IconOrb({ Icon, color, size = 60, iconSize = 22 }) {
@@ -133,205 +144,335 @@ function BurstButton({ children }) {
   )
 }
 
-/* ── Compact holographic service card (orbit + mobile stack) ── */
-function CompactCard({ svc }) {
-  return (
-    <TiltCard max={8} glareColor={`${svc.color}29`}>
-      <Link
-        to={`/services/${svc.slug}`}
-        className="group relative flex flex-col gap-2.5 p-5 rounded-2xl overflow-hidden"
+/* ── Glitch / scramble text reveal ── */
+const SCRAMBLE_CHARS = '!<>-_\\/[]{}—=+*^?#ABCDEFGHIK0123456789'
+
+function ScrambleText({ text, active, className, style }) {
+  const [display, setDisplay] = useState(text)
+
+  useEffect(() => {
+    if (!active) return
+    let frame = 0
+    const total = 20
+    const id = setInterval(() => {
+      frame++
+      const reveal = Math.floor((frame / total) * text.length)
+      let out = ''
+      for (let i = 0; i < text.length; i++) {
+        if (text[i] === ' ') { out += ' '; continue }
+        out += i < reveal
+          ? text[i]
+          : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
+      }
+      if (frame >= total) { setDisplay(text); clearInterval(id) }
+      else setDisplay(out)
+    }, 34)
+    return () => clearInterval(id)
+  }, [active, text])
+
+  return <span className={className} style={style}>{display}</span>
+}
+
+/* ── Per-service ambient animation inside the card ── */
+function CardAmbient({ type, color }) {
+  if (type === 'rain') {
+    return (
+      <div
+        className="ambient-rain absolute inset-0 opacity-[0.16] pointer-events-none"
         style={{
-          background: `linear-gradient(160deg, ${svc.color}1A, transparent 50%), linear-gradient(#0A1130, #0A1130)`,
-          border: `1px solid ${svc.color}38`,
-          boxShadow: `0 18px 50px rgba(0,0,0,0.5), 0 0 28px ${svc.color}16, inset 0 1px 0 rgba(255,255,255,0.06)`,
+          backgroundImage: `repeating-linear-gradient(180deg, transparent 0 14px, ${color}66 14px 17px, transparent 17px 38px), repeating-linear-gradient(90deg, transparent 0 26px, rgba(5,9,26,0.9) 26px 30px)`,
         }}
-      >
-        <div className="holo-sweep" />
-        <div
-          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-600 pointer-events-none"
-          style={{ background: `radial-gradient(110% 70% at 50% 0%, ${svc.color}22, transparent 65%)` }}
-        />
-
-        <div className="flex items-center justify-between">
-          <IconOrb Icon={svc.Icon} color={svc.color} size={46} iconSize={17} />
+      />
+    )
+  }
+  if (type === 'gold') {
+    return (
+      <div className="ambient-rise absolute inset-0 opacity-70 pointer-events-none">
+        {Array.from({ length: 9 }).map((_, i) => (
           <span
-            className="font-bold leading-none select-none"
-            style={{ fontSize: 34, color: 'transparent', WebkitTextStroke: `1.2px ${svc.color}50` }}
-          >
-            {svc.n}
-          </span>
+            key={i}
+            style={{
+              left: `${8 + (i * 11) % 86}%`,
+              width: i % 3 === 0 ? 4 : 3,
+              height: i % 3 === 0 ? 4 : 3,
+              background: '#F59E0B',
+              boxShadow: '0 0 8px #F59E0B',
+              animationDelay: `${i * 0.4}s`,
+              animationDuration: `${2.8 + (i % 4) * 0.5}s`,
+            }}
+          />
+        ))}
+      </div>
+    )
+  }
+  if (type === 'phone') {
+    return (
+      <div className="absolute right-6 top-1/2 -translate-y-1/2 w-[88px] h-[160px] opacity-25 pointer-events-none">
+        <div className="absolute inset-0 rounded-[18px] border-2" style={{ borderColor: color }} />
+        <div className="absolute top-2 left-1/2 -translate-x-1/2 w-7 h-1 rounded-full" style={{ background: color }} />
+        <div className="absolute inset-0 animate-spin-slow" style={{ animationDuration: '11s' }}>
+          <span className="absolute -left-3 top-1/2 w-2 h-2 rounded-full" style={{ background: color, boxShadow: `0 0 8px ${color}` }} />
         </div>
-
-        <h3 className="text-white font-bold text-[16.5px] leading-tight">{svc.title}</h3>
-        <p className="text-white/45 text-[12px] leading-relaxed line-clamp-2">{svc.desc}</p>
-
-        <span
-          className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.2em] uppercase font-semibold transition-all duration-300 group-hover:gap-3"
-          style={{ color: svc.color }}
-        >
-          Explore
-          <ArrowUpRight size={11} strokeWidth={2.2} />
-        </span>
-      </Link>
-    </TiltCard>
+        <div className="absolute -inset-4 animate-spin-slower" style={{ animationDirection: 'reverse' }}>
+          <span className="absolute -right-1 top-1/3 w-1.5 h-1.5 rounded-full" style={{ background: '#fff', boxShadow: `0 0 6px ${color}` }} />
+        </div>
+      </div>
+    )
+  }
+  if (type === 'neural') {
+    const nodes = [[15, 25], [38, 12], [62, 28], [85, 18], [25, 62], [50, 50], [75, 60], [88, 80], [12, 82], [45, 85]]
+    return (
+      <svg className="absolute inset-0 w-full h-full opacity-25 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 100 100">
+        {nodes.slice(0, -1).map((n, i) => (
+          <line key={i} x1={n[0]} y1={n[1]} x2={nodes[i + 1][0]} y2={nodes[i + 1][1]} stroke={color} strokeWidth="0.35" opacity="0.5" />
+        ))}
+        {nodes.map((n, i) => (
+          <circle key={i} cx={n[0]} cy={n[1]} r="1.6" fill={color} className="ambient-node" style={{ animationDelay: `${i * 0.3}s` }} />
+        ))}
+      </svg>
+    )
+  }
+  if (type === 'bars') {
+    return (
+      <div className="absolute inset-x-8 bottom-6 h-[42%] flex items-end gap-2.5 opacity-25 pointer-events-none">
+        {Array.from({ length: 12 }).map((_, i) => (
+          <div
+            key={i}
+            className="ambient-bar flex-1 rounded-t"
+            style={{
+              height: `${30 + (i * 17) % 70}%`,
+              background: `linear-gradient(180deg, ${color}, transparent)`,
+              animationDelay: `${i * 0.22}s`,
+            }}
+          />
+        ))}
+      </div>
+    )
+  }
+  /* blobs — branding */
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-50">
+      <div className="nebula-blob absolute -top-10 -right-10 w-48 h-48 rounded-full" style={{ background: `radial-gradient(circle, ${color}55, transparent 65%)` }} />
+      <div className="nebula-blob absolute -bottom-12 -left-8 w-52 h-52 rounded-full" style={{ background: 'radial-gradient(circle, #E8155A40, transparent 65%)', animationDelay: '-7s', animationDirection: 'reverse' }} />
+    </div>
   )
 }
 
-/* ── Orbit showcase — cards emerge from the 3D core one by one on scroll ── */
-const SLOTS = [
-  { x: -480, y: -218 },  // 01 left top
-  { x: 480,  y: -218 },  // 02 right top
-  { x: -555, y: 22 },    // 03 left mid
-  { x: 555,  y: 22 },    // 04 right mid
-  { x: -440, y: 258 },   // 05 left bottom
-  { x: 440,  y: 258 },   // 06 right bottom
-]
+/* ── Card panel content (shared by carousel + mobile stack) ── */
+function CardPanel({ svc, active }) {
+  return (
+    <div
+      className="group relative w-full h-full rounded-[26px] overflow-hidden flex flex-col p-8 sm:p-9"
+      style={{
+        background: 'rgba(10,17,48,0.5)',
+        backdropFilter: 'blur(18px)',
+        WebkitBackdropFilter: 'blur(18px)',
+        border: `1px solid ${svc.color}55`,
+        boxShadow: `0 30px 90px rgba(0,0,0,0.55), 0 0 50px ${svc.color}22, inset 0 1px 0 rgba(255,255,255,0.09)`,
+      }}
+    >
+      <CardAmbient type={svc.ambient} color={svc.color} />
+      <div className="holo-sweep" />
 
-const slotTiming = (i) => {
-  const start = 0.06 + i * 0.145
-  return [start, start + 0.115]
+      {/* top row */}
+      <div className="relative flex items-start justify-between mb-7">
+        <IconOrb Icon={svc.Icon} color={svc.color} size={58} iconSize={22} />
+        <span
+          className="font-bold leading-none select-none"
+          style={{ fontSize: 64, color: 'transparent', WebkitTextStroke: `1.4px ${svc.color}55` }}
+        >
+          {svc.n}
+        </span>
+      </div>
+
+      {/* glitch title */}
+      <h3 className="relative text-white font-bold leading-tight mb-1.5" style={{ fontSize: 'clamp(1.5rem, 2vw, 1.9rem)' }}>
+        <ScrambleText text={svc.title} active={active} />
+      </h3>
+      <p className="relative text-[12px] font-semibold tracking-[0.16em] uppercase mb-5" style={{ color: svc.color }}>
+        {svc.sub}
+      </p>
+
+      <p className="relative text-white/55 text-[14px] leading-relaxed max-w-sm">{svc.desc}</p>
+
+      {/* CTA */}
+      <Link
+        to={`/services/${svc.slug}`}
+        className="relative mt-auto inline-flex items-center gap-2.5 text-[11.5px] tracking-[0.22em] uppercase font-bold transition-all duration-300 hover:gap-4 w-fit"
+        style={{ color: svc.color }}
+      >
+        Explore
+        <span
+          className="flex items-center justify-center w-8 h-8 rounded-full transition-transform duration-300 group-hover:rotate-45"
+          style={{ border: `1px solid ${svc.color}66`, background: `${svc.color}18` }}
+        >
+          <ArrowUpRight size={14} strokeWidth={2.2} />
+        </span>
+      </Link>
+    </div>
+  )
 }
 
-function OrbitCard({ svc, i, progress }) {
-  const [start, end] = slotTiming(i)
-  const slot = SLOTS[i]
-  const opacity = useTransform(progress, [start, start + 0.03, end], [0, 0.55, 1])
-  const scale   = useTransform(progress, [start, end], [0.22, 1])
-  const x       = useTransform(progress, [start, end], [0, slot.x])
-  const y       = useTransform(progress, [start, end], [0, slot.y])
-  const blur    = useTransform(progress, [start, end], [8, 0])
-  const filter  = useTransform(blur, v => `blur(${v}px)`)
+/* ── One carousel card — position derived from the carousel pos ── */
+function CarouselCard({ svc, i, pos, active }) {
+  const d = useTransform(pos, v => i - v)
+  const x = useTransform(d, v => v * 620)
+  const y = useTransform(d, v => Math.abs(v) * 26)
+  const scale = useTransform(d, v => 1 - Math.min(Math.abs(v), 2.4) * 0.15)
+  const rotateY = useTransform(d, v => -Math.max(Math.min(v, 1.6), -1.6) * 16)
+  const opacity = useTransform(d, v => 1 - Math.min(Math.abs(v), 1.9) * 0.48)
+  const blurPx = useTransform(d, v => Math.min(Math.abs(v) * 2.2, 6))
+  const filter = useTransform(blurPx, v => `blur(${v}px)`)
+  const zIndex = useTransform(d, v => 100 - Math.round(Math.abs(v) * 10))
 
   return (
     <motion.div
-      style={{ opacity, scale, x, y, filter }}
-      className="absolute left-1/2 top-1/2 -ml-[150px] -mt-[86px] w-[300px] z-20"
+      style={{ x, y, scale, rotateY, opacity, filter, zIndex, transformStyle: 'preserve-3d' }}
+      className="absolute left-1/2 top-1/2 -ml-[260px] sm:-ml-[290px] -mt-[235px] w-[520px] sm:w-[580px] h-[440px]"
     >
-      <CompactCard svc={svc} />
+      <CardPanel svc={svc} active={active} />
     </motion.div>
   )
 }
 
-function OrbitLine({ i, progress }) {
-  const [start, end] = slotTiming(i)
-  const slot = SLOTS[i]
-  const pathLength = useTransform(progress, [start, end], [0, 1])
-  const opacity    = useTransform(progress, [start, end], [0, 0.45])
-  return (
-    <motion.line
-      x1={620} y1={420}
-      x2={620 + slot.x} y2={420 + slot.y}
-      stroke={services[i].color}
-      strokeWidth="1.2"
-      style={{ pathLength, opacity }}
-    />
-  )
-}
-
-function OrbitShowcase() {
+/* ── The pinned 3D horizontal carousel ── */
+function ServicesCarousel() {
   const ref = useRef(null)
+  const storeRef = useRef({ pos: 0 })
+  const [active, setActive] = useState(0)
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start start', 'end end'],
   })
+  const pos = useTransform(scrollYProgress, [0.03, 0.97], [0, 5], { clamp: true })
 
-  const hintOpacity = useTransform(scrollYProgress, [0, 0.05, 0.85, 0.95], [1, 1, 1, 0])
+  useMotionValueEvent(pos, 'change', v => {
+    storeRef.current.pos = v
+    const idx = Math.min(5, Math.max(0, Math.round(v)))
+    setActive(prev => (prev === idx ? prev : idx))
+  })
+
+  /* halo colour follows the active card */
+  const halo = useTransform(pos, [0, 1, 2, 3, 4, 5], COLORS)
+  const haloBg = useMotionTemplate`radial-gradient(560px circle at 50% 52%, ${halo}30, transparent 70%)`
+
+  const jumpTo = (i) => {
+    const el = ref.current
+    if (!el) return
+    const top = el.getBoundingClientRect().top + window.scrollY
+    const travel = el.offsetHeight - window.innerHeight
+    const progress = 0.03 + (i / 5) * 0.94
+    const target = top + progress * travel
+    if (window.__lenis) window.__lenis.scrollTo(target, { duration: 1.4 })
+    else window.scrollTo({ top: target, behavior: 'smooth' })
+  }
 
   return (
-    <section ref={ref} className="relative hidden lg:block bg-bg-dark" style={{ height: '340vh' }}>
-      <div className="sticky top-0 h-screen overflow-hidden flex items-center justify-center">
+    <section ref={ref} className="relative hidden lg:block bg-bg-dark" style={{ height: '640vh' }}>
+      <div className="sticky top-0 h-screen overflow-hidden">
 
-        {/* ambient */}
-        <div className="absolute top-1/4 left-0 w-[460px] h-[460px] bg-brand-blue/[0.06] rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-[420px] h-[420px] bg-brand-pink/[0.05] rounded-full blur-[120px] pointer-events-none" />
+        {/* sci-fi grid floor */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-[0.5]"
+          style={{
+            backgroundImage: 'linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px)',
+            backgroundSize: '72px 72px',
+            maskImage: 'radial-gradient(ellipse 75% 70% at 50% 50%, #000 20%, transparent 78%)',
+            WebkitMaskImage: 'radial-gradient(ellipse 75% 70% at 50% 50%, #000 20%, transparent 78%)',
+          }}
+        />
+
+        {/* fluid explosion + starfield */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <FluidBurst store={storeRef.current} />
+        </div>
+
+        {/* colour halo behind the active card */}
+        <motion.div className="absolute inset-0 pointer-events-none" style={{ background: haloBg }} />
 
         {/* heading */}
-        <div className="absolute top-14 left-1/2 -translate-x-1/2 text-center z-30 w-full px-6">
+        <div className="absolute top-12 left-1/2 -translate-x-1/2 text-center z-30 w-full px-6">
           <motion.p
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-3"
+            className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-2.5"
           >
             What We Do
           </motion.p>
-          <h2 className="font-bold leading-[1.04]" style={{ fontSize: 'clamp(2rem, 3.6vw, 3.2rem)' }}>
+          <h2 className="font-bold leading-[1.04]" style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)' }}>
             <RevealText as="span" className="text-white inline-block" stagger={0.07}>
-              One Core.
+              Scroll Through
             </RevealText>{' '}
             <RevealText as="span" className="inline-block" gradient delay={0.22} stagger={0.09}>
-              Six Services.
+              Our Universe.
             </RevealText>
           </h2>
         </div>
 
-        {/* connection lines — drawn from the core to each card */}
-        <svg
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10"
-          width="1240" height="840" viewBox="0 0 1240 840" fill="none"
-        >
-          {services.map((_, i) => <OrbitLine key={i} i={i} progress={scrollYProgress} />)}
-        </svg>
-
-        {/* central 3D core */}
-        <div className="relative w-[460px] h-[460px] z-10 mt-10">
-          {/* pulsing glow behind */}
-          <div
-            className="animate-glow-pulse absolute inset-6 rounded-full pointer-events-none"
-            style={{ background: 'radial-gradient(circle, rgba(46,85,224,0.22), rgba(232,21,90,0.08) 55%, transparent 72%)', filter: 'blur(14px)' }}
-          />
-          <CoreElement />
+        {/* the six cards in 3D space */}
+        <div className="absolute inset-0 z-10" style={{ perspective: 1600 }}>
+          {services.map((svc, i) => (
+            <CarouselCard key={svc.n} svc={svc} i={i} pos={pos} active={active === i} />
+          ))}
         </div>
 
-        {/* the six cards, emerging one by one */}
-        {services.map((svc, i) => (
-          <OrbitCard key={svc.n} svc={svc} i={i} progress={scrollYProgress} />
-        ))}
-
-        {/* scroll hint */}
-        <motion.div
-          style={{ opacity: hintOpacity }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2"
-        >
-          <span className="text-white/25 text-[10px] uppercase tracking-[0.25em]">Keep scrolling</span>
-          <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
-            className="w-px h-7 bg-gradient-to-b from-white/25 to-transparent"
-          />
-        </motion.div>
+        {/* nav dots + counter */}
+        <div className="absolute bottom-9 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-4">
+          <div className="flex items-center gap-3">
+            {services.map((s, i) => (
+              <button
+                key={s.n}
+                onClick={() => jumpTo(i)}
+                aria-label={`Go to ${s.title}`}
+                className="relative rounded-full transition-all duration-400"
+                style={{
+                  width: active === i ? 30 : 8,
+                  height: 8,
+                  background: active === i ? s.color : 'rgba(255,255,255,0.18)',
+                  boxShadow: active === i ? `0 0 14px ${s.color}` : 'none',
+                }}
+              />
+            ))}
+          </div>
+          <span className="text-white/30 text-[10px] tracking-[0.3em] uppercase">
+            0{active + 1} / 06 — {services[active].title}
+          </span>
+        </div>
       </div>
     </section>
   )
 }
 
-/* ── Mobile: simple stacked cards ── */
+/* ── Mobile: stacked glass panels ── */
 function MobileServices() {
   return (
-    <section className="lg:hidden py-16 bg-bg-dark relative">
+    <section className="lg:hidden py-16 bg-bg-dark relative overflow-hidden">
       <div className="max-w-xl mx-auto px-5 sm:px-8">
         <div className="text-center mb-10">
           <p className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-3">What We Do</p>
           <h2 className="font-bold leading-[1.05]" style={{ fontSize: 'clamp(2rem, 8vw, 2.6rem)' }}>
             <RevealText as="span" className="text-white inline-block" stagger={0.07}>
-              One Core.
+              Six Services.
             </RevealText>{' '}
             <RevealText as="span" className="inline-block" gradient delay={0.22} stagger={0.09}>
-              Six Services.
+              One Vision.
             </RevealText>
           </h2>
         </div>
-        <div className="space-y-4">
+        <div className="space-y-5">
           {services.map((svc, i) => (
             <motion.div
               key={svc.n}
-              initial={{ opacity: 0, y: 36 }}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-40px' }}
-              transition={{ delay: (i % 2) * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="h-[400px]"
             >
-              <CompactCard svc={svc} />
+              <CardPanel svc={svc} active />
             </motion.div>
           ))}
         </div>
@@ -358,12 +499,10 @@ export default function ServicesPage() {
       ══════════════════════════════════ */}
       <section className="relative pt-20 pb-24 lg:pt-24 lg:pb-32 overflow-hidden min-h-[86vh]" ref={heroRef}>
 
-        {/* 3D atom: six electron services orbiting one nucleus */}
         <div className="absolute inset-0 z-0 pointer-events-none">
           <ServicesScene />
         </div>
 
-        {/* Text-protection gradient (left) + bottom fade into solid bg */}
         <div
           className="absolute inset-0 pointer-events-none z-[1]"
           style={{ background: 'linear-gradient(100deg, rgba(5,9,26,0.88) 35%, rgba(5,9,26,0.45) 62%, rgba(5,9,26,0.05) 100%)' }}
@@ -402,7 +541,6 @@ export default function ServicesPage() {
             digital experiences that deliver real business results.
           </motion.p>
 
-          {/* Stats — floating glass panels */}
           <div className="flex flex-wrap gap-3 sm:gap-4 max-w-2xl">
             <HeroStat value={500} suffix="+" label="Projects" color="#2E55E0" i={0} />
             <HeroStat value={10}  suffix="+" label="Years"    color="#E8155A" i={1} />
@@ -413,9 +551,9 @@ export default function ServicesPage() {
       </section>
 
       {/* ══════════════════════════════════
-          SERVICES — pinned orbit showcase
+          SERVICES — 3D horizontal carousel
       ══════════════════════════════════ */}
-      <OrbitShowcase />
+      <ServicesCarousel />
       <MobileServices />
 
       {/* ══════════════════════════════════
@@ -426,7 +564,6 @@ export default function ServicesPage() {
           style={{ background: 'rgba(255,255,255,0.013)', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)' }} />
         <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-brand-pink/[0.05] blur-[120px] pointer-events-none" />
 
-        {/* Rotating holographic rings behind the section */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[760px] h-[760px] pointer-events-none hidden md:block" aria-hidden>
           <div
             className="absolute inset-0 rounded-full animate-spin-slower"
@@ -464,7 +601,6 @@ export default function ServicesPage() {
             </h2>
           </div>
 
-          {/* perspective stage — cards swing in from the sides */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" style={{ perspective: 1600 }}>
             {[
               { Icon: Clock, color: '#2E55E0', title: '10+ Years',       desc: 'A decade of delivering digital solutions that actually work.' },
@@ -529,7 +665,6 @@ export default function ServicesPage() {
 
         <div className="max-w-4xl mx-auto px-5 sm:px-8 relative z-10" style={{ perspective: 1400 }}>
 
-          {/* Floating geometry around the panel */}
           <motion.div
             aria-hidden
             className="absolute -top-12 -left-4 lg:-left-14 w-11 h-11 rounded-xl border pointer-events-none"
@@ -544,15 +679,7 @@ export default function ServicesPage() {
             animate={{ y: [0, 14, 0], x: [0, -8, 0] }}
             transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
           />
-          <motion.div
-            aria-hidden
-            className="absolute top-1/3 -right-6 lg:-right-20 w-6 h-6 border pointer-events-none rotate-45"
-            style={{ borderColor: 'rgba(124,58,237,0.5)', boxShadow: '0 0 18px rgba(124,58,237,0.3)' }}
-            animate={{ y: [0, -12, 0], rotate: [45, 225, 405] }}
-            transition={{ duration: 11, repeat: Infinity, ease: 'linear' }}
-          />
 
-          {/* 3D hologram panel */}
           <motion.div
             initial={{ opacity: 0, y: 90, rotateX: -22, scale: 0.94 }}
             whileInView={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
@@ -561,8 +688,16 @@ export default function ServicesPage() {
             style={{ transformStyle: 'preserve-3d', transformOrigin: '50% 100%' }}
           >
             <TiltCard max={4} glareColor="rgba(255,255,255,0.06)">
-              <div className="relative rounded-[30px] p-[1.5px] overflow-hidden">
-                {/* spinning conic border */}
+              {/* breathing border glow */}
+              <motion.div
+                animate={{ boxShadow: [
+                  '0 0 32px rgba(232,21,90,0.16), 0 0 60px rgba(46,85,224,0.10)',
+                  '0 0 52px rgba(232,21,90,0.32), 0 0 90px rgba(46,85,224,0.20)',
+                  '0 0 32px rgba(232,21,90,0.16), 0 0 60px rgba(46,85,224,0.10)',
+                ] }}
+                transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+                className="relative rounded-[30px] p-[1.5px] overflow-hidden"
+              >
                 <div
                   className="absolute -inset-[150%] animate-spin-slower pointer-events-none"
                   style={{
@@ -576,7 +711,6 @@ export default function ServicesPage() {
                     boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.07)',
                   }}
                 >
-                  {/* nebula fluid backdrop */}
                   <div
                     className="nebula-blob absolute -top-24 -left-20 w-[420px] h-[320px] rounded-full"
                     style={{ background: 'radial-gradient(circle at 35% 40%, rgba(46,85,224,0.28), transparent 60%)' }}
@@ -587,23 +721,6 @@ export default function ServicesPage() {
                       background: 'radial-gradient(circle at 60% 55%, rgba(232,21,90,0.22), transparent 60%)',
                       animationDelay: '-8s',
                       animationDirection: 'reverse',
-                    }}
-                  />
-                  <div
-                    className="nebula-blob absolute top-1/3 left-1/3 w-[340px] h-[260px] rounded-full"
-                    style={{
-                      background: 'radial-gradient(circle at 50% 50%, rgba(124,58,237,0.18), transparent 60%)',
-                      animationDelay: '-4s',
-                    }}
-                  />
-                  {/* dot grid */}
-                  <div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{
-                      backgroundImage: 'radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)',
-                      backgroundSize: '24px 24px',
-                      maskImage: 'radial-gradient(ellipse 70% 70% at 50% 40%, #000 30%, transparent 78%)',
-                      WebkitMaskImage: 'radial-gradient(ellipse 70% 70% at 50% 40%, #000 30%, transparent 78%)',
                     }}
                   />
 
@@ -656,7 +773,7 @@ export default function ServicesPage() {
                     </motion.div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </TiltCard>
           </motion.div>
         </div>
