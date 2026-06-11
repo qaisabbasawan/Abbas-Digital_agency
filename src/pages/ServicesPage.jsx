@@ -108,7 +108,7 @@ export default function ServicesPage() {
       {/* ══════════════════════════════════
           HERO
       ══════════════════════════════════ */}
-      <section className="relative py-24 lg:py-32 overflow-hidden min-h-[88vh] flex items-center" ref={heroRef}>
+      <section className="relative pt-20 pb-24 lg:pt-24 lg:pb-32 overflow-hidden min-h-[82vh]" ref={heroRef}>
 
         {/* ── 3D atom scene: six electron services orbiting one nucleus ── */}
         <div className="absolute inset-0 z-0 pointer-events-none">
@@ -176,16 +176,24 @@ export default function ServicesPage() {
           style={{ background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(46,85,224,0.06), transparent)' }} />
 
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {/* perspective stage — cards stand up from the floor in 3D */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" style={{ perspective: 1600 }}>
             {services.map((svc, i) => (
               <motion.div
                 key={svc.n}
-                initial={{ opacity: 0, y: 48 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 110, rotateX: -32, scale: 0.92 }}
+                whileInView={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
                 viewport={{ once: true, margin: '-60px' }}
-                transition={{ delay: (i % 3) * 0.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ delay: (i % 3) * 0.14, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+                style={{ transformStyle: 'preserve-3d', transformOrigin: '50% 100%' }}
                 className="h-full"
               >
+                {/* idle levitation — each card breathes on its own rhythm */}
+                <motion.div
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{ duration: 5 + i * 0.55, repeat: Infinity, ease: 'easeInOut', delay: i * 0.35 }}
+                  className="h-full"
+                >
                 <TiltCard max={8} glareColor={`${svc.color}26`}>
                   <Link
                     to={`/services/${svc.slug}`}
@@ -268,6 +276,7 @@ export default function ServicesPage() {
                     </span>
                   </Link>
                 </TiltCard>
+                </motion.div>
               </motion.div>
             ))}
           </div>
@@ -300,7 +309,8 @@ export default function ServicesPage() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* perspective stage — cards swing in from the sides */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" style={{ perspective: 1600 }}>
             {[
               { Icon: Clock, color: '#2E55E0', title: '10+ Years',       desc: 'A decade of delivering digital solutions that actually work.' },
               { Icon: Users, color: '#E8155A', title: '50+ Clients',     desc: 'Trusted by businesses across Pakistan, UAE and beyond.' },
@@ -309,12 +319,24 @@ export default function ServicesPage() {
             ].map((item, i) => (
               <motion.div
                 key={item.title}
-                initial={{ opacity: 0, y: 32 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{
+                  opacity: 0,
+                  x: i < 2 ? -90 : 90,
+                  rotateY: i < 2 ? -38 : 38,
+                  scale: 0.9,
+                }}
+                whileInView={{ opacity: 1, x: 0, rotateY: 0, scale: 1 }}
                 viewport={{ once: true, margin: '-60px' }}
-                transition={{ delay: i * 0.1, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ delay: Math.abs(i - 1.5) * 0.12, duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
+                style={{ transformStyle: 'preserve-3d' }}
                 className="h-full"
               >
+                {/* idle hologram float */}
+                <motion.div
+                  animate={{ y: [0, -7, 0] }}
+                  transition={{ duration: 4.5 + i * 0.6, repeat: Infinity, ease: 'easeInOut', delay: i * 0.4 }}
+                  className="h-full"
+                >
                 <TiltCard max={7} glareColor={`${item.color}22`}>
                   <div
                     className="group relative p-6 rounded-2xl overflow-hidden h-full"
@@ -334,6 +356,7 @@ export default function ServicesPage() {
                     <p className="text-white/45 text-[13px] leading-relaxed">{item.desc}</p>
                   </div>
                 </TiltCard>
+                </motion.div>
               </motion.div>
             ))}
           </div>
@@ -350,50 +373,116 @@ export default function ServicesPage() {
         />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] rounded-full bg-brand-blue/[0.07] blur-[100px] pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 text-center relative z-10">
-          <motion.p
-            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-            className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-4"
-          >
-            Let's Build Together
-          </motion.p>
-          <h2 className="font-bold leading-[1.06] mb-5" style={{ fontSize: 'clamp(2.4rem, 5vw, 4.2rem)' }}>
-            <RevealText as="span" className="text-white block" stagger={0.07}>
-              Ready to Grow
-            </RevealText>
-            <RevealText as="span" className="block" gradient delay={0.28} stagger={0.09}>
-              Your Business?
-            </RevealText>
-          </h2>
-          <motion.p
-            initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="text-white/45 text-[15px] mb-10 max-w-md mx-auto leading-relaxed"
-          >
-            Free consultation, no commitment. Tell us about your project and we'll get back within 24 hours.
-          </motion.p>
+        <div className="max-w-4xl mx-auto px-5 sm:px-8 relative z-10" style={{ perspective: 1400 }}>
+
+          {/* Floating geometry around the panel */}
           <motion.div
-            initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            aria-hidden
+            className="absolute -top-12 -left-4 lg:-left-14 w-11 h-11 rounded-xl border pointer-events-none"
+            style={{ borderColor: 'rgba(46,85,224,0.45)', boxShadow: '0 0 22px rgba(46,85,224,0.25)' }}
+            animate={{ y: [0, -16, 0], rotate: [0, 180, 360] }}
+            transition={{ duration: 14, repeat: Infinity, ease: 'linear' }}
+          />
+          <motion.div
+            aria-hidden
+            className="absolute -bottom-8 -right-2 lg:-right-12 w-8 h-8 rounded-full border pointer-events-none"
+            style={{ borderColor: 'rgba(232,21,90,0.5)', boxShadow: '0 0 20px rgba(232,21,90,0.3)' }}
+            animate={{ y: [0, 14, 0], x: [0, -8, 0] }}
+            transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <motion.div
+            aria-hidden
+            className="absolute top-1/3 -right-6 lg:-right-20 w-6 h-6 border pointer-events-none rotate-45"
+            style={{ borderColor: 'rgba(124,58,237,0.5)', boxShadow: '0 0 18px rgba(124,58,237,0.3)' }}
+            animate={{ y: [0, -12, 0], rotate: [45, 225, 405] }}
+            transition={{ duration: 11, repeat: Infinity, ease: 'linear' }}
+          />
+
+          {/* 3D hologram panel — flips up, tilts toward cursor, spinning border */}
+          <motion.div
+            initial={{ opacity: 0, y: 90, rotateX: -22, scale: 0.94 }}
+            whileInView={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.95, ease: [0.22, 1, 0.36, 1] }}
+            style={{ transformStyle: 'preserve-3d', transformOrigin: '50% 100%' }}
           >
-            <Magnetic>
-              <Link
-                to="/contact"
-                className="shimmer-btn inline-flex items-center gap-2.5 px-8 py-3.5 text-sm tracking-wide text-white font-medium hover:opacity-90 transition-opacity"
-              >
-                Get a Free Quote
-                <ArrowRight size={15} strokeWidth={2} />
-              </Link>
-            </Magnetic>
-            <Magnetic>
-              <Link
-                to="/portfolio"
-                className="inline-flex items-center gap-2 px-8 py-3.5 text-sm tracking-wide text-white/60 border border-white/15 rounded-sm hover:text-white hover:border-white/35 transition-all duration-250"
-              >
-                View Our Work
-              </Link>
-            </Magnetic>
+            <TiltCard max={4} glareColor="rgba(255,255,255,0.06)">
+              <div className="relative rounded-[30px] p-[1.5px] overflow-hidden">
+                {/* spinning conic border */}
+                <div
+                  className="absolute -inset-[150%] animate-spin-slower pointer-events-none"
+                  style={{
+                    background: 'conic-gradient(from 0deg, transparent 8%, #2E55E0 22%, transparent 38%, transparent 55%, #E8155A 72%, transparent 88%)',
+                  }}
+                />
+                <div
+                  className="relative rounded-[30px] px-6 sm:px-12 py-14 lg:py-16 text-center overflow-hidden"
+                  style={{
+                    background: 'linear-gradient(165deg, #0B1232, #080E2A 60%)',
+                    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.07)',
+                  }}
+                >
+                  {/* inner glow + dot grid */}
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[420px] h-[200px] bg-brand-pink/[0.08] blur-[90px] rounded-full pointer-events-none" />
+                  <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      backgroundImage: 'radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)',
+                      backgroundSize: '24px 24px',
+                      maskImage: 'radial-gradient(ellipse 70% 70% at 50% 40%, #000 30%, transparent 78%)',
+                      WebkitMaskImage: 'radial-gradient(ellipse 70% 70% at 50% 40%, #000 30%, transparent 78%)',
+                    }}
+                  />
+
+                  <div className="relative">
+                    <motion.p
+                      initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+                      className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-4"
+                    >
+                      Let's Build Together
+                    </motion.p>
+                    <h2 className="font-bold leading-[1.06] mb-5" style={{ fontSize: 'clamp(2.2rem, 4.5vw, 3.8rem)' }}>
+                      <RevealText as="span" className="text-white block" stagger={0.07}>
+                        Ready to Grow
+                      </RevealText>
+                      <RevealText as="span" className="block" gradient delay={0.28} stagger={0.09}>
+                        Your Business?
+                      </RevealText>
+                    </h2>
+                    <motion.p
+                      initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+                      transition={{ delay: 0.3, duration: 0.6 }}
+                      className="text-white/45 text-[15px] mb-10 max-w-md mx-auto leading-relaxed"
+                    >
+                      Free consultation, no commitment. Tell us about your project and we'll get back within 24 hours.
+                    </motion.p>
+                    <motion.div
+                      initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+                      transition={{ delay: 0.4, duration: 0.6 }}
+                      className="flex flex-col sm:flex-row items-center justify-center gap-4"
+                    >
+                      <Magnetic>
+                        <Link
+                          to="/contact"
+                          className="shimmer-btn inline-flex items-center gap-2.5 px-8 py-3.5 text-sm tracking-wide text-white font-medium hover:opacity-90 transition-opacity"
+                        >
+                          Get a Free Quote
+                          <ArrowRight size={15} strokeWidth={2} />
+                        </Link>
+                      </Magnetic>
+                      <Magnetic>
+                        <Link
+                          to="/portfolio"
+                          className="inline-flex items-center gap-2 px-8 py-3.5 text-sm tracking-wide text-white/60 border border-white/15 rounded-sm hover:text-white hover:border-white/35 transition-all duration-250"
+                        >
+                          View Our Work
+                        </Link>
+                      </Magnetic>
+                    </motion.div>
+                  </div>
+                </div>
+              </div>
+            </TiltCard>
           </motion.div>
         </div>
       </section>
