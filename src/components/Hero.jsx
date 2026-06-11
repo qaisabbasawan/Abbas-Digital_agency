@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { useEffect, useState, useRef } from 'react'
+import { motion, useScroll, useTransform, useAnimationFrame } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import {
   Globe, ShoppingCart, Smartphone,
@@ -57,88 +57,110 @@ function HeadlineLine({ text, gradient, lineIdx }) {
 /* ── Typewriter words ── */
 const words = ['Web Development', 'E-Commerce', 'Mobile Apps', 'AI Solutions', 'Digital Marketing']
 
-/* ── Floating service tags — all on the right side, staggered vertically ── */
+/* ── Services orbiting the 3D core like satellites ── */
 const services = [
-  {
-    Icon: Globe,        label: 'Web Development',  color: '#2E55E0',
-    float: { dur: 5.5, x: [0, 0, 0, 0, 0],     y: [0, -14, 0, -14, 0] },  // pure vertical bob
-    pos: { top: '8%',  right: '3%'  }, delay: 0.3,
-  },
-  {
-    Icon: ShoppingCart, label: 'E-Commerce',       color: '#E8155A',
-    float: { dur: 6.4, x: [-9, 0, 9, 0, -9],   y: [0, -10, 0, 10, 0]  },  // oval orbit
-    pos: { top: '22%', right: '20%' }, delay: 0.6,
-  },
-  {
-    Icon: Smartphone,   label: 'Mobile Apps',      color: '#7C3AED',
-    float: { dur: 5.8, x: [0, 10, 0, -10, 0],  y: [0, -6, 0, -6, 0]   },  // horizontal sway
-    pos: { top: '38%', right: '4%'  }, delay: 0.9,
-  },
-  {
-    Icon: Bot,          label: 'AI & Chatbots',    color: '#0891B2',
-    float: { dur: 5.2, x: [0, -8, 0, 8, 0],    y: [-10, 0, 10, 0, -10] }, // phase-shifted orbit
-    pos: { top: '54%', right: '22%' }, delay: 0.15,
-  },
-  {
-    Icon: TrendingUp,   label: 'Digital Marketing',color: '#059669',
-    float: { dur: 5.0, x: [0, 7, 0, -7, 0],    y: [0, -12, 0, -12, 0]  }, // diagonal drift
-    pos: { top: '68%', right: '5%'  }, delay: 1.1,
-  },
-  {
-    Icon: Palette,      label: 'Branding & Design',color: '#D97706',
-    float: { dur: 7.0, x: [-7, 7, -7, 7, -7],  y: [-8, 0, 8, 0, -8]   },  // figure-8
-    pos: { top: '80%', right: '20%' }, delay: 0.75,
-  },
+  { Icon: Globe,        label: 'Web Development',   color: '#2E55E0' },
+  { Icon: ShoppingCart, label: 'E-Commerce',        color: '#E8155A' },
+  { Icon: Smartphone,   label: 'Mobile Apps',       color: '#7C3AED' },
+  { Icon: Bot,          label: 'AI & Chatbots',     color: '#0891B2' },
+  { Icon: TrendingUp,   label: 'Digital Marketing', color: '#059669' },
+  { Icon: Palette,      label: 'Branding & Design', color: '#D97706' },
 ]
 
-/* ── Floating tag component ── */
-function FloatingTag({ svc, inView }) {
-  const { Icon, label, color, float, pos, delay } = svc
+/* Orbit geometry — a tilted elliptical ring, like Saturn's rings seen from above.
+   Tags scale up / sharpen as they sweep in front, shrink / blur / dim behind. */
+const ORBIT = { rx: 255, ry: 145, speed: 0.16, tilt: -9 }
+
+function OrbitServices({ inView }) {
+  const refs = useRef([])
+
+  useAnimationFrame((t) => {
+    const time = t / 1000
+    const n = services.length
+    for (let i = 0; i < n; i++) {
+      const el = refs.current[i]
+      if (!el) continue
+      const angle = (i / n) * Math.PI * 2 + time * ORBIT.speed
+      const x = Math.cos(angle) * ORBIT.rx
+      const y = Math.sin(angle) * ORBIT.ry
+      const depth = (Math.sin(angle) + 1) / 2          // 0 = behind core, 1 = in front
+      const scale = 0.68 + depth * 0.42
+      el.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${y}px, 0) scale(${scale})`
+      el.style.opacity = 0.3 + depth * 0.7
+      el.style.filter = `blur(${(1 - depth) * 2.4}px)`
+      el.style.zIndex = String(Math.round(5 + depth * 20))
+    }
+  })
+
   return (
-    /* Outer: entry pop-in */
-    <motion.div
-      className="absolute hidden lg:block z-20"
-      style={pos}
-      initial={{ opacity: 0, scale: 0.4 }}
-      animate={inView ? { opacity: 1, scale: 1 } : {}}
-      transition={{ delay: 1.4 + delay, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+    <div
+      className="absolute hidden lg:block pointer-events-none z-[15]"
+      style={{ left: '71%', top: '44%', transform: `rotate(${ORBIT.tilt}deg)` }}
     >
-      {/* Inner: continuous unique float */}
-      <motion.div
-        animate={{ x: float.x, y: float.y }}
-        transition={{ duration: float.dur, repeat: Infinity, ease: 'easeInOut', delay, repeatType: 'loop' }}
-      >
-        <Link to="/services" tabIndex={-1}>
+      {/* Faint orbit guide rings */}
+      <div
+        className="absolute rounded-[50%] border border-white/[0.06]"
+        style={{
+          width: ORBIT.rx * 2 + 70, height: ORBIT.ry * 2 + 70,
+          left: 0, top: 0, transform: 'translate(-50%, -50%)',
+        }}
+      />
+      <div
+        className="absolute rounded-[50%]"
+        style={{
+          width: ORBIT.rx * 2 + 110, height: ORBIT.ry * 2 + 110,
+          left: 0, top: 0, transform: 'translate(-50%, -50%)',
+          border: '1px dashed rgba(255,255,255,0.04)',
+        }}
+      />
+
+      {services.map(({ Icon, label, color }, i) => (
+        <div
+          key={label}
+          ref={el => { refs.current[i] = el }}
+          className="absolute left-0 top-0"
+          style={{ willChange: 'transform, opacity, filter' }}
+        >
+          {/* Entry pop-in + tilt compensation so text stays level */}
           <motion.div
-            whileHover={{ scale: 1.12, y: -6 }}
-            whileTap={{ scale: 0.96 }}
-            transition={{ duration: 0.2 }}
-            className="flex items-center gap-2.5 px-4 py-2.5 rounded-full cursor-pointer select-none"
-            style={{
-              background: 'rgba(5, 9, 26, 0.72)',
-              backdropFilter: 'blur(16px)',
-              WebkitBackdropFilter: 'blur(16px)',
-              border: `1px solid ${color}45`,
-              boxShadow: `0 4px 24px ${color}25, inset 0 1px 0 rgba(255,255,255,0.06)`,
-            }}
+            initial={{ opacity: 0, scale: 0.3 }}
+            animate={inView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ delay: 1.5 + i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            style={{ rotate: -ORBIT.tilt }}
+            className="pointer-events-auto"
           >
-            <div
-              className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
-              style={{ background: `${color}20` }}
-            >
-              <Icon size={13} style={{ color }} strokeWidth={2.2} />
-            </div>
-            <span className="text-white/90 text-[13px] font-medium whitespace-nowrap tracking-tight">
-              {label}
-            </span>
-            <span
-              className="w-1.5 h-1.5 rounded-full shrink-0 animate-pulse"
-              style={{ background: color }}
-            />
+            <Link to="/services" tabIndex={-1}>
+              <motion.div
+                whileHover={{ scale: 1.12 }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ duration: 0.2 }}
+                className="flex items-center gap-2.5 pl-2 pr-4 py-2 rounded-full cursor-pointer select-none"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(13,20,48,0.92), rgba(5,9,26,0.85))',
+                  backdropFilter: 'blur(14px)',
+                  WebkitBackdropFilter: 'blur(14px)',
+                  border: `1px solid ${color}50`,
+                  boxShadow: `0 8px 32px ${color}30, 0 0 0 1px rgba(255,255,255,0.04) inset, 0 1px 0 rgba(255,255,255,0.08) inset`,
+                }}
+              >
+                <span
+                  className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
+                  style={{
+                    background: `radial-gradient(circle at 35% 30%, ${color}55, ${color}18)`,
+                    boxShadow: `0 0 12px ${color}40`,
+                  }}
+                >
+                  <Icon size={13} style={{ color: '#fff' }} strokeWidth={2.1} />
+                </span>
+                <span className="text-white/90 text-[12.5px] font-medium whitespace-nowrap tracking-tight">
+                  {label}
+                </span>
+              </motion.div>
+            </Link>
           </motion.div>
-        </Link>
-      </motion.div>
-    </motion.div>
+        </div>
+      ))}
+    </div>
   )
 }
 
@@ -188,10 +210,8 @@ export default function Hero() {
         style={{ background: 'linear-gradient(to top, #05091A, transparent)' }}
       />
 
-      {/* ── Floating service tags (all over the hero) ── */}
-      {services.map(s => (
-        <FloatingTag key={s.label} svc={s} inView={loaded} />
-      ))}
+      {/* ── Services orbiting the 3D core ── */}
+      <OrbitServices inView={loaded} />
 
       {/* ── Hero text ── */}
       <div className="relative z-20 flex-1 flex items-center">
