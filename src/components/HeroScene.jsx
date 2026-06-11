@@ -256,6 +256,25 @@ function CameraController() {
   return null
 }
 
+/* The core system sits at the centre of the DOM service-tag orbit
+   (left: 71%, top: 44% in the hero) on desktop; centred on mobile. */
+function CoreGroup() {
+  const { viewport, size } = useThree()
+  const desktop = size.width >= 1024
+  const x = desktop ? viewport.width * 0.21 : 0
+  const y = desktop ? viewport.height * 0.06 : 0
+
+  return (
+    <group position={[x, y, 0]}>
+      <LiquidCore />
+      <WireShell />
+      <OrbitRings />
+      <OrbitComets />
+      <Particles />
+    </group>
+  )
+}
+
 export default function HeroScene() {
   return (
     <Canvas
@@ -272,11 +291,7 @@ export default function HeroScene() {
       <pointLight position={[-5, -2, -4]} intensity={20} color="#E8155A" />
       <pointLight position={[0, 6, 2]} intensity={10} color="#ffffff" />
 
-      <LiquidCore />
-      <WireShell />
-      <OrbitRings />
-      <OrbitComets />
-      <Particles />
+      <CoreGroup />
       <FloatingShapes />
       <CameraController />
     </Canvas>

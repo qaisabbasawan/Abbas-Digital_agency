@@ -97,6 +97,21 @@ function OrbitServices({ inView }) {
       className="absolute hidden lg:block pointer-events-none z-[15]"
       style={{ left: '71%', top: '44%', transform: `rotate(${ORBIT.tilt}deg)` }}
     >
+      {/* Pulsing energy glow at the orbit centre (sits over the 3D core) */}
+      <div
+        className="absolute left-0 top-0"
+        style={{ transform: 'translate(-50%, -50%)' }}
+      >
+        <div
+          className="animate-glow-pulse rounded-full"
+          style={{
+            width: 360, height: 360,
+            background: 'radial-gradient(circle, rgba(46,85,224,0.22), rgba(124,58,237,0.10) 45%, rgba(232,21,90,0.05) 60%, transparent 72%)',
+            filter: 'blur(10px)',
+          }}
+        />
+      </div>
+
       {/* Faint orbit guide rings */}
       <div
         className="absolute rounded-[50%] border border-white/[0.06]"
