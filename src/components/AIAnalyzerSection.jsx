@@ -272,14 +272,16 @@ export default function AIAnalyzerSection() {
               className="flex flex-wrap items-center gap-4"
             >
               <Magnetic>
-                <Link
-                  to="/business-analyzer"
+                <a
+                  href="https://abbasdigitalagency.com/analyzer"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="group inline-flex items-center gap-2.5 shimmer-btn px-8 py-4 rounded-full text-sm tracking-[0.1em] uppercase text-white font-medium hover:opacity-90 active:scale-[0.98] transition-all duration-200"
                 >
                   <Sparkles size={15} />
                   Analyse My Business Free
                   <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform duration-200" />
-                </Link>
+                </a>
               </Magnetic>
               <span className="text-white/25 text-[12px]">Takes under 2 minutes · No sign-up</span>
             </motion.div>
@@ -417,8 +419,10 @@ export default function AIAnalyzerSection() {
                     animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
                     transition={{ delay: 2.3, duration: 0.5 }}
                   >
-                    <Link
-                      to="/business-analyzer"
+                    <a
+                      href="https://abbasdigitalagency.com/analyzer"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="group w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-[13px] font-semibold tracking-wide transition-all duration-300"
                       style={{
                         background: 'linear-gradient(135deg, rgba(46,85,224,0.18), rgba(232,21,90,0.18))',
@@ -439,7 +443,7 @@ export default function AIAnalyzerSection() {
                       <Sparkles size={14} />
                       Run the full analysis on your business
                       <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
-                    </Link>
+                    </a>
                   </motion.div>
                 </div>
               </div>
