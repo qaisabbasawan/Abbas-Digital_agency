@@ -267,13 +267,29 @@ input, textarea, select, button {
 }
 .animate-glow-pulse { animation: glow-pulse 4.5s ease-in-out infinite; }
 
-/* ── Scroll path line — moving pulse orb ──────────────────────────────── */
+/* ── Scroll path line ─────────────────────────────────────────────────── */
+
+/* Pulse orb travels the full path length */
 @keyframes sp-pulse-move {
-  0%   { stroke-dashoffset:  55; }
-  100% { stroke-dashoffset: -22000; }
+  0%   { stroke-dashoffset:  52; }
+  100% { stroke-dashoffset: -24000; }
 }
-.sp-pulse {
-  animation: sp-pulse-move 2.8s linear infinite;
+.sp-pulse { animation: sp-pulse-move 3s linear infinite; }
+
+/* Spark expanding rings — scale from centre using fill-box */
+@keyframes sp-ring-pop {
+  0%   { transform: scale(1);   opacity: 0.85; }
+  100% { transform: scale(2.8); opacity: 0; }
+}
+.sp-ring-1 {
+  transform-box:    fill-box;
+  transform-origin: center center;
+  animation: sp-ring-pop 1.6s ease-out infinite;
+}
+.sp-ring-2 {
+  transform-box:    fill-box;
+  transform-origin: center center;
+  animation: sp-ring-pop 1.6s ease-out 0.55s infinite;
 }
 
 /* Respect users who prefer reduced motion */

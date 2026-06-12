@@ -80,6 +80,8 @@ export default function LandingPage() {
       </div>
 
       <div style={{ position: 'relative', zIndex: 10 }}>
+        {/* Scroll-drawn curly path threads — spans hero + all sections */}
+        <ScrollPathLine />
 
         {/* Hero — sticky pin zone (hero stays on screen for 80 vh while zooming back) */}
         <div style={{ height: '180vh', position: 'relative' }}>
@@ -90,7 +92,6 @@ export default function LandingPage() {
 
         {/* Every section below gets the same push-into-background scroll animation */}
         <div style={{ background: '#05091A', position: 'relative', zIndex: 2 }}>
-          <ScrollPathLine />
           <Marquee />
           {/* Services pins itself for the horizontal showcase — must NOT be
               inside a transformed wrapper or the pin breaks */}
