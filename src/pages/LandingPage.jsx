@@ -10,7 +10,8 @@ import Services     from '../components/Services'
 import About        from '../components/About'
 import Process      from '../components/Process'
 import Portfolio    from '../components/Portfolio'
-import Testimonials from '../components/Testimonials'
+import Testimonials       from '../components/Testimonials'
+import AIAnalyzerSection  from '../components/AIAnalyzerSection'
 import Contact      from '../components/Contact'
 import Footer       from '../components/Footer'
 
@@ -96,6 +97,7 @@ export default function LandingPage() {
           <ScrollSection><Process /></ScrollSection>
           {/* Portfolio uses sticky card-stacking — keep it out of transformed wrappers */}
           <Portfolio />
+          <ScrollSection><AIAnalyzerSection /></ScrollSection>
           <ScrollSection><Testimonials /></ScrollSection>
           <ScrollSection><Contact /></ScrollSection>
           <Footer />
