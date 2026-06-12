@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
-import { Link } from 'react-router-dom'
 import {
   Cpu, BarChart2, Target, Zap, TrendingUp, Star,
   ArrowRight, Sparkles, CheckCircle2, AlertTriangle, Globe,
