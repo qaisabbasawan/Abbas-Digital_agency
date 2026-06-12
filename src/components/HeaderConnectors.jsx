@@ -2,31 +2,38 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 
 /* ─────────────────────────────────────────────────────────────────────────
    HeaderConnectors — 6 soft blurred ambient wires, one per nav link.
-   Each wire is a diffuse glowing streak in the background: heavy blur,
-   thick stroke, very low opacity — purely atmospheric, like coloured light
-   bleeding down the page from each nav item to its section.
+   Each wire zigzags aggressively across the full page width using a unique
+   pattern, creating lush curly paths. The visual treatment is purely
+   atmospheric: heavy blur, thick soft stroke, screen blend — coloured
+   light in the background.
 ────────────────────────────────────────────────────────────────────────── */
 
 const CONNECTORS = [
-  { id: 'about',    navSel: '[data-hc-link="about"]',    targSel: '[data-hc-target="about"]',    color: '#66DDFF', xSwing: +130 },
-  { id: 'services', navSel: '[data-hc-link="services"]', targSel: '[data-hc-target="services"]', color: '#8899FF', xSwing: -100 },
-  { id: 'portfolio',navSel: '[data-hc-link="portfolio"]',targSel: '[data-hc-target="portfolio"]',color: '#CC88FF', xSwing: +120 },
-  { id: 'blog',     navSel: '[data-hc-link="blog"]',     targSel: 'footer a[href="/blog"]',      color: '#66FFBB', xSwing: -130 },
-  { id: 'contact',  navSel: '[data-hc-link="contact"]',  targSel: '[data-hc-target="contact"]',  color: '#FF7799', xSwing: +90  },
-  { id: 'analyzer', navSel: '[data-hc-link="analyzer"]', targSel: '[data-hc-target="analyzer"]', color: '#FFCC66', xSwing: -90  },
+  { id: 'about',    navSel: '[data-hc-link="about"]',    targSel: '[data-hc-target="about"]',    color: '#66DDFF' },
+  { id: 'services', navSel: '[data-hc-link="services"]', targSel: '[data-hc-target="services"]', color: '#8899FF' },
+  { id: 'portfolio',navSel: '[data-hc-link="portfolio"]',targSel: '[data-hc-target="portfolio"]',color: '#CC88FF' },
+  { id: 'blog',     navSel: '[data-hc-link="blog"]',     targSel: 'footer a[href="/blog"]',      color: '#66FFBB' },
+  { id: 'contact',  navSel: '[data-hc-link="contact"]',  targSel: '[data-hc-target="contact"]',  color: '#FF8899' },
+  { id: 'analyzer', navSel: '[data-hc-link="analyzer"]', targSel: '[data-hc-target="analyzer"]', color: '#FFCC66' },
+]
+
+/*
+ * Unique full-width zigzag patterns per wire — 9 X positions between
+ * start and end. Different phase and swing direction for every wire.
+ * Values are fractions of viewport width (resolved at runtime).
+ */
+const PATTERNS = [
+  [0.86, 0.13, 0.80, 0.18, 0.82, 0.14, 0.78, 0.20, 0.75],  // about    — starts far-right
+  [0.14, 0.87, 0.20, 0.82, 0.15, 0.85, 0.22, 0.78, 0.25],  // services — starts far-left
+  [0.72, 0.13, 0.85, 0.28, 0.80, 0.15, 0.75, 0.12, 0.70],  // portfolio — center-right opener
+  [0.28, 0.87, 0.15, 0.72, 0.20, 0.85, 0.25, 0.88, 0.30],  // blog      — center-left opener
+  [0.85, 0.28, 0.88, 0.14, 0.72, 0.86, 0.18, 0.80, 0.70],  // contact   — erratic right-heavy
+  [0.15, 0.72, 0.12, 0.86, 0.28, 0.14, 0.82, 0.20, 0.30],  // analyzer  — erratic left-heavy
 ]
 
 const f = n => n.toFixed(1)
 
-function wirePath(nx, ny, tx, ty, xSwing) {
-  const span = ty - ny
-  const pts = [
-    [nx,                   ny],
-    [nx + xSwing * 0.7,    ny + span * 0.22],
-    [tx - xSwing * 0.5,    ny + span * 0.50],
-    [tx + xSwing * 0.25,   ny + span * 0.75],
-    [tx,                   ty],
-  ]
+function smooth(pts) {
   let d = `M ${f(pts[0][0])} ${f(pts[0][1])}`
   for (let i = 1; i < pts.length; i++) {
     const [x0, y0] = pts[i - 1]
@@ -37,10 +44,24 @@ function wirePath(nx, ny, tx, ty, xSwing) {
   return d
 }
 
-export default function HeaderConnectors() {
-  const anchorRef   = useRef(null)
+function wirePath(nx, ny, tx, ty, W, wireIndex) {
+  const pat  = PATTERNS[wireIndex]
+  const span = ty - ny
+  const step = span / (pat.length + 1)
 
-  /* Two layers per wire: ultra-wide halo + softer inner glow */
+  const pts = [[nx, ny]]
+  pat.forEach((xFrac, j) => {
+    pts.push([W * xFrac, ny + step * (j + 1)])
+  })
+  pts.push([tx, ty])
+
+  return smooth(pts)
+}
+
+export default function HeaderConnectors() {
+  const anchorRef = useRef(null)
+
+  /* Two refs per wire: halo (wide blur) + inner (medium blur) */
   const haloRefs  = CONNECTORS.map(() => useRef(null))  // eslint-disable-line
   const innerRefs = CONNECTORS.map(() => useRef(null))  // eslint-disable-line
 
@@ -57,7 +78,7 @@ export default function HeaderConnectors() {
     const W = container.offsetWidth
     const H = container.scrollHeight
 
-    const computed = CONNECTORS.map(({ navSel, targSel, xSwing }) => {
+    const computed = CONNECTORS.map(({ navSel, targSel }, i) => {
       const navEl  = document.querySelector(navSel)
       const targEl = document.querySelector(targSel)
       if (!navEl || !targEl) return null
@@ -70,7 +91,7 @@ export default function HeaderConnectors() {
       const tx = tr.left + tr.width  / 2
       const ty = tr.top  + tr.height / 2 + window.scrollY
 
-      return { path: wirePath(nx, ny, tx, ty, xSwing), targetDocY: ty }
+      return { path: wirePath(nx, ny, tx, ty, W, i), targetDocY: ty }
     })
 
     computed.forEach((c, i) => {
@@ -157,7 +178,9 @@ export default function HeaderConnectors() {
             top: 0, left: 0,
             width:         '100%',
             height:        dims.h,
-            zIndex:        2,
+            /* z:3 — sits above the content div (z:2) so screen blend
+               can work across all sections, not just the hero */
+            zIndex:        3,
             pointerEvents: 'none',
             overflow:      'visible',
             mixBlendMode:  'screen',
@@ -169,27 +192,27 @@ export default function HeaderConnectors() {
             const { color } = CONNECTORS[i]
             return (
               <g key={i}>
-                {/* Ultra-wide blurred halo — the dominant atmospheric glow */}
+                {/* Ultra-wide blurred halo */}
                 <path
                   ref={haloRefs[i]}
                   d={d}
                   fill="none"
                   stroke={color}
-                  strokeWidth="80"
+                  strokeWidth="90"
                   strokeLinecap="round"
-                  opacity="0.28"
-                  style={{ filter: 'blur(32px)' }}
+                  opacity="0.26"
+                  style={{ filter: 'blur(36px)' }}
                 />
-                {/* Softer inner streak — slightly crisper, adds depth */}
+                {/* Softer inner streak */}
                 <path
                   ref={innerRefs[i]}
                   d={d}
                   fill="none"
                   stroke={color}
-                  strokeWidth="24"
+                  strokeWidth="28"
                   strokeLinecap="round"
-                  opacity="0.22"
-                  style={{ filter: 'blur(12px)' }}
+                  opacity="0.20"
+                  style={{ filter: 'blur(14px)' }}
                 />
               </g>
             )
