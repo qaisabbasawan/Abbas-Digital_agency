@@ -1,27 +1,19 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 
 /* ─────────────────────────────────────────────────────────────────────────
-   ScrollPathLine — "Three-Wire Neon Weave"
-   Three live neon cables roaming the full landing page.
-
-   Wire A  Cyan   #00CCFF  full-width zigzag, left-heavy phase
-   Wire B  Violet #CC44FF  center-weave, expands to edges, threads between A/C
-   Wire C  Pink   #FF1A6C  full-width zigzag, right-heavy phase, offset from A
-
-   Each wire has 5 visual layers:
-     1. Always-on blurred atmospheric halo
-     2. Scroll-animated medium glow (dashoffset)
-     3. Scroll-animated crisp main line (dashoffset + getTotalLength source)
-     4. CSS-animated "electricity" pulses clipped to drawn region
-     5. Pulsing orb clipped to drawn region
-
-   Spark tip per wire: 3 expanding rings + bright core + white dot
+   ScrollPathLine — 3-wire neon weave (performance build)
+   Performance: NO SVG feGaussianBlur filters. Each wire is grouped in a <g>
+   with a CSS drop-shadow filter — one cheap GPU composite per wire instead
+   of 5 expensive SVG filter renders per wire.
 ────────────────────────────────────────────────────────────────────────── */
 
-const CYAN   = '#00CCFF'
-const VIOLET = '#CC44FF'
-const PINK   = '#FF1A6C'
-const f      = n => n.toFixed(1)
+const WIRES = [
+  { color: '#00DDFF', glow: 'drop-shadow(0 0 5px #00DDFF) drop-shadow(0 0 18px #00AAFF)' },
+  { color: '#CC44FF', glow: 'drop-shadow(0 0 5px #CC44FF) drop-shadow(0 0 18px #9922CC)' },
+  { color: '#FF2266', glow: 'drop-shadow(0 0 5px #FF2266) drop-shadow(0 0 18px #CC0044)' },
+]
+
+const f = n => n.toFixed(1)
 
 function smooth(pts) {
   let d = `M ${f(pts[0][0])} ${f(pts[0][1])}`
@@ -41,7 +33,6 @@ function makePaths(W, H, endX, endY) {
   const CR = W * 0.72
   const MC = W * 0.50
 
-  /* Wire A — Cyan — left-heavy full-width zigzag */
   const A = smooth([
     [CL, H*0.001], [R,  H*0.036], [L,  H*0.062], [R,  H*0.088],
     [L,  H*0.114], [R,  H*0.140], [L,  H*0.165], [R,  H*0.193],
@@ -54,7 +45,6 @@ function makePaths(W, H, endX, endY) {
     [L,  H*0.905], [CR, H*0.930], [endX, endY],
   ])
 
-  /* Wire B — Violet — center-weave with occasional edge expansions */
   const B = smooth([
     [MC,  H*0.003], [CR,  H*0.030], [CL,  H*0.056], [R,   H*0.082],
     [CL,  H*0.108], [CR,  H*0.135], [L,   H*0.160], [CR,  H*0.186],
@@ -67,7 +57,6 @@ function makePaths(W, H, endX, endY) {
     [CL,  H*0.868], [R,   H*0.895], [MC,  H*0.922], [endX, endY],
   ])
 
-  /* Wire C — Pink — right-heavy full-width zigzag, offset from A */
   const Cp = smooth([
     [CR,  H*0.002], [L,  H*0.042], [R,  H*0.070], [L,  H*0.096],
     [R,   H*0.122], [L,  H*0.148], [R,  H*0.175], [L,  H*0.202],
@@ -80,18 +69,17 @@ function makePaths(W, H, endX, endY) {
     [R,   H*0.892], [L,  H*0.918], [CR, H*0.940], [endX, endY],
   ])
 
-  return { A, B, C: Cp }
+  return [A, B, Cp]
 }
 
 export default function ScrollPathLine() {
-  const anchorRef = useRef(null)
-
-  const aMainRef = useRef(null), aGlowRef = useRef(null), aSparkRef = useRef(null)
-  const bMainRef = useRef(null), bGlowRef = useRef(null), bSparkRef = useRef(null)
-  const cMainRef = useRef(null), cGlowRef = useRef(null), cSparkRef = useRef(null)
-  const aLen = useRef(0), bLen = useRef(0), cLen = useRef(0)
-  const clipRef = useRef(null)
-  const rafRef  = useRef(null)
+  const anchorRef  = useRef(null)
+  const mainRefs   = [useRef(null), useRef(null), useRef(null)]
+  const glowRefs   = [useRef(null), useRef(null), useRef(null)]
+  const sparkRefs  = [useRef(null), useRef(null), useRef(null)]
+  const clipRef    = useRef(null)
+  const lengths    = useRef([0, 0, 0])
+  const rafRef     = useRef(null)
 
   const [dims,  setDims]  = useState({ w: 0, h: 0 })
   const [paths, setPaths] = useState(null)
@@ -104,9 +92,8 @@ export default function ScrollPathLine() {
 
     let endX = W * 0.688
     let endY = H * 0.953
-    const btn = document.querySelector(
-      '#contact button[type="submit"], form button[type="submit"]'
-    )
+    const btn = document.querySelector('[data-hc-target="contact"]')
+      || document.querySelector('#contact button[type="submit"]')
     if (btn) {
       const r = btn.getBoundingClientRect()
       endX = r.left + r.width  / 2
@@ -129,22 +116,18 @@ export default function ScrollPathLine() {
   useEffect(() => {
     if (!paths) return
     const id = requestAnimationFrame(() => {
-      const wires = [
-        { main: aMainRef, glow: aGlowRef, len: aLen },
-        { main: bMainRef, glow: bGlowRef, len: bLen },
-        { main: cMainRef, glow: cGlowRef, len: cLen },
-      ]
-      wires.forEach(({ main, glow, len }) => {
-        const el = main.current
+      mainRefs.forEach((ref, i) => {
+        const el = ref.current
         if (!el) return
         const l = el.getTotalLength?.() ?? 0
         if (!l) return
-        len.current = l
+        lengths.current[i] = l
         el.style.strokeDasharray  = `${l}`
         el.style.strokeDashoffset = `${l}`
-        if (glow.current) {
-          glow.current.style.strokeDasharray  = `${l}`
-          glow.current.style.strokeDashoffset = `${l}`
+        const gl = glowRefs[i].current
+        if (gl) {
+          gl.style.strokeDasharray  = `${l}`
+          gl.style.strokeDashoffset = `${l}`
         }
       })
       onScroll()
@@ -159,21 +142,17 @@ export default function ScrollPathLine() {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight
       const progress  = maxScroll > 0 ? Math.min(window.scrollY / maxScroll, 1) : 0
 
-      const wires = [
-        { main: aMainRef, glow: aGlowRef, spark: aSparkRef, len: aLen },
-        { main: bMainRef, glow: bGlowRef, spark: bSparkRef, len: bLen },
-        { main: cMainRef, glow: cGlowRef, spark: cSparkRef, len: cLen },
-      ]
-
-      wires.forEach(({ main, glow, spark, len }) => {
-        const el = main.current
-        if (!el || !len.current) return
-        const drawn = len.current * progress
-        const off   = len.current - drawn
+      mainRefs.forEach((ref, i) => {
+        const el = ref.current
+        const l  = lengths.current[i]
+        if (!el || !l) return
+        const drawn = l * progress
+        const off   = l - drawn
         el.style.strokeDashoffset = `${off}`
-        if (glow.current) glow.current.style.strokeDashoffset = `${off}`
+        const gl = glowRefs[i].current
+        if (gl) gl.style.strokeDashoffset = `${off}`
 
-        const sp = spark.current
+        const sp = sparkRefs[i].current
         if (sp) {
           if (progress < 0.005) {
             sp.setAttribute('display', 'none')
@@ -190,7 +169,8 @@ export default function ScrollPathLine() {
         clipRef.current.setAttribute('height', `${H * progress}`)
       }
     })
-  }, []) // eslint-disable-line
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -213,186 +193,63 @@ export default function ScrollPathLine() {
             position: 'absolute', top: 0, left: 0,
             width: '100%', height: dims.h,
             zIndex: 5, pointerEvents: 'none',
-            mixBlendMode: 'screen', overflow: 'visible',
+            overflow: 'visible',
           }}
           viewBox={`0 0 ${dims.w} ${dims.h}`}
         >
           <defs>
-            {/* ── Gradients — one per wire, top→bottom colour shift ── */}
-            <linearGradient id="sp-ga" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2={dims.h}>
-              <stop offset="0%"   stopColor="#00EEFF" />
-              <stop offset="100%" stopColor="#0055FF" />
-            </linearGradient>
-            <linearGradient id="sp-gb" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2={dims.h}>
-              <stop offset="0%"   stopColor="#DD44FF" />
-              <stop offset="100%" stopColor="#FF44BB" />
-            </linearGradient>
-            <linearGradient id="sp-gc" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2={dims.h}>
-              <stop offset="0%"   stopColor="#FF2266" />
-              <stop offset="100%" stopColor="#FF8833" />
-            </linearGradient>
-
-            {/* ── Filters ── */}
-            {/* sp-halo: pure big blur → atmospheric depth behind the wire */}
-            <filter id="sp-halo" x="-400%" y="-2%" width="900%" height="104%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="20" />
-            </filter>
-            {/* sp-glow: medium blur merged back → bright corona around crisp edge */}
-            <filter id="sp-glow" x="-150%" y="-2%" width="400%" height="104%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="b" />
-              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-            {/* sp-edge: tight blur merged → soft neon edge on main line */}
-            <filter id="sp-edge" x="-60%" y="-1%" width="220%" height="102%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="b" />
-              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-            {/* sp-dot: small radial glow for spark core + orb */}
-            <filter id="sp-dot" x="-250%" y="-250%" width="600%" height="600%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="b" />
-              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-
-            {/* ── Clip — shared rect that grows with scroll progress ── */}
             <clipPath id="sp-clip">
               <rect ref={clipRef} x="0" y="0" width={dims.w} height="0" />
             </clipPath>
           </defs>
 
-          {/* ════════════════════════════════════════════
-              WIRE A  —  CYAN
-          ════════════════════════════════════════════ */}
+          {paths.map((d, i) => {
+            const { color, glow } = WIRES[i]
+            const flowClass = i === 0 ? 'sp-flow' : i === 1 ? 'sp-flow-b' : 'sp-flow-c'
+            const orbDelay  = i === 0 ? '0s'    : i === 1 ? '1.1s'    : '2.2s'
 
-          {/* Layer 1: atmospheric halo (always drawn, very subtle) */}
-          <path d={paths.A} fill="none"
-            stroke="url(#sp-ga)" strokeWidth="30" strokeLinecap="round"
-            filter="url(#sp-halo)" opacity="0.20" />
+            return (
+              <g key={i} style={{ mixBlendMode: 'screen', filter: glow }}>
+                {/* Glow stroke — scroll-drawn */}
+                <path ref={glowRefs[i]} d={d} fill="none"
+                  stroke={color} strokeWidth="9" strokeLinecap="round"
+                  opacity="0.35" />
 
-          {/* Layer 2: scroll-drawn medium glow */}
-          <path ref={aGlowRef} d={paths.A} fill="none"
-            stroke="url(#sp-ga)" strokeWidth="10" strokeLinecap="round"
-            filter="url(#sp-glow)" opacity="0.50" />
+                {/* Crisp main line — scroll-drawn, getTotalLength source */}
+                <path ref={mainRefs[i]} d={d} fill="none"
+                  stroke={color} strokeWidth="2" strokeLinecap="round"
+                  opacity="0.95" />
 
-          {/* Layer 3: scroll-drawn crisp main line */}
-          <path ref={aMainRef} d={paths.A} fill="none"
-            stroke="url(#sp-ga)" strokeWidth="2" strokeLinecap="round"
-            filter="url(#sp-edge)" opacity="1" />
+                {/* Flowing electricity pulses — CSS animated, clipped to drawn region */}
+                <path d={d} fill="none"
+                  stroke="white" strokeWidth="2.5" strokeLinecap="round"
+                  strokeDasharray="24 204" opacity="0.80"
+                  clipPath="url(#sp-clip)"
+                  className={flowClass} />
 
-          {/* Layer 4: flowing electricity pulses (CSS-animated, clipped) */}
-          <path d={paths.A} fill="none"
-            stroke="#88EEFF" strokeWidth="3.5" strokeLinecap="round"
-            strokeDasharray="28 200" clipPath="url(#sp-clip)"
-            filter="url(#sp-glow)" opacity="0.90"
-            className="sp-flow" />
+                {/* Travelling pulse orb */}
+                <path d={d} fill="none"
+                  stroke={color} strokeWidth="5" strokeLinecap="round"
+                  strokeDasharray="46 99999"
+                  clipPath="url(#sp-clip)"
+                  opacity="0.90"
+                  className="sp-pulse"
+                  style={{ animationDelay: orbDelay }} />
 
-          {/* Layer 5: travelling pulse orb */}
-          <path d={paths.A} fill="none"
-            stroke="url(#sp-ga)" strokeWidth="6" strokeLinecap="round"
-            strokeDasharray="50 99999" clipPath="url(#sp-clip)"
-            filter="url(#sp-halo)" opacity="0.95"
-            className="sp-pulse" />
-
-          {/* ════════════════════════════════════════════
-              WIRE B  —  VIOLET
-          ════════════════════════════════════════════ */}
-
-          <path d={paths.B} fill="none"
-            stroke="url(#sp-gb)" strokeWidth="26" strokeLinecap="round"
-            filter="url(#sp-halo)" opacity="0.18" />
-
-          <path ref={bGlowRef} d={paths.B} fill="none"
-            stroke="url(#sp-gb)" strokeWidth="9" strokeLinecap="round"
-            filter="url(#sp-glow)" opacity="0.46" />
-
-          <path ref={bMainRef} d={paths.B} fill="none"
-            stroke="url(#sp-gb)" strokeWidth="1.8" strokeLinecap="round"
-            filter="url(#sp-edge)" opacity="0.95" />
-
-          <path d={paths.B} fill="none"
-            stroke="#EE88FF" strokeWidth="3" strokeLinecap="round"
-            strokeDasharray="28 200" clipPath="url(#sp-clip)"
-            filter="url(#sp-glow)" opacity="0.85"
-            className="sp-flow-b" />
-
-          <path d={paths.B} fill="none"
-            stroke="url(#sp-gb)" strokeWidth="5" strokeLinecap="round"
-            strokeDasharray="50 99999" clipPath="url(#sp-clip)"
-            filter="url(#sp-halo)" opacity="0.90"
-            className="sp-pulse" style={{ animationDelay: '1.1s' }} />
-
-          {/* ════════════════════════════════════════════
-              WIRE C  —  PINK
-          ════════════════════════════════════════════ */}
-
-          <path d={paths.C} fill="none"
-            stroke="url(#sp-gc)" strokeWidth="26" strokeLinecap="round"
-            filter="url(#sp-halo)" opacity="0.18" />
-
-          <path ref={cGlowRef} d={paths.C} fill="none"
-            stroke="url(#sp-gc)" strokeWidth="9" strokeLinecap="round"
-            filter="url(#sp-glow)" opacity="0.46" />
-
-          <path ref={cMainRef} d={paths.C} fill="none"
-            stroke="url(#sp-gc)" strokeWidth="1.8" strokeLinecap="round"
-            filter="url(#sp-edge)" opacity="0.95" />
-
-          <path d={paths.C} fill="none"
-            stroke="#FF88BB" strokeWidth="3" strokeLinecap="round"
-            strokeDasharray="28 200" clipPath="url(#sp-clip)"
-            filter="url(#sp-glow)" opacity="0.85"
-            className="sp-flow-c" />
-
-          <path d={paths.C} fill="none"
-            stroke="url(#sp-gc)" strokeWidth="5" strokeLinecap="round"
-            strokeDasharray="50 99999" clipPath="url(#sp-clip)"
-            filter="url(#sp-halo)" opacity="0.90"
-            className="sp-pulse" style={{ animationDelay: '2.2s' }} />
-
-          {/* ════════════════════════════════════════════
-              SPARK TIPS
-          ════════════════════════════════════════════ */}
-
-          {/* Spark A — Cyan */}
-          <g ref={aSparkRef} display="none">
-            <circle cx="0" cy="0" r="26" fill="none"
-              stroke={CYAN} strokeWidth="1" className="sp-ring-1" />
-            <circle cx="0" cy="0" r="16" fill="none"
-              stroke={CYAN} strokeWidth="1.5" className="sp-ring-2" />
-            <circle cx="0" cy="0" r="9" fill="none"
-              stroke={CYAN} strokeWidth="2" className="sp-ring-3" />
-            <circle cx="0" cy="0" r="7"
-              fill={CYAN} filter="url(#sp-dot)" opacity="0.95" />
-            <circle cx="0" cy="0" r="2.8"
-              fill="white" opacity="1" />
-          </g>
-
-          {/* Spark B — Violet */}
-          <g ref={bSparkRef} display="none">
-            <circle cx="0" cy="0" r="24" fill="none"
-              stroke={VIOLET} strokeWidth="1" className="sp-ring-1" />
-            <circle cx="0" cy="0" r="15" fill="none"
-              stroke={VIOLET} strokeWidth="1.5" className="sp-ring-2" />
-            <circle cx="0" cy="0" r="8" fill="none"
-              stroke={VIOLET} strokeWidth="2" className="sp-ring-3" />
-            <circle cx="0" cy="0" r="6"
-              fill={VIOLET} filter="url(#sp-dot)" opacity="0.95" />
-            <circle cx="0" cy="0" r="2.5"
-              fill="white" opacity="1" />
-          </g>
-
-          {/* Spark C — Pink */}
-          <g ref={cSparkRef} display="none">
-            <circle cx="0" cy="0" r="24" fill="none"
-              stroke={PINK} strokeWidth="1" className="sp-ring-1" />
-            <circle cx="0" cy="0" r="15" fill="none"
-              stroke={PINK} strokeWidth="1.5" className="sp-ring-2" />
-            <circle cx="0" cy="0" r="8" fill="none"
-              stroke={PINK} strokeWidth="2" className="sp-ring-3" />
-            <circle cx="0" cy="0" r="6"
-              fill={PINK} filter="url(#sp-dot)" opacity="0.95" />
-            <circle cx="0" cy="0" r="2.5"
-              fill="white" opacity="1" />
-          </g>
+                {/* Spark tip */}
+                <g ref={sparkRefs[i]} display="none">
+                  <circle cx="0" cy="0" r="22" fill="none"
+                    stroke={color} strokeWidth="1" className="sp-ring-1" />
+                  <circle cx="0" cy="0" r="14" fill="none"
+                    stroke={color} strokeWidth="1.4" className="sp-ring-2" />
+                  <circle cx="0" cy="0" r="8" fill="none"
+                    stroke={color} strokeWidth="2" className="sp-ring-3" />
+                  <circle cx="0" cy="0" r="5.5" fill={color} opacity="1" />
+                  <circle cx="0" cy="0" r="2.2" fill="white" opacity="1" />
+                </g>
+              </g>
+            )
+          })}
         </svg>
       )}
     </>

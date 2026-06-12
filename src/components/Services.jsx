@@ -250,6 +250,7 @@ export default function Services() {
           >
             <Link
               to="/services"
+              data-hc-target="services"
               className="inline-flex items-center gap-2 text-white/50 text-sm hover:text-white transition-colors duration-200 group"
             >
               View All Services

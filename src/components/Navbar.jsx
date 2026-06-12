@@ -100,6 +100,7 @@ export default function Navbar() {
                 <Link
                   key={l.label}
                   to={l.path}
+                  data-hc-link="about"
                   className={`relative text-xs tracking-[0.18em] uppercase transition-colors duration-200 py-1 ${
                     active ? 'text-white' : 'text-white/50 hover:text-white/90'
                   }`}
@@ -121,6 +122,7 @@ export default function Navbar() {
             >
               <Link
                 to="/services"
+                data-hc-link="services"
                 className={`relative flex items-center gap-1 text-xs tracking-[0.18em] uppercase transition-colors duration-200 py-1 ${
                   isServicesActive ? 'text-white' : 'text-white/50 hover:text-white/90'
                 }`}
@@ -291,6 +293,7 @@ export default function Navbar() {
                 <Link
                   key={l.label}
                   to={l.path}
+                  data-hc-link={l.label.toLowerCase()}
                   className={`relative text-xs tracking-[0.18em] uppercase transition-colors duration-200 py-1 ${
                     active ? 'text-white' : 'text-white/50 hover:text-white/90'
                   }`}
@@ -308,6 +311,7 @@ export default function Navbar() {
           <div className="hidden lg:flex items-center gap-3">
             <Link
               to="/analyzer"
+              data-hc-link="analyzer"
               className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[11px] tracking-[0.1em] font-medium text-brand-pink transition-all duration-200 hover:bg-brand-pink/10"
               style={{ border: '1px solid rgba(232,21,90,0.4)' }}
             >

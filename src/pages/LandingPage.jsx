@@ -12,7 +12,8 @@ import Process      from '../components/Process'
 import Portfolio    from '../components/Portfolio'
 import Testimonials       from '../components/Testimonials'
 import AIAnalyzerSection  from '../components/AIAnalyzerSection'
-import ScrollPathLine    from '../components/ScrollPathLine'
+import ScrollPathLine     from '../components/ScrollPathLine'
+import HeaderConnectors  from '../components/HeaderConnectors'
 import Contact      from '../components/Contact'
 import Footer       from '../components/Footer'
 
@@ -82,6 +83,8 @@ export default function LandingPage() {
       <div style={{ position: 'relative', zIndex: 10 }}>
         {/* Scroll-drawn curly path threads — spans hero + all sections */}
         <ScrollPathLine />
+        {/* 6 header nav connectors — each wire from nav link to its section */}
+        <HeaderConnectors />
 
         {/* Hero — sticky pin zone (hero stays on screen for 80 vh while zooming back) */}
         <div style={{ height: '180vh', position: 'relative' }}>

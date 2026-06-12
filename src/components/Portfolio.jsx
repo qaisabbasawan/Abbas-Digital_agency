@@ -298,6 +298,7 @@ export default function Portfolio() {
           <Magnetic>
             <Link
               to="/portfolio"
+              data-hc-target="portfolio"
               className="group inline-flex items-center gap-3 px-7 py-3.5 rounded-full text-white/60 text-sm border border-white/15 hover:text-white hover:border-white/40 hover:bg-white/[0.04] transition-all duration-300"
             >
               See All Projects

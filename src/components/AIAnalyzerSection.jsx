@@ -275,6 +275,7 @@ export default function AIAnalyzerSection() {
                   href="https://abbasdigitalagency.com/analyzer"
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-hc-target="analyzer"
                   className="group inline-flex items-center gap-2.5 shimmer-btn px-8 py-4 rounded-full text-sm tracking-[0.1em] uppercase text-white font-medium hover:opacity-90 active:scale-[0.98] transition-all duration-200"
                 >
                   <Sparkles size={15} />

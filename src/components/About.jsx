@@ -193,6 +193,7 @@ export default function About() {
               <Magnetic>
                 <Link
                   to="/about"
+                  data-hc-target="about"
                   className="shimmer-btn inline-flex items-center gap-2 px-7 py-3.5 text-sm text-white hover:opacity-90 transition-opacity"
                 >
                   Our Full Story

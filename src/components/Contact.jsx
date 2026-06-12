@@ -195,6 +195,7 @@ export default function Contact() {
 
                 <motion.button
                   type="submit"
+                  data-hc-target="contact"
                   whileHover={{ scale: 1.015 }}
                   whileTap={{ scale: 0.985 }}
                   className="group w-full shimmer-btn rounded-xl py-4 text-sm tracking-[0.14em] uppercase text-white font-medium flex items-center justify-center gap-2.5"
