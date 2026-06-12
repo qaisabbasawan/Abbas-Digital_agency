@@ -1,81 +1,33 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 
 /* ─────────────────────────────────────────────────────────────────────────
-   HeaderConnectors — 6 neon wires from each nav link to its landing section.
-
-   Each wire:
-   • Starts at the nav link's centre position in the header
-   • Ends at the corresponding section's CTA button/element
-   • Draws from scroll=0 (all start simultaneously)
-   • Finishes when scrollY reaches the target element's document Y position
-   • Uses a light CSS drop-shadow for glow — no heavy SVG filters
+   HeaderConnectors — 6 soft blurred ambient wires, one per nav link.
+   Each wire is a diffuse glowing streak in the background: heavy blur,
+   thick stroke, very low opacity — purely atmospheric, like coloured light
+   bleeding down the page from each nav item to its section.
 ────────────────────────────────────────────────────────────────────────── */
 
 const CONNECTORS = [
-  {
-    id:       'about',
-    navSel:   '[data-hc-link="about"]',
-    targSel:  '[data-hc-target="about"]',
-    color:    '#00EEFF',
-    xSwing:   +130,
-    glow:     'drop-shadow(0 0 4px #00EEFF) drop-shadow(0 0 14px #0099CC)',
-  },
-  {
-    id:       'services',
-    navSel:   '[data-hc-link="services"]',
-    targSel:  '[data-hc-target="services"]',
-    color:    '#5566FF',
-    xSwing:   -100,
-    glow:     'drop-shadow(0 0 4px #5566FF) drop-shadow(0 0 14px #3344CC)',
-  },
-  {
-    id:       'portfolio',
-    navSel:   '[data-hc-link="portfolio"]',
-    targSel:  '[data-hc-target="portfolio"]',
-    color:    '#AA44FF',
-    xSwing:   +110,
-    glow:     'drop-shadow(0 0 4px #AA44FF) drop-shadow(0 0 14px #7722CC)',
-  },
-  {
-    id:       'blog',
-    navSel:   '[data-hc-link="blog"]',
-    targSel:  'footer a[href="/blog"]',
-    color:    '#00FF99',
-    xSwing:   -130,
-    glow:     'drop-shadow(0 0 4px #00FF99) drop-shadow(0 0 14px #00AA66)',
-  },
-  {
-    id:       'contact',
-    navSel:   '[data-hc-link="contact"]',
-    targSel:  '[data-hc-target="contact"]',
-    color:    '#FF2266',
-    xSwing:   +90,
-    glow:     'drop-shadow(0 0 4px #FF2266) drop-shadow(0 0 14px #CC0044)',
-  },
-  {
-    id:       'analyzer',
-    navSel:   '[data-hc-link="analyzer"]',
-    targSel:  '[data-hc-target="analyzer"]',
-    color:    '#FFAA00',
-    xSwing:   -80,
-    glow:     'drop-shadow(0 0 4px #FFAA00) drop-shadow(0 0 14px #CC7700)',
-  },
+  { id: 'about',    navSel: '[data-hc-link="about"]',    targSel: '[data-hc-target="about"]',    color: '#66DDFF', xSwing: +130 },
+  { id: 'services', navSel: '[data-hc-link="services"]', targSel: '[data-hc-target="services"]', color: '#8899FF', xSwing: -100 },
+  { id: 'portfolio',navSel: '[data-hc-link="portfolio"]',targSel: '[data-hc-target="portfolio"]',color: '#CC88FF', xSwing: +120 },
+  { id: 'blog',     navSel: '[data-hc-link="blog"]',     targSel: 'footer a[href="/blog"]',      color: '#66FFBB', xSwing: -130 },
+  { id: 'contact',  navSel: '[data-hc-link="contact"]',  targSel: '[data-hc-target="contact"]',  color: '#FF7799', xSwing: +90  },
+  { id: 'analyzer', navSel: '[data-hc-link="analyzer"]', targSel: '[data-hc-target="analyzer"]', color: '#FFCC66', xSwing: -90  },
 ]
 
 const f = n => n.toFixed(1)
 
-/* Organic path: nav link → target with two intermediate S-curve waypoints */
 function wirePath(nx, ny, tx, ty, xSwing) {
   const span = ty - ny
-  const p1x  = nx + xSwing * 0.6
-  const p1y  = ny + span   * 0.28
-  const p2x  = tx - xSwing * 0.45
-  const p2y  = ny + span   * 0.62
-  const p3x  = tx + xSwing * 0.18
-  const p3y  = ny + span   * 0.82
-
-  let d = `M ${f(nx)} ${f(ny)}`
-  const pts = [[nx, ny], [p1x, p1y], [p2x, p2y], [p3x, p3y], [tx, ty]]
+  const pts = [
+    [nx,                   ny],
+    [nx + xSwing * 0.7,    ny + span * 0.22],
+    [tx - xSwing * 0.5,    ny + span * 0.50],
+    [tx + xSwing * 0.25,   ny + span * 0.75],
+    [tx,                   ty],
+  ]
+  let d = `M ${f(pts[0][0])} ${f(pts[0][1])}`
   for (let i = 1; i < pts.length; i++) {
     const [x0, y0] = pts[i - 1]
     const [x1, y1] = pts[i]
@@ -87,15 +39,17 @@ function wirePath(nx, ny, tx, ty, xSwing) {
 
 export default function HeaderConnectors() {
   const anchorRef   = useRef(null)
-  const mainRefs    = CONNECTORS.map(() => useRef(null))  // eslint-disable-line
-  const glowRefs    = CONNECTORS.map(() => useRef(null))  // eslint-disable-line
-  const sparkRefs   = CONNECTORS.map(() => useRef(null))  // eslint-disable-line
+
+  /* Two layers per wire: ultra-wide halo + softer inner glow */
+  const haloRefs  = CONNECTORS.map(() => useRef(null))  // eslint-disable-line
+  const innerRefs = CONNECTORS.map(() => useRef(null))  // eslint-disable-line
+
   const lengths     = useRef(CONNECTORS.map(() => 0))
   const targetDocYs = useRef(CONNECTORS.map(() => 0))
   const rafRef      = useRef(null)
 
   const [dims,  setDims]  = useState({ w: 0, h: 0 })
-  const [wires, setWires] = useState(null)   // array of path strings
+  const [wires, setWires] = useState(null)
 
   const recalc = useCallback(() => {
     const container = anchorRef.current?.parentElement
@@ -113,7 +67,6 @@ export default function HeaderConnectors() {
 
       const nx = nr.left + nr.width  / 2
       const ny = nr.top  + nr.height / 2
-
       const tx = tr.left + tr.width  / 2
       const ty = tr.top  + tr.height / 2 + window.scrollY
 
@@ -137,11 +90,10 @@ export default function HeaderConnectors() {
     return () => ro.disconnect()
   }, [recalc])
 
-  /* Init dasharray after wires are computed */
   useEffect(() => {
     if (!wires) return
     const id = requestAnimationFrame(() => {
-      mainRefs.forEach((ref, i) => {
+      innerRefs.forEach((ref, i) => {
         const el = ref.current
         if (!el) return
         const l = el.getTotalLength?.() ?? 0
@@ -149,10 +101,10 @@ export default function HeaderConnectors() {
         lengths.current[i] = l
         el.style.strokeDasharray  = `${l}`
         el.style.strokeDashoffset = `${l}`
-        const gl = glowRefs[i].current
-        if (gl) {
-          gl.style.strokeDasharray  = `${l}`
-          gl.style.strokeDashoffset = `${l}`
+        const hl = haloRefs[i].current
+        if (hl) {
+          hl.style.strokeDasharray  = `${l}`
+          hl.style.strokeDashoffset = `${l}`
         }
       })
       onScroll()
@@ -166,31 +118,18 @@ export default function HeaderConnectors() {
     rafRef.current = requestAnimationFrame(() => {
       const sy = window.scrollY
 
-      mainRefs.forEach((ref, i) => {
-        const el  = ref.current
-        const l   = lengths.current[i]
-        const tY  = targetDocYs.current[i]
+      innerRefs.forEach((ref, i) => {
+        const el = ref.current
+        const l  = lengths.current[i]
+        const tY = targetDocYs.current[i]
         if (!el || !l || !tY) return
 
-        /* Progress: 0 at scroll=0, 1 when target section is reached */
         const progress = Math.min(sy / (tY * 0.85), 1)
-        const drawn    = l * progress
-        const off      = l - drawn
+        const off      = l - l * progress
 
         el.style.strokeDashoffset = `${off}`
-        const gl = glowRefs[i].current
-        if (gl) gl.style.strokeDashoffset = `${off}`
-
-        const sp = sparkRefs[i].current
-        if (sp) {
-          if (progress < 0.01) {
-            sp.setAttribute('display', 'none')
-          } else {
-            sp.setAttribute('display', 'block')
-            const pt = el.getPointAtLength(Math.max(0, drawn - 2))
-            sp.setAttribute('transform', `translate(${f(pt.x)},${f(pt.y)})`)
-          }
-        }
+        const hl = haloRefs[i].current
+        if (hl) hl.style.strokeDashoffset = `${off}`
       })
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -218,36 +157,40 @@ export default function HeaderConnectors() {
             top: 0, left: 0,
             width:         '100%',
             height:        dims.h,
-            zIndex:        4,
+            zIndex:        2,
             pointerEvents: 'none',
             overflow:      'visible',
+            mixBlendMode:  'screen',
           }}
           viewBox={`0 0 ${dims.w} ${dims.h}`}
         >
           {wires.map((d, i) => {
             if (!d) return null
-            const { color, glow } = CONNECTORS[i]
+            const { color } = CONNECTORS[i]
             return (
-              <g key={i} style={{ mixBlendMode: 'screen', filter: glow }}>
-                {/* Glow stroke */}
-                <path ref={glowRefs[i]} d={d} fill="none"
-                  stroke={color} strokeWidth="7" strokeLinecap="round"
-                  opacity="0.30" />
-
-                {/* Crisp main line */}
-                <path ref={mainRefs[i]} d={d} fill="none"
-                  stroke={color} strokeWidth="1.6" strokeLinecap="round"
-                  opacity="0.92" />
-
-                {/* Spark tip */}
-                <g ref={sparkRefs[i]} display="none">
-                  <circle cx="0" cy="0" r="16" fill="none"
-                    stroke={color} strokeWidth="1" className="sp-ring-1" />
-                  <circle cx="0" cy="0" r="10" fill="none"
-                    stroke={color} strokeWidth="1.5" className="sp-ring-2" />
-                  <circle cx="0" cy="0" r="4" fill={color} opacity="1" />
-                  <circle cx="0" cy="0" r="1.8" fill="white" opacity="1" />
-                </g>
+              <g key={i}>
+                {/* Ultra-wide blurred halo — the dominant atmospheric glow */}
+                <path
+                  ref={haloRefs[i]}
+                  d={d}
+                  fill="none"
+                  stroke={color}
+                  strokeWidth="80"
+                  strokeLinecap="round"
+                  opacity="0.28"
+                  style={{ filter: 'blur(32px)' }}
+                />
+                {/* Softer inner streak — slightly crisper, adds depth */}
+                <path
+                  ref={innerRefs[i]}
+                  d={d}
+                  fill="none"
+                  stroke={color}
+                  strokeWidth="24"
+                  strokeLinecap="round"
+                  opacity="0.22"
+                  style={{ filter: 'blur(12px)' }}
+                />
               </g>
             )
           })}
