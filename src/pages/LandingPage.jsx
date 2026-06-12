@@ -12,7 +12,7 @@ import Process      from '../components/Process'
 import Portfolio    from '../components/Portfolio'
 import Testimonials       from '../components/Testimonials'
 import AIAnalyzerSection  from '../components/AIAnalyzerSection'
-import HeaderConnectors  from '../components/HeaderConnectors'
+import ScrollPathLine    from '../components/ScrollPathLine'
 import Contact      from '../components/Contact'
 import Footer       from '../components/Footer'
 
@@ -80,8 +80,7 @@ export default function LandingPage() {
       </div>
 
       <div style={{ position: 'relative', zIndex: 10 }}>
-        {/* 6 header nav connectors — blurred ambient wires from nav to sections */}
-        <HeaderConnectors />
+        <ScrollPathLine />
 
         {/* Hero — sticky pin zone (hero stays on screen for 80 vh while zooming back) */}
         <div style={{ height: '180vh', position: 'relative' }}>
