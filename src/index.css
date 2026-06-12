@@ -267,6 +267,15 @@ input, textarea, select, button {
 }
 .animate-glow-pulse { animation: glow-pulse 4.5s ease-in-out infinite; }
 
+/* ── Scroll path line — moving pulse orb ──────────────────────────────── */
+@keyframes sp-pulse-move {
+  0%   { stroke-dashoffset:  55; }
+  100% { stroke-dashoffset: -22000; }
+}
+.sp-pulse {
+  animation: sp-pulse-move 2.8s linear infinite;
+}
+
 /* Respect users who prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

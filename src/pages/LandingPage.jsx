@@ -12,6 +12,7 @@ import Process      from '../components/Process'
 import Portfolio    from '../components/Portfolio'
 import Testimonials       from '../components/Testimonials'
 import AIAnalyzerSection  from '../components/AIAnalyzerSection'
+import ScrollPathLine    from '../components/ScrollPathLine'
 import Contact      from '../components/Contact'
 import Footer       from '../components/Footer'
 
@@ -89,6 +90,7 @@ export default function LandingPage() {
 
         {/* Every section below gets the same push-into-background scroll animation */}
         <div style={{ background: '#05091A', position: 'relative', zIndex: 2 }}>
+          <ScrollPathLine />
           <Marquee />
           {/* Services pins itself for the horizontal showcase — must NOT be
               inside a transformed wrapper or the pin breaks */}
