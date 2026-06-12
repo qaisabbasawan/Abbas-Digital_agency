@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 
 /* ─────────────────────────────────────────────────────────────────────────
-   HeaderConnectors — 6 soft blurred ambient wires, one per nav link.
-   Each wire zigzags aggressively across the full page width using a unique
-   pattern, creating lush curly paths. The visual treatment is purely
-   atmospheric: heavy blur, thick soft stroke, screen blend — coloured
-   light in the background.
+   HeaderConnectors — 6 thin ambient wires, one per nav link.
+   Lightweight: 1 path per wire, 1 shared SVG blur filter (stdDeviation=5),
+   no CSS blur (avoids large rasterisation buffers on tall SVG).
 ────────────────────────────────────────────────────────────────────────── */
 
 const CONNECTORS = [
@@ -17,18 +15,14 @@ const CONNECTORS = [
   { id: 'analyzer', navSel: '[data-hc-link="analyzer"]', targSel: '[data-hc-target="analyzer"]', color: '#FFCC66' },
 ]
 
-/*
- * Unique full-width zigzag patterns per wire — 9 X positions between
- * start and end. Different phase and swing direction for every wire.
- * Values are fractions of viewport width (resolved at runtime).
- */
+/* Unique 9-point X patterns (as fractions of W) — full-width zigzags */
 const PATTERNS = [
-  [0.86, 0.13, 0.80, 0.18, 0.82, 0.14, 0.78, 0.20, 0.75],  // about    — starts far-right
-  [0.14, 0.87, 0.20, 0.82, 0.15, 0.85, 0.22, 0.78, 0.25],  // services — starts far-left
-  [0.72, 0.13, 0.85, 0.28, 0.80, 0.15, 0.75, 0.12, 0.70],  // portfolio — center-right opener
-  [0.28, 0.87, 0.15, 0.72, 0.20, 0.85, 0.25, 0.88, 0.30],  // blog      — center-left opener
-  [0.85, 0.28, 0.88, 0.14, 0.72, 0.86, 0.18, 0.80, 0.70],  // contact   — erratic right-heavy
-  [0.15, 0.72, 0.12, 0.86, 0.28, 0.14, 0.82, 0.20, 0.30],  // analyzer  — erratic left-heavy
+  [0.86, 0.13, 0.80, 0.18, 0.82, 0.14, 0.78, 0.20, 0.75],
+  [0.14, 0.87, 0.20, 0.82, 0.15, 0.85, 0.22, 0.78, 0.25],
+  [0.72, 0.13, 0.85, 0.28, 0.80, 0.15, 0.75, 0.12, 0.70],
+  [0.28, 0.87, 0.15, 0.72, 0.20, 0.85, 0.25, 0.88, 0.30],
+  [0.85, 0.28, 0.88, 0.14, 0.72, 0.86, 0.18, 0.80, 0.70],
+  [0.15, 0.72, 0.12, 0.86, 0.28, 0.14, 0.82, 0.20, 0.30],
 ]
 
 const f = n => n.toFixed(1)
@@ -44,30 +38,22 @@ function smooth(pts) {
   return d
 }
 
-function wirePath(nx, ny, tx, ty, W, wireIndex) {
-  const pat  = PATTERNS[wireIndex]
+function wirePath(nx, ny, tx, ty, W, idx) {
+  const pat  = PATTERNS[idx]
   const span = ty - ny
   const step = span / (pat.length + 1)
-
-  const pts = [[nx, ny]]
-  pat.forEach((xFrac, j) => {
-    pts.push([W * xFrac, ny + step * (j + 1)])
-  })
+  const pts  = [[nx, ny]]
+  pat.forEach((xf, j) => pts.push([W * xf, ny + step * (j + 1)]))
   pts.push([tx, ty])
-
   return smooth(pts)
 }
 
 export default function HeaderConnectors() {
   const anchorRef = useRef(null)
-
-  /* Two refs per wire: halo (wide blur) + inner (medium blur) */
-  const haloRefs  = CONNECTORS.map(() => useRef(null))  // eslint-disable-line
-  const innerRefs = CONNECTORS.map(() => useRef(null))  // eslint-disable-line
-
-  const lengths     = useRef(CONNECTORS.map(() => 0))
-  const targetDocYs = useRef(CONNECTORS.map(() => 0))
-  const rafRef      = useRef(null)
+  const pathRefs  = CONNECTORS.map(() => useRef(null)) // eslint-disable-line
+  const lengths   = useRef(CONNECTORS.map(() => 0))
+  const targDocYs = useRef(CONNECTORS.map(() => 0))
+  const rafRef    = useRef(null)
 
   const [dims,  setDims]  = useState({ w: 0, h: 0 })
   const [wires, setWires] = useState(null)
@@ -82,22 +68,16 @@ export default function HeaderConnectors() {
       const navEl  = document.querySelector(navSel)
       const targEl = document.querySelector(targSel)
       if (!navEl || !targEl) return null
-
       const nr = navEl.getBoundingClientRect()
       const tr = targEl.getBoundingClientRect()
-
       const nx = nr.left + nr.width  / 2
       const ny = nr.top  + nr.height / 2
       const tx = tr.left + tr.width  / 2
       const ty = tr.top  + tr.height / 2 + window.scrollY
-
       return { path: wirePath(nx, ny, tx, ty, W, i), targetDocY: ty }
     })
 
-    computed.forEach((c, i) => {
-      targetDocYs.current[i] = c?.targetDocY ?? 0
-    })
-
+    computed.forEach((c, i) => { targDocYs.current[i] = c?.targetDocY ?? 0 })
     setDims({ w: W, h: H })
     setWires(computed.map(c => c?.path ?? null))
   }, [])
@@ -114,7 +94,7 @@ export default function HeaderConnectors() {
   useEffect(() => {
     if (!wires) return
     const id = requestAnimationFrame(() => {
-      innerRefs.forEach((ref, i) => {
+      pathRefs.forEach((ref, i) => {
         const el = ref.current
         if (!el) return
         const l = el.getTotalLength?.() ?? 0
@@ -122,11 +102,6 @@ export default function HeaderConnectors() {
         lengths.current[i] = l
         el.style.strokeDasharray  = `${l}`
         el.style.strokeDashoffset = `${l}`
-        const hl = haloRefs[i].current
-        if (hl) {
-          hl.style.strokeDasharray  = `${l}`
-          hl.style.strokeDashoffset = `${l}`
-        }
       })
       onScroll()
     })
@@ -138,19 +113,13 @@ export default function HeaderConnectors() {
     cancelAnimationFrame(rafRef.current)
     rafRef.current = requestAnimationFrame(() => {
       const sy = window.scrollY
-
-      innerRefs.forEach((ref, i) => {
+      pathRefs.forEach((ref, i) => {
         const el = ref.current
         const l  = lengths.current[i]
-        const tY = targetDocYs.current[i]
+        const tY = targDocYs.current[i]
         if (!el || !l || !tY) return
-
         const progress = Math.min(sy / (tY * 0.85), 1)
-        const off      = l - l * progress
-
-        el.style.strokeDashoffset = `${off}`
-        const hl = haloRefs[i].current
-        if (hl) hl.style.strokeDashoffset = `${off}`
+        el.style.strokeDashoffset = `${l - l * progress}`
       })
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -174,47 +143,35 @@ export default function HeaderConnectors() {
       {show && (
         <svg aria-hidden
           style={{
-            position:      'absolute',
-            top: 0, left: 0,
-            width:         '100%',
-            height:        dims.h,
-            /* z:3 — sits above the content div (z:2) so screen blend
-               can work across all sections, not just the hero */
-            zIndex:        3,
-            pointerEvents: 'none',
-            overflow:      'visible',
-            mixBlendMode:  'screen',
+            position: 'absolute', top: 0, left: 0,
+            width: '100%', height: dims.h,
+            zIndex: 3, pointerEvents: 'none',
+            overflow: 'visible', mixBlendMode: 'screen',
           }}
           viewBox={`0 0 ${dims.w} ${dims.h}`}
         >
+          <defs>
+            {/* Single cheap SVG blur — small stdDeviation, tight region */}
+            <filter id="hc-soft" x="-30%" y="0%" width="160%" height="100%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
+            </filter>
+          </defs>
+
           {wires.map((d, i) => {
             if (!d) return null
             const { color } = CONNECTORS[i]
             return (
-              <g key={i}>
-                {/* Ultra-wide blurred halo */}
-                <path
-                  ref={haloRefs[i]}
-                  d={d}
-                  fill="none"
-                  stroke={color}
-                  strokeWidth="90"
-                  strokeLinecap="round"
-                  opacity="0.26"
-                  style={{ filter: 'blur(36px)' }}
-                />
-                {/* Softer inner streak */}
-                <path
-                  ref={innerRefs[i]}
-                  d={d}
-                  fill="none"
-                  stroke={color}
-                  strokeWidth="28"
-                  strokeLinecap="round"
-                  opacity="0.20"
-                  style={{ filter: 'blur(14px)' }}
-                />
-              </g>
+              <path
+                key={i}
+                ref={pathRefs[i]}
+                d={d}
+                fill="none"
+                stroke={color}
+                strokeWidth="10"
+                strokeLinecap="round"
+                opacity="0.38"
+                filter="url(#hc-soft)"
+              />
             )
           })}
         </svg>
