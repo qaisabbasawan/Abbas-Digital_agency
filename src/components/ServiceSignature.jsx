@@ -546,6 +546,12 @@ const MODULES = {
   brand: BrandSignature,
 }
 
+/* Just the animated mockup — used as the hero visual on each service page */
+export function SignatureVisual({ variant = 'web', color = '#2E55E0' }) {
+  const Module = MODULES[variant] || WebSignature
+  return <Module color={color} />
+}
+
 export default function ServiceSignature({ variant = 'web', color = '#2E55E0', glow }) {
   const Module = MODULES[variant] || WebSignature
   const copy = COPY[variant] || COPY.web

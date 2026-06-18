@@ -12,8 +12,7 @@ import {
   ArrowRight, ChevronRight,
 } from 'lucide-react'
 import Footer from '../components/Footer'
-import ServiceScene from '../components/ServiceScene'
-import ServiceSignature from '../components/ServiceSignature'
+import { SignatureVisual } from '../components/ServiceSignature'
 import RevealText from '../components/anim/RevealText'
 import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
@@ -336,91 +335,102 @@ export default function ServiceDetailPage() {
         path={`/services/${slug}`}
       />
 
-      {/* ══════════════ 3D HERO ══════════════ */}
+      {/* ══════════════ HERO ══════════════ */}
       <section className="relative min-h-[88vh] flex items-center overflow-hidden pt-[72px]">
-        <div className="absolute inset-0">
-          <ServiceScene variant={scene} color={color} />
+        {/* ambient glow background */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/4 -right-20 w-[520px] h-[520px] rounded-full blur-[150px] opacity-50" style={{ background: glow }} />
+          <div className="absolute -bottom-10 left-1/4 w-[400px] h-[400px] rounded-full blur-[140px] opacity-30" style={{ background: glow }} />
         </div>
-        <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-bg-dark/85 via-bg-dark/35 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 h-40 pointer-events-none bg-gradient-to-t from-bg-dark to-transparent" />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 w-full py-20">
-          {/* breadcrumb badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-7"
-            style={{ background: `${color}12`, border: `1px solid ${color}38` }}
-          >
-            <Link to="/services" className="text-white/40 text-[11px] tracking-[0.2em] uppercase hover:text-white/70 transition-colors">Services</Link>
-            <ChevronRight size={11} className="text-white/25" />
-            <span className="text-[11px] tracking-[0.2em] uppercase" style={{ color }}>{title}</span>
-          </motion.div>
+        <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 w-full py-20 grid lg:grid-cols-2 gap-12 lg:gap-10 items-center">
+          {/* ─── left: copy ─── */}
+          <div>
+            {/* breadcrumb badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-7"
+              style={{ background: `${color}12`, border: `1px solid ${color}38` }}
+            >
+              <Link to="/services" className="text-white/40 text-[11px] tracking-[0.2em] uppercase hover:text-white/70 transition-colors">Services</Link>
+              <ChevronRight size={11} className="text-white/25" />
+              <span className="text-[11px] tracking-[0.2em] uppercase" style={{ color }}>{title}</span>
+            </motion.div>
 
-          {/* tagline */}
-          <div className="mb-7" style={{ perspective: 900 }}>
-            {tagline.map((line, i) => (
-              <div key={line} className="overflow-hidden pb-[0.08em] -mb-[0.08em]">
-                <motion.h1
-                  initial={{ y: '110%', rotateX: -70, opacity: 0 }}
-                  animate={{ y: 0, rotateX: 0, opacity: 1 }}
-                  transition={{ delay: 0.12 + i * 0.16, duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
-                  className={`font-bold leading-[0.95] tracking-tight ${i === 1 ? '' : 'text-white'}`}
-                  style={{
-                    fontSize: 'clamp(2.8rem, 6.5vw, 6rem)',
-                    transformOrigin: '50% 100%',
-                    ...(i === 1 ? {
-                      backgroundImage: `linear-gradient(135deg, ${color}, ${color}88)`,
-                      WebkitBackgroundClip: 'text',
-                      backgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                    } : {}),
-                  }}
-                >
-                  {line}
-                </motion.h1>
-              </div>
-            ))}
-          </div>
+            {/* tagline */}
+            <div className="mb-7" style={{ perspective: 900 }}>
+              {tagline.map((line, i) => (
+                <div key={line} className="overflow-hidden pb-[0.08em] -mb-[0.08em]">
+                  <motion.h1
+                    initial={{ y: '110%', rotateX: -70, opacity: 0 }}
+                    animate={{ y: 0, rotateX: 0, opacity: 1 }}
+                    transition={{ delay: 0.12 + i * 0.16, duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
+                    className={`font-bold leading-[0.95] tracking-tight ${i === 1 ? '' : 'text-white'}`}
+                    style={{
+                      fontSize: 'clamp(2.6rem, 5.2vw, 5rem)',
+                      transformOrigin: '50% 100%',
+                      ...(i === 1 ? {
+                        backgroundImage: `linear-gradient(135deg, ${color}, ${color}88)`,
+                        WebkitBackgroundClip: 'text',
+                        backgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                      } : {}),
+                    }}
+                  >
+                    {line}
+                  </motion.h1>
+                </div>
+              ))}
+            </div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.45, duration: 0.6 }}
-            className="text-white/45 text-[15px] leading-relaxed max-w-lg mb-9"
-          >
-            {desc}
-          </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.45, duration: 0.6 }}
+              className="text-white/45 text-[15px] leading-relaxed max-w-lg mb-9"
+            >
+              {desc}
+            </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.55, duration: 0.55 }}
-            className="flex flex-wrap items-center gap-4 mb-12"
-          >
-            <Magnetic>
-              <Link to="/contact"
-                className="shimmer-btn inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full text-sm tracking-[0.1em] uppercase text-white font-medium hover:opacity-90 active:scale-[0.98] transition-all duration-200">
-                Get a Free Quote <ArrowRight size={15} strokeWidth={2} />
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.55, duration: 0.55 }}
+              className="flex flex-wrap items-center gap-4 mb-12"
+            >
+              <Magnetic>
+                <Link to="/contact"
+                  className="shimmer-btn inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full text-sm tracking-[0.1em] uppercase text-white font-medium hover:opacity-90 active:scale-[0.98] transition-all duration-200">
+                  Get a Free Quote <ArrowRight size={15} strokeWidth={2} />
+                </Link>
+              </Magnetic>
+              <Link to="/portfolio"
+                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm text-white/55 hover:text-white transition-all duration-300"
+                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.12)' }}>
+                View Our Work
               </Link>
-            </Magnetic>
-            <Link to="/portfolio"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm text-white/55 hover:text-white transition-all duration-300"
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.12)' }}>
-              View Our Work
-            </Link>
-          </motion.div>
+            </motion.div>
 
-          {/* floating stat chips */}
-          <div className="flex flex-wrap gap-4">
-            {stats.map((s, i) => <StatChip key={s.label} {...s} color={color} i={i} />)}
+            {/* floating stat chips */}
+            <div className="flex flex-wrap gap-4">
+              {stats.map((s, i) => <StatChip key={s.label} {...s} color={color} i={i} />)}
+            </div>
           </div>
+
+          {/* ─── right: animated service mockup ─── */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.35, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="flex justify-center lg:justify-end"
+          >
+            <SignatureVisual variant={scene} color={color} />
+          </motion.div>
         </div>
       </section>
-
-      {/* ══════════════ SERVICE SIGNATURE ══════════════ */}
-      <ServiceSignature variant={scene} color={color} glow={glow} />
 
       {/* ══════════════ FEATURES ══════════════ */}
       <section className="relative py-20 lg:py-28 overflow-hidden">
