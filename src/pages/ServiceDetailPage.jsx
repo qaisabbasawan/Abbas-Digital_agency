@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import Footer from '../components/Footer'
 import ServiceScene from '../components/ServiceScene'
+import ServiceSignature from '../components/ServiceSignature'
 import RevealText from '../components/anim/RevealText'
 import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
@@ -418,6 +419,9 @@ export default function ServiceDetailPage() {
         </div>
       </section>
 
+      {/* ══════════════ SERVICE SIGNATURE ══════════════ */}
+      <ServiceSignature variant={scene} color={color} glow={glow} />
+
       {/* ══════════════ FEATURES ══════════════ */}
       <section className="relative py-20 lg:py-28 overflow-hidden">
         <div className="absolute top-24 right-0 w-[460px] h-[460px] rounded-full blur-[150px] pointer-events-none opacity-50" style={{ background: glow }} />
@@ -643,7 +647,7 @@ export default function ServiceDetailPage() {
             }}
           >
             <div className="absolute top-0 left-1/4 w-80 h-80 rounded-full blur-[120px] pointer-events-none" style={{ background: glow }} />
-            <div className="absolute bottom-0 right-1/4 w-72 h-72 rounded-full blur-[110px] pointer-events-none" style={{ background: 'rgba(232,21,90,0.12)' }} />
+            <div className="absolute bottom-0 right-1/4 w-72 h-72 rounded-full blur-[110px] pointer-events-none" style={{ background: glow }} />
 
             <p className="relative text-[11px] tracking-[0.28em] uppercase mb-4" style={{ color }}>
               Let's Get Started
