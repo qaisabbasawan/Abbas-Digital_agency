@@ -338,7 +338,7 @@ export default function AIAnalyzerSection() {
                       <Cpu size={15} className="text-brand-pink" />
                     </motion.div>
                     <span className="font-mono text-[12px] text-white/50">
-                      <Typewriter text="Analyzing: Ahmad's E-Commerce Store · Islamabad, PK" active={inView} delay={0.3} />
+                      <Typewriter text="Analyzing: Ahmad's E-Commerce Store · Islamabad, PK & USA" active={inView} delay={0.3} />
                     </span>
                   </motion.div>
 
