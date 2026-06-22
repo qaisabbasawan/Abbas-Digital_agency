@@ -57,12 +57,12 @@ const socials = [
 const addresses = [
   {
     phone: '0300 593 5125',
-    type: 'Visit Us',
+    type: 'Pakistan Office',
     lines: ['H 1-A, IVY Street, Banigala,', 'Islamabad, Pakistan'],
   },
   {
     phone: '+1 843 733 0701',
-    type: 'Mailing Address',
+    type: 'USA Office',
     lines: ['1001 S MAIN ST STE 500,', 'KALISPELL, MT 59901, USA'],
   },
 ]
