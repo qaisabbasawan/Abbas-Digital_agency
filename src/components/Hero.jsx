@@ -232,19 +232,6 @@ export default function Hero() {
       <div className="relative z-20 flex-1 flex items-center">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 w-full pt-28 pb-10">
 
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55 }}
-            className="inline-flex items-center gap-2.5 mb-8 px-3 py-1.5 border border-white/10 rounded-full"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-brand-pink animate-pulse" />
-            <span className="text-white/50 text-[11px] tracking-[0.22em] uppercase">
-              Islamabad · Pakistan · Est. 2012
-            </span>
-          </motion.div>
-
           {/* Headline — cinematic per-character 3D reveal */}
           <div className="mb-6 space-y-0">
             <HeadlineLine text="We Build"    lineIdx={0} />
