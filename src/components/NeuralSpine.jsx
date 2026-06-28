@@ -1,5 +1,6 @@
 import { useRef, useMemo, useEffect } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { useIsClient } from '../hooks/useIsClient'
 import { Stars, MeshDistortMaterial } from '@react-three/drei'
 import * as THREE from 'three'
 
@@ -262,6 +263,8 @@ function Rig({ store }) {
 }
 
 export default function NeuralSpine({ store }) {
+  const isClient = useIsClient()
+  if (!isClient) return null
   return (
     <Canvas
       camera={{ position: [0, 0, CAM_Z], fov: FOV }}

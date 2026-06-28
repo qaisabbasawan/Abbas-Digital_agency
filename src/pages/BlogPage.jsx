@@ -256,16 +256,21 @@ export default function BlogPage() {
             <span className="text-brand-pink text-[11px] tracking-[0.28em] uppercase">The Knowledge Hub</span>
           </motion.div>
 
-          <RevealText as="h1" delay={0.15} stagger={0.08}
-            className="font-bold text-white leading-[1.04] mb-3"
-            style={{ fontSize: 'clamp(2.7rem,6.5vw,5.4rem)' }}>
-            Ideas that move
-          </RevealText>
-          <RevealText as="h1" delay={0.35} stagger={0.08} gradient
-            className="font-bold leading-[1.04] mb-6"
-            style={{ fontSize: 'clamp(2.7rem,6.5vw,5.4rem)' }}>
-            businesses forward
-          </RevealText>
+          {/* One <h1> for SEO; an sr-only phrase carries the primary keyword
+              while the animated lines stay as the visible headline. */}
+          <h1 className="mb-6">
+            <span className="sr-only">Digital Marketing Blog</span>
+            <RevealText as="span" delay={0.15} stagger={0.08}
+              className="block font-bold text-white leading-[1.04] mb-3"
+              style={{ fontSize: 'clamp(2.7rem,6.5vw,5.4rem)' }}>
+              Ideas that move
+            </RevealText>
+            <RevealText as="span" delay={0.35} stagger={0.08} gradient
+              className="block font-bold leading-[1.04]"
+              style={{ fontSize: 'clamp(2.7rem,6.5vw,5.4rem)' }}>
+              businesses forward
+            </RevealText>
+          </h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.6 }}

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import SEO from '../components/SEO'
+import { organizationSchema, localBusinessPK, localBusinessUSA } from '../lib/schema'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -65,10 +66,11 @@ export default function LandingPage() {
   return (
     <>
       <SEO
-        title="Digital Marketing Agency Islamabad | Abbas Digital Agency"
-        description="Abbas Digital Agency delivers SEO, web design & digital marketing for businesses in Pakistan & USA. US-registered LLC. Free consultation."
-        keywords="digital marketing agency Islamabad, SEO services Pakistan, web design company Pakistan, digital agency Islamabad, best SEO company Pakistan, social media marketing Pakistan"
+        title="Digital Marketing Agency Islamabad & Montana USA | Abbas Digital Agency"
+        description="Abbas Digital Agency delivers SEO, web design & digital marketing for businesses in Pakistan & the USA. US-registered LLC in Montana. Book a free consultation."
+        keywords="digital marketing agency Islamabad, SEO services Pakistan, web design company Pakistan, digital agency Islamabad, digital marketing Montana, best SEO company Pakistan, social media marketing Pakistan"
         path="/"
+        schema={[organizationSchema(), localBusinessPK(), localBusinessUSA()]}
       />
       {/* Fixed 3-D background */}
       <div

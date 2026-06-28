@@ -1,5 +1,6 @@
 import { useParams, Link, Navigate } from 'react-router-dom'
 import SEO from '../components/SEO'
+import { serviceSchema, breadcrumbSchema } from '../lib/schema'
 import { motion } from 'framer-motion'
 import {
   Globe, ShoppingCart, Smartphone, Bot, TrendingUp, Palette,
@@ -333,6 +334,14 @@ export default function ServiceDetailPage() {
         description={`${tagline} — Abbas Digital Agency delivers professional ${title.toLowerCase()} services for businesses in Pakistan & USA. US-registered. Free consultation.`}
         keywords={`${title.toLowerCase()} Pakistan, ${title.toLowerCase()} Islamabad, Abbas Digital Agency, digital marketing Pakistan`}
         path={`/services/${slug}`}
+        schema={[
+          serviceSchema(title, `${tagline} — professional ${title.toLowerCase()} services for businesses in Pakistan and the USA.`, `/services/${slug}`),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Services', path: '/services' },
+            { name: title, path: `/services/${slug}` },
+          ]),
+        ]}
       />
 
       {/* ══════════════ HERO ══════════════ */}
@@ -360,15 +369,17 @@ export default function ServiceDetailPage() {
               <span className="text-[11px] tracking-[0.2em] uppercase" style={{ color }}>{title}</span>
             </motion.div>
 
-            {/* tagline */}
-            <div className="mb-7" style={{ perspective: 900 }}>
+            {/* tagline — one <h1> for SEO; an sr-only phrase carries the full
+                keyword line while the animated lines stay the visible headline. */}
+            <h1 className="mb-7" style={{ perspective: 900 }}>
+              <span className="sr-only">{`${title} — ${tagline.join(' ')}`}</span>
               {tagline.map((line, i) => (
-                <div key={line} className="overflow-hidden pb-[0.08em] -mb-[0.08em]">
-                  <motion.h1
+                <span key={line} aria-hidden className="block overflow-hidden pb-[0.08em] -mb-[0.08em]">
+                  <motion.span
                     initial={{ y: '110%', rotateX: -70, opacity: 0 }}
                     animate={{ y: 0, rotateX: 0, opacity: 1 }}
                     transition={{ delay: 0.12 + i * 0.16, duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
-                    className={`font-bold leading-[0.95] tracking-tight ${i === 1 ? '' : 'text-white'}`}
+                    className={`block font-bold leading-[0.95] tracking-tight ${i === 1 ? '' : 'text-white'}`}
                     style={{
                       fontSize: 'clamp(2.6rem, 5.2vw, 5rem)',
                       transformOrigin: '50% 100%',
@@ -381,10 +392,10 @@ export default function ServiceDetailPage() {
                     }}
                   >
                     {line}
-                  </motion.h1>
-                </div>
+                  </motion.span>
+                </span>
               ))}
-            </div>
+            </h1>
 
             <motion.p
               initial={{ opacity: 0, y: 16 }}

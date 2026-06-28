@@ -88,9 +88,9 @@ function PublicLayout() {
   )
 }
 
-export default function App() {
+export default function App({ ssrData } = {}) {
   return (
-    <AuthProvider>
+    <AuthProvider initialBlogs={ssrData?.blogs}>
       <GATracker />
       <Suspense fallback={<PageLoader />}>
         <Routes>

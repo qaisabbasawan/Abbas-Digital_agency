@@ -1,5 +1,6 @@
 import { useRef, useEffect, useMemo } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { useIsClient } from '../hooks/useIsClient'
 import { Stars, Sparkles, Float, MeshDistortMaterial, RoundedBox } from '@react-three/drei'
 import * as THREE from 'three'
 
@@ -589,7 +590,9 @@ function CameraController() {
 }
 
 export default function ServiceScene({ variant = 'web', color = '#2E55E0' }) {
+  const isClient = useIsClient()
   const Scene = SCENES[variant] || WebScene
+  if (!isClient) return null
   return (
     <Canvas
       camera={{ position: [0, 0, 8], fov: 50 }}

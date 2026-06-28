@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { ArrowUpRight, MapPin, Phone, Mail, Clock } from 'lucide-react'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
+import { localBusinessPK, faqSchema, breadcrumbSchema } from '../lib/schema'
 
 const services = [
   { title: 'SEO Services Islamabad', desc: 'Rank higher on Google Pakistan. We help Islamabad businesses dominate local and national search results.' },
@@ -35,6 +36,14 @@ export default function IslamabadPage() {
         description="Abbas Digital Agency — Islamabad's leading digital marketing, SEO, web design and mobile app development agency. Serving businesses across Pakistan since 2012."
         keywords="digital marketing agency Islamabad, SEO services Islamabad, web design Islamabad, web development company Islamabad, digital agency Pakistan, online marketing Islamabad"
         path="/islamabad"
+        schema={[
+          localBusinessPK(),
+          faqSchema(faqs),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Islamabad', path: '/islamabad' },
+          ]),
+        ]}
       />
 
       {/* Hero */}

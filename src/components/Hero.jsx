@@ -25,9 +25,9 @@ function HeadlineLine({ text, gradient, lineIdx }) {
     : {}
 
   return (
-    <h1
+    <span
       aria-label={text}
-      className="font-bold leading-[0.92] tracking-tight text-white"
+      className="block font-bold leading-[0.92] tracking-tight text-white"
       style={{ fontSize: 'clamp(3rem, 7.5vw, 7.2rem)', perspective: 900 }}
     >
       {[...text].map((ch, i) => (
@@ -50,7 +50,7 @@ function HeadlineLine({ text, gradient, lineIdx }) {
           </motion.span>
         </span>
       ))}
-    </h1>
+    </span>
   )
 }
 
@@ -232,12 +232,15 @@ export default function Hero() {
       <div className="relative z-20 flex-1 flex items-center">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 w-full pt-28 pb-10">
 
-          {/* Headline — cinematic per-character 3D reveal */}
-          <div className="mb-6 space-y-0">
+          {/* Headline — cinematic per-character 3D reveal.
+              One <h1> for SEO; an sr-only phrase carries the primary keyword
+              while the animated lines stay as the visible headline. */}
+          <h1 className="mb-6 space-y-0">
+            <span className="sr-only">Digital Marketing Agency in Islamabad &amp; Montana USA — We Build Digital Excellence</span>
             <HeadlineLine text="We Build"    lineIdx={0} />
             <HeadlineLine text="Digital"     lineIdx={1} gradient />
             <HeadlineLine text="Excellence." lineIdx={2} />
-          </div>
+          </h1>
 
           {/* Typewriter */}
           <motion.p

@@ -9,6 +9,7 @@ import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
 import { useAuth } from '../admin/context/AuthContext'
 import SEO from '../components/SEO'
+import { localBusinessPK, localBusinessUSA } from '../lib/schema'
 
 const svcList = [
   'Web Development', 'E-Commerce', 'Mobile Apps',
@@ -139,6 +140,7 @@ export default function ContactPage() {
         description="Get in touch with Abbas Digital Agency. Contact our offices in Islamabad, Pakistan or Montana, USA. Free consultation for SEO, web design & digital marketing."
         keywords="contact Abbas Digital Agency, digital marketing agency Islamabad contact, SEO agency Pakistan contact"
         path="/contact"
+        schema={[localBusinessPK(), localBusinessUSA()]}
       />
 
       {/* ── 3D Hero ── */}
@@ -159,16 +161,21 @@ export default function ContactPage() {
             <span className="text-brand-pink text-[11px] tracking-[0.28em] uppercase">Get In Touch</span>
           </motion.div>
 
-          <RevealText as="h1" delay={0.15} stagger={0.08}
-            className="font-bold text-white leading-[1.04] mb-3"
-            style={{ fontSize: 'clamp(3rem,7vw,6rem)' }}>
-            Your signal,
-          </RevealText>
-          <RevealText as="h1" delay={0.35} stagger={0.08} gradient
-            className="font-bold leading-[1.04] mb-6"
-            style={{ fontSize: 'clamp(3rem,7vw,6rem)' }}>
-            our mission
-          </RevealText>
+          {/* One <h1> for SEO; an sr-only phrase carries the primary keyword
+              while the animated lines stay as the visible headline. */}
+          <h1 className="mb-6">
+            <span className="sr-only">Contact Abbas Digital Agency — Islamabad &amp; Montana USA</span>
+            <RevealText as="span" delay={0.15} stagger={0.08}
+              className="block font-bold text-white leading-[1.04] mb-3"
+              style={{ fontSize: 'clamp(3rem,7vw,6rem)' }}>
+              Your signal,
+            </RevealText>
+            <RevealText as="span" delay={0.35} stagger={0.08} gradient
+              className="block font-bold leading-[1.04]"
+              style={{ fontSize: 'clamp(3rem,7vw,6rem)' }}>
+              our mission
+            </RevealText>
+          </h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.6 }}

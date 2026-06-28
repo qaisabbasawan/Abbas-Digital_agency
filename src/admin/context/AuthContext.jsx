@@ -115,10 +115,21 @@ function userToDb(u) {
 
 // ── Provider ─────────────────────────────────────────────────────────────────
 
-export function AuthProvider({ children }) {
+/* Blogs prerendered into the page at build time (see scripts/prerender.mjs).
+   On the client they're read from the injected global so the first render
+   matches the server HTML and hydration stays clean; the useEffect below then
+   refreshes them with live data from Supabase. */
+function getSsgBlogs(initialBlogs) {
+  if (initialBlogs && initialBlogs.length) return initialBlogs
+  if (typeof window !== 'undefined' && window.__SSG_DATA__?.blogs) return window.__SSG_DATA__.blogs
+  return []
+}
+
+export function AuthProvider({ children, initialBlogs }) {
+  const seedBlogs = getSsgBlogs(initialBlogs)
   const [user,    setUser]    = useState(null)
   const [users,   setUsers]   = useState(DEFAULT_USERS)
-  const [blogs,   setBlogs]   = useState([])
+  const [blogs,   setBlogs]   = useState(seedBlogs)
   const [leads,   setLeads]   = useState([])
   const [loading, setLoading] = useState(true)
 

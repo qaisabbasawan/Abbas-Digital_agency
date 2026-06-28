@@ -587,6 +587,64 @@ export const SEO_PAGES = {
     ],
   }),
 
+  'montana': locationPage('montana', 'Montana', 'USA', {
+    type: 'location-us',
+    title: 'Digital Marketing Agency Montana USA | Abbas Digital Agency',
+    description: 'Abbas Digital Agency is a US-registered digital marketing agency serving Montana businesses with SEO, web design and online advertising. Free strategy call.',
+    keywords: 'digital marketing agency montana, seo montana, web design montana, montana digital marketing, web development montana, montana advertising agency',
+    hero: {
+      badge: 'Serving Montana, USA',
+      headline: 'Digital Marketing Agency\nin Montana',
+      subheadline: 'Abbas Digital Agency is a Montana-registered LLC helping businesses across Big Sky Country grow online with web design, SEO and high-ROI advertising — world-class quality at competitive rates.',
+    },
+    localContent: {
+      label: 'Serving Big Sky Country',
+      heading: 'Your Growth Partner Across Montana',
+      paragraphs: [
+        'Abbas Digital Agency is registered as a Montana LLC in Kalispell, and we work with businesses throughout the state — from Billings, Missoula and Bozeman to Great Falls, Helena and the Flathead Valley. Whether you run a contracting company, a ranch-to-table restaurant, a tourism outfitter near Glacier National Park or a professional services firm, we build the digital presence that turns local searches into paying customers.',
+        'Montana is a relationship-driven market, and the businesses that win online are the ones that show up first when someone searches "near me." We combine local SEO, Google Business Profile optimization and fast, mobile-friendly websites so your business is the obvious choice across every Montana community you serve — and across state lines when you are ready to grow.',
+        'As a US-registered agency, we sign US-standard service agreements and NDAs, invoice in USD, and operate on schedules that overlap Mountain Time. You get a dedicated account manager, transparent monthly reporting and full ownership of everything we build — at roughly 40–60% below typical US agency rates.',
+      ],
+    },
+    map: 'https://www.google.com/maps?q=Montana,%20USA&output=embed',
+    faqs: [
+      { q: 'Is Abbas Digital Agency actually registered in Montana?', a: 'Yes. We are registered as Abbas Digital Agency LLC in Kalispell, Montana, with a US business address. This gives Montana clients full legal confidence and a local US point of contact while benefiting from our highly competitive rates.' },
+      { q: 'Which Montana cities and regions do you serve?', a: 'We serve businesses statewide — Billings, Missoula, Bozeman, Great Falls, Helena, Kalispell, Butte and the surrounding rural communities. All of our services are delivered remotely with regular video calls, so distance is never a barrier.' },
+      { q: 'What digital marketing services work best for Montana small businesses?', a: 'For most Montana businesses, local SEO and Google Business Profile optimization deliver the strongest ROI, paired with a fast, mobile-friendly website and targeted Google Ads. Tourism and hospitality businesses also benefit heavily from social media and seasonal ad campaigns.' },
+      { q: 'How do you handle time zones for Montana clients?', a: 'Our project managers operate on schedules that overlap Mountain Time business hours. We communicate via email, Slack and scheduled video calls so you always get timely, responsive service.' },
+      { q: 'How much does digital marketing cost for a Montana business?', a: 'Projects start with a free strategy call and a fixed, transparent quote. Because our team is structured for efficiency, Montana clients typically pay 40–60% less than comparable US agency rates — with no hidden fees and full IP ownership on completion.' },
+    ],
+  }),
+
+  'kalispell': locationPage('kalispell', 'Kalispell', 'USA', {
+    type: 'location-us',
+    title: 'Web Design & SEO Services Kalispell MT | Abbas Digital Agency',
+    description: 'Web design, SEO and digital marketing for Kalispell, Montana businesses. US-registered agency based in Kalispell. Free strategy call for local businesses.',
+    keywords: 'web design kalispell, seo kalispell mt, digital marketing kalispell, kalispell web developer, flathead valley marketing, kalispell montana seo',
+    hero: {
+      badge: 'Based in Kalispell, MT',
+      headline: 'Web Design & SEO\nin Kalispell, Montana',
+      subheadline: 'Abbas Digital Agency is headquartered as a US LLC in Kalispell, MT. We build high-converting websites and rank Flathead Valley businesses on Google — local presence, world-class execution.',
+    },
+    localContent: {
+      label: 'Local in the Flathead Valley',
+      heading: 'Helping Kalispell Businesses Get Found Online',
+      paragraphs: [
+        'Kalispell is the heart of the Flathead Valley and the gateway to Glacier National Park, which means local businesses serve both a tight-knit community and a steady flow of visitors. Abbas Digital Agency LLC is registered right here in Kalispell, and we help local contractors, retailers, restaurants, real-estate offices, outfitters and professional services firms turn that traffic into booked jobs and walk-in customers.',
+        'We start with the fundamentals that matter most for a town like Kalispell: a Google Business Profile that ranks in the local map pack, a fast and mobile-friendly website, and location-specific SEO targeting searches like "Kalispell" and "Flathead Valley." From there we layer in Google Ads and social media so you stay top-of-mind through every season — including the busy summer tourism months.',
+        'Because we are a US-registered agency, you get US-standard contracts and NDAs, USD invoicing and a local point of contact — combined with rates that are dramatically more affordable than hiring a large-city agency. Every website and campaign we build is fully owned by you on completion.',
+      ],
+    },
+    map: 'https://www.google.com/maps?q=Kalispell,%20MT%2059901&output=embed',
+    faqs: [
+      { q: 'Where in Kalispell is Abbas Digital Agency located?', a: 'Our US office is registered at 1001 S Main St, Ste 500, Kalispell, MT 59901. We work with Kalispell and Flathead Valley businesses both remotely and, where helpful, in person.' },
+      { q: 'Do you specialise in local SEO for Kalispell businesses?', a: 'Yes. Local SEO is one of our core services. We optimise your Google Business Profile, build local citations, and target Kalispell and Flathead Valley keywords so your business appears in "near me" and Google Maps searches.' },
+      { q: 'Can you help a seasonal tourism business in the Kalispell area?', a: 'Definitely. Many Flathead Valley businesses rely on the summer Glacier National Park season. We build seasonal Google Ads and social campaigns, plus evergreen SEO, so you capture peak-season demand and stay visible year-round.' },
+      { q: 'How affordable is web design for a small Kalispell business?', a: 'We offer fixed, transparent pricing with packages suited to small Flathead Valley businesses. Most Kalispell clients pay far less than they would with a large regional agency, with no hidden fees and full ownership of the finished website.' },
+      { q: 'Do you build websites for contractors and trades in the Flathead Valley?', a: 'Yes. We build lead-generating websites for contractors, builders, landscapers and home-service businesses across the Flathead Valley, complete with quote-request forms, click-to-call buttons and local SEO to drive steady enquiries.' },
+    ],
+  }),
+
   'new-york': locationPage('new-york', 'New York', 'USA', {
     type: 'location-us',
     title: 'Web Design & Digital Marketing New York | Abbas Digital Agency',

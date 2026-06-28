@@ -1,6 +1,8 @@
 // ── Shared markdown renderer styles (blog detail + admin preview) ──────────
 export const mdComponents = {
-  h1: ({ children }) => <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: '#fff', marginTop: '2rem', marginBottom: '0.75rem', lineHeight: 1.3 }}>{children}</h1>,
+  // The page title is the sole <h1>; a leading "# Title" in post content
+  // renders as <h2> (keeping the larger styling) to avoid a second h1.
+  h1: ({ children }) => <h2 style={{ fontSize: '1.75rem', fontWeight: 700, color: '#fff', marginTop: '2rem', marginBottom: '0.75rem', lineHeight: 1.3 }}>{children}</h2>,
   h2: ({ children }) => <h2 style={{ fontSize: '1.35rem', fontWeight: 700, color: 'rgba(255,255,255,0.92)', marginTop: '1.75rem', marginBottom: '0.6rem', lineHeight: 1.35 }}>{children}</h2>,
   h3: ({ children }) => <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'rgba(255,255,255,0.85)', marginTop: '1.4rem', marginBottom: '0.5rem' }}>{children}</h3>,
   p:  ({ children }) => <p  style={{ color: 'rgba(255,255,255,0.7)', lineHeight: 1.85, marginBottom: '1.1rem', fontSize: '15px' }}>{children}</p>,

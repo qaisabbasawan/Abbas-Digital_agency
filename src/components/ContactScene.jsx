@@ -1,5 +1,6 @@
 import { useRef, useMemo, useEffect } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { useIsClient } from '../hooks/useIsClient'
 import { Stars, Sparkles, MeshDistortMaterial } from '@react-three/drei'
 import * as THREE from 'three'
 
@@ -185,6 +186,8 @@ function CameraController() {
 }
 
 export default function ContactScene() {
+  const isClient = useIsClient()
+  if (!isClient) return null
   return (
     <Canvas
       camera={{ position: [0, 0, 8], fov: 50 }}

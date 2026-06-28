@@ -1,5 +1,6 @@
 import { useRef, useMemo, useEffect } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { useIsClient } from '../hooks/useIsClient'
 import { Stars, Sparkles, MeshDistortMaterial, Float } from '@react-three/drei'
 import * as THREE from 'three'
 
@@ -276,6 +277,8 @@ function CoreGroup() {
 }
 
 export default function HeroScene() {
+  const isClient = useIsClient()
+  if (!isClient) return null
   return (
     <Canvas
       camera={{ position: [0, 0, 7.5], fov: 55 }}

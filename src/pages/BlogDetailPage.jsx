@@ -10,6 +10,7 @@ import Magnetic from '../components/anim/Magnetic'
 import { useAuth } from '../admin/context/AuthContext'
 import { mdComponents } from '../lib/mdComponents'
 import SEO from '../components/SEO'
+import { articleSchema, breadcrumbSchema } from '../lib/schema'
 
 const catColors = {
   'Web Development':   '#2E55E0',
@@ -149,7 +150,28 @@ export default function BlogDetailPage() {
         path={`/blog/${blog.slug}`}
         image={blog.image || undefined}
         type="article"
+        publishedTime={blog.date ? new Date(blog.date).toISOString() : undefined}
+        modifiedTime={(blog.updatedAt || blog.date) ? new Date(blog.updatedAt || blog.date).toISOString() : undefined}
+        schema={[
+          articleSchema(blog),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Blog', path: '/blog' },
+            { name: blog.title, path: `/blog/${blog.slug}` },
+          ]),
+        ]}
       />
+
+      {/* Breadcrumb navigation */}
+      <nav aria-label="Breadcrumb" className="max-w-4xl mx-auto px-5 sm:px-8 pt-[88px] pb-1">
+        <ol className="flex flex-wrap items-center gap-1.5 text-[12px] text-white/40">
+          <li><Link to="/" className="hover:text-white transition-colors">Home</Link></li>
+          <li aria-hidden className="text-white/25">/</li>
+          <li><Link to="/blog" className="hover:text-white transition-colors">Blog</Link></li>
+          <li aria-hidden className="text-white/25">/</li>
+          <li className="text-white/70 line-clamp-1 max-w-[60vw]" aria-current="page">{blog.title}</li>
+        </ol>
+      </nav>
 
       {/* ── Cinematic cover hero ── */}
       <section className="relative overflow-hidden pt-[72px]">

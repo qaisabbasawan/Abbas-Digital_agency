@@ -1,1 +1,7 @@
-/* /index.html 200
+# Force non-www (canonical host) — 301 permanent. The "!" forces the rule.
+http://www.abbasdigitalagency.com/*   https://abbasdigitalagency.com/:splat   301!
+https://www.abbasdigitalagency.com/*  https://abbasdigitalagency.com/:splat   301!
+
+# SPA fallback for any route that isn't a prerendered static file.
+# (Netlify serves existing files first, so prerendered pages still win.)
+/*  /index.html  200

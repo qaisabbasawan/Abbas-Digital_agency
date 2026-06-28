@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import SEO from './SEO'
 import Footer from './Footer'
+import { localBusinessPK, localBusinessUSA, faqSchema, breadcrumbSchema } from '../lib/schema'
 
 // ─── Constants ─────────────────────────────────────────────────────────────
 
@@ -512,10 +513,62 @@ function FinalCTA() {
   )
 }
 
+// ─── Local content + Google Map (location pages) ─────────────────────────────
+
+function LocalAreaSection({ localContent, map }) {
+  if (!localContent && !map) return null
+  return (
+    <section className="bg-bg-dark py-20">
+      <div className="max-w-6xl mx-auto px-5 sm:px-8 lg:px-12">
+        <div className="grid lg:grid-cols-2 gap-12 items-start">
+          {localContent && (
+            <motion.div
+              initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={stagger}
+            >
+              <motion.div variants={fadeUp}><SectionLabel>{localContent.label || 'Local Expertise'}</SectionLabel></motion.div>
+              <motion.h2 variants={fadeUp} className="font-heading text-3xl sm:text-4xl font-bold mb-6">
+                {localContent.heading}
+              </motion.h2>
+              <div className="space-y-4">
+                {localContent.paragraphs.map((p, i) => (
+                  <motion.p key={i} variants={fadeUp} className="text-white/60 text-[15px] leading-relaxed">{p}</motion.p>
+                ))}
+              </div>
+            </motion.div>
+          )}
+          {map && (
+            <motion.div
+              initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }} variants={fadeUp}
+              className="rounded-2xl overflow-hidden border border-white/[0.08] min-h-[320px] h-full"
+            >
+              <iframe
+                title={`${localContent?.heading || 'Location'} map`}
+                src={map}
+                width="100%" height="100%" loading="lazy"
+                style={{ border: 0, minHeight: 320 }}
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+            </motion.div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 // ─── Main Template ──────────────────────────────────────────────────────────
 
 export default function SeoLandingTemplate({ page }) {
-  const { seo, hero, faqs, slug } = page
+  const { seo, hero, faqs, slug, type, localContent, map } = page
+
+  const isUS = type === 'location-us'
+  const schema = [isUS ? localBusinessUSA() : localBusinessPK()]
+  if (faqs && faqs.length > 0) schema.push(faqSchema(faqs))
+  schema.push(breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: hero.badge || seo.title, path: `/${slug}` },
+  ]))
 
   return (
     <>
@@ -524,12 +577,14 @@ export default function SeoLandingTemplate({ page }) {
         description={seo.description}
         keywords={seo.keywords}
         path={`/${slug}`}
+        schema={schema}
       />
 
       <main>
         <HeroSection hero={hero} />
         <TrustBar />
         <ServicesSection />
+        <LocalAreaSection localContent={localContent} map={map} />
         <WhySection />
         <ProcessSection />
         <IndustriesSection />
