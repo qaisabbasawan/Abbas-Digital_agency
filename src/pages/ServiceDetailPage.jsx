@@ -10,6 +10,7 @@ import {
   MessageSquare, Cpu, GitBranch, Database, Settings,
   Target, Users, FileText, Mail, PieChart, Activity,
   Brush, Eye, Type, BookOpen,
+  Boxes, Cloud, ShieldAlert, LineChart, Puzzle, Languages,
   ArrowRight, ChevronRight,
 } from 'lucide-react'
 import Footer from '../components/Footer'
@@ -260,6 +261,45 @@ const services = {
       img: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=900&h=460&fit=crop&q=80',
       tags: ['Brand Identity', 'Figma', 'Guidelines'],
       from: '#4C1D95', to: '#D97706',
+    },
+  },
+
+  'erp-solutions': {
+    title: 'ERP Solutions',
+    tagline: ['Enterprise Intelligence.', 'Any Scale. Any Market.'],
+    color: '#4F46E5',
+    glow: 'rgba(79,70,229,0.24)',
+    Icon: Boxes,
+    scene: 'erp',
+    stats: [
+      { value: '6',    label: 'Core Modules' },
+      { value: '3 mo', label: 'Data to Forecast' },
+      { value: '24/7', label: 'Fraud Monitoring' },
+    ],
+    desc: 'Cloud-native, modular ERP systems for businesses of all sizes — from growing SMEs to large enterprises — with AI demand forecasting, real-time fraud detection and a multilingual chatbot at the core. Built on Next.js + Supabase, deployed across Pakistan, the Middle East and global markets.',
+    features: [
+      { Icon: Boxes,       title: '6 Core Modules',         desc: 'HR, Inventory, Sales, Finance, Procurement and Analytics — independent yet fully interconnected modules that share one source of truth.' },
+      { Icon: LineChart,   title: 'AI Demand Forecasting',  desc: 'Accurate predictions with as little as 3 months of data. Local seasonal patterns — Eid, Ramadan, harvest and back-to-school — built natively into the model.' },
+      { Icon: ShieldAlert, title: 'Fraud & Error Detection', desc: 'Real-time anomaly detection across every transaction using Isolation Forest, rule-based checks and Z-score analysis — each flag scored and explained.' },
+      { Icon: Languages,   title: 'Multilingual AI Chatbot', desc: 'Query and command your entire ERP in natural language — in any language. Powered by Google Gemini for instant, conversational insight.' },
+      { Icon: Cloud,       title: 'Cloud-Based Access',     desc: 'Accessible on desktop and mobile from anywhere in the world. Real-time data, role-based access and zero on-premise hardware to maintain.' },
+      { Icon: Puzzle,      title: 'Modular Pricing',        desc: 'SMEs pay only for the modules they need. Enterprises scale with full module access, custom integrations and dedicated support.' },
+    ],
+    steps: [
+      { n: '01', title: 'Discovery',   desc: 'Map your processes, data and pain points across departments to scope the right module mix.' },
+      { n: '02', title: 'Configure',   desc: 'Select and tailor modules — workflows, roles, approvals and reports shaped to how you actually work.' },
+      { n: '03', title: 'Integrate',   desc: 'Migrate existing data, connect payment, tax and third-party systems, and wire up the AI layer.' },
+      { n: '04', title: 'AI Training',  desc: 'Feed historical data so the forecasting and fraud-detection models learn your business patterns.' },
+      { n: '05', title: 'Launch & Scale', desc: 'Team onboarding, go-live support, then add modules and locations as you grow.' },
+    ],
+    tech: ['Next.js', 'Supabase', 'PostgreSQL', 'Facebook Prophet', 'Isolation Forest', 'Google Gemini', 'Python', 'FastAPI', 'Tailwind CSS', 'Vercel'],
+    caseStudy: {
+      title: 'Meridian Distribution',
+      metric: '30% Fewer Stockouts',
+      desc: 'A growing distributor replaced spreadsheets with a 6-module ERP. AI forecasting cut stockouts by 30%, while real-time fraud detection flagged duplicate invoices in their first month live.',
+      img: 'https://images.unsplash.com/photo-1553413077-190dd305871c?w=900&h=460&fit=crop&q=80',
+      tags: ['Next.js', 'Supabase', 'AI Forecasting'],
+      from: '#312E81', to: '#4F46E5',
     },
   },
 }

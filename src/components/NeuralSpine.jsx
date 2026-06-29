@@ -13,8 +13,9 @@ import * as THREE from 'three'
    spine as the user scrolls (store.p = 0..1).
    ════════════════════════════════════════════════════════════════ */
 
+export const CARD_COUNT = 7           // service cards riding the spine
 export const CARD_STEP = 2.2          // world units between card junctions
-export const DROP = CARD_STEP * 5     // total camera travel
+export const DROP = CARD_STEP * (CARD_COUNT - 1)   // total camera travel
 export const CAM_Z = 7
 export const FOV = 50
 
@@ -178,6 +179,7 @@ const JUNCTION_COLORS = [
   ['#0891B2', '#FF2D72'],
   ['#2DD4BF', '#059669'],
   ['#FF2D72', '#D97706'],
+  ['#4F46E5', '#0EA5E9'],
 ]
 
 function Junctions({ store }) {
@@ -186,10 +188,10 @@ function Junctions({ store }) {
 
   useFrame(({ clock }) => {
     const t = clock.elapsedTime
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < CARD_COUNT; i++) {
       const g = groups.current[i]
       if (!g) continue
-      const center = i / 5
+      const center = i / (CARD_COUNT - 1)
       /* erupts as its card crystallizes, idles softly otherwise */
       const bell = Math.exp(-Math.pow((store.p - center) * 7, 2))
       const intensity = 0.10 + bell * 0.95
@@ -203,7 +205,7 @@ function Junctions({ store }) {
     }
   })
 
-  return Array.from({ length: 6 }).map((_, i) => {
+  return Array.from({ length: CARD_COUNT }).map((_, i) => {
     const side = i % 2 === 0 ? -1 : 1
     const [cA, cB] = JUNCTION_COLORS[i]
     /* cards orbit the spine, so eruptions sit close to the centre */

@@ -18,6 +18,7 @@ const services = [
   { label: 'AI & Chatbots',    path: '/services/ai-chatbots' },
   { label: 'Digital Marketing', path: '/services/digital-marketing' },
   { label: 'Branding & Design', path: '/services/branding-design' },
+  { label: 'ERP Solutions',     path: '/services/erp-solutions' },
 ]
 
 const socials = [

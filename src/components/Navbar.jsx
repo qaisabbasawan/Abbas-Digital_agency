@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Link, useLocation } from 'react-router-dom'
 import {
   Globe, ShoppingCart, Smartphone,
-  Bot, TrendingUp, Palette, ChevronDown, BarChart2,
+  Bot, TrendingUp, Palette, ChevronDown, BarChart2, Boxes,
 } from 'lucide-react'
 import Logo from './Logo'
 
@@ -15,6 +15,7 @@ const serviceItems = [
   { Icon: Bot,          label: 'AI & Chatbots',      sub: 'WhatsApp bots & GPT integrations',  color: '#0891B2', path: '/services/ai-chatbots' },
   { Icon: TrendingUp,   label: 'Digital Marketing',  sub: 'SEO, Google Ads & Social Media',    color: '#059669', path: '/services/digital-marketing' },
   { Icon: Palette,      label: 'Branding & Design',  sub: 'Logo, identity & UI/UX',            color: '#D97706', path: '/services/branding-design' },
+  { Icon: Boxes,        label: 'ERP Solutions',      sub: 'Modular, AI-powered ERP',           color: '#4F46E5', path: '/services/erp-solutions' },
 ]
 
 const navLinks = [
@@ -271,7 +272,7 @@ export default function Navbar() {
                     <div className="relative px-5 py-3 border-t border-white/[0.06] flex items-center justify-between">
                       <span className="text-white/30 text-[11px] inline-flex items-center gap-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                        All 6 services · available now
+                        All 7 services · available now
                       </span>
                       <Link
                         to="/services"

@@ -3,6 +3,8 @@ import { motion, useInView, useMotionValue, animate, AnimatePresence } from 'fra
 import {
   ShoppingCart, Star, Heart, Bell, Wifi,
   ArrowUpRight, TrendingUp, Sparkles,
+  Users, Package, Wallet, Truck, BarChart3, ShoppingBag,
+  BrainCircuit, ShieldAlert, Languages,
 } from 'lucide-react'
 
 /* ──────────────────────────────────────────────────────────────
@@ -18,6 +20,7 @@ const COPY = {
   ai:        { eyebrow: 'Always On',          heading: 'Conversations on Autopilot' },
   marketing: { eyebrow: 'Measurable Growth',  heading: 'Watch the Numbers Climb' },
   brand:     { eyebrow: 'Identity System',    heading: 'A Brand, Assembled' },
+  erp:       { eyebrow: 'One Command Center',  heading: 'Six Modules. One Brain.' },
 }
 
 const glass = (color, extra = 0) => ({
@@ -537,6 +540,255 @@ function BrandSignature({ color }) {
   )
 }
 
+/* ════════════════ ERP — 3D orbital command center ════════════════
+   A central AI core with six business modules orbiting on a tilted
+   elliptical ring (real per-frame 3D depth), energy threads pulsing
+   inward, plus floating forecast / fraud / multilingual overlays. */
+const ERP_MODULES = [
+  { Icon: Users,       label: 'HR',          tint: '#6366F1' },
+  { Icon: Package,     label: 'Inventory',   tint: '#0EA5E9' },
+  { Icon: ShoppingBag, label: 'Sales',       tint: '#EC4899' },
+  { Icon: Wallet,      label: 'Finance',     tint: '#10B981' },
+  { Icon: Truck,       label: 'Procurement', tint: '#F59E0B' },
+  { Icon: BarChart3,   label: 'Analytics',   tint: '#A855F7' },
+]
+
+const ERP_CHAT = [
+  { q: 'Show me low-stock items', lang: 'English' },
+  { q: 'اسٹاک کم اشیاء دکھائیں',   lang: 'اردو' },
+  { q: 'أرني الأصناف منخفضة المخزون', lang: 'العربية' },
+]
+
+const STAGE_W = 460
+const STAGE_H = 360
+const CX = STAGE_W / 2
+const CY = STAGE_H / 2 + 6
+const RX = 168
+const RY = 66
+
+function ErpSignature({ color }) {
+  const [t, setT] = useState(0)
+  const [chat, setChat] = useState(0)
+  const reduce = typeof window !== 'undefined'
+    && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+
+  /* orbit clock */
+  useEffect(() => {
+    if (reduce) return
+    let raf, start
+    const tick = (ts) => {
+      if (!start) start = ts
+      setT(((ts - start) / 1000) * 0.42)   // radians/sec
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [reduce])
+
+  /* multilingual chatbot cycle */
+  useEffect(() => {
+    const id = setInterval(() => setChat(c => (c + 1) % ERP_CHAT.length), 2600)
+    return () => clearInterval(id)
+  }, [])
+
+  const mods = ERP_MODULES.map((m, i) => {
+    const a = (i / ERP_MODULES.length) * Math.PI * 2 + t
+    const x = CX + Math.cos(a) * RX
+    const y = CY + Math.sin(a) * RY
+    const depth = (Math.sin(a) + 1) / 2          // 0 = back, 1 = front
+    return { ...m, x, y, depth, scale: 0.66 + depth * 0.42, z: Math.round(depth * 100) }
+  })
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30, scale: 0.94 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      className="relative"
+      style={{ width: 'min(460px, 94vw)' }}
+    >
+      <div className="relative mx-auto" style={{ width: STAGE_W, height: STAGE_H, maxWidth: '100%' }}>
+        {/* tilted holographic floor grid */}
+        <div
+          className="absolute left-1/2 -translate-x-1/2 pointer-events-none"
+          style={{
+            top: CY - RY - 8, width: RX * 2 + 60, height: RY * 2 + 60,
+            transform: 'translateX(-50%) perspective(700px) rotateX(72deg)',
+            background: `radial-gradient(ellipse at center, ${color}22, transparent 70%)`,
+            borderRadius: '50%',
+            border: `1px solid ${color}30`,
+            boxShadow: `0 0 60px ${color}20, inset 0 0 40px ${color}10`,
+          }}
+        />
+
+        {/* energy threads core → modules (behind core) */}
+        <svg className="absolute inset-0 pointer-events-none" width={STAGE_W} height={STAGE_H} style={{ overflow: 'visible' }}>
+          {mods.map((m, i) => (
+            <g key={i} opacity={0.25 + m.depth * 0.6}>
+              <line x1={CX} y1={CY} x2={m.x} y2={m.y}
+                stroke={color} strokeWidth={0.8 + m.depth} strokeLinecap="round" opacity={0.5} />
+              <circle r={2 + m.depth} fill="#fff" opacity={0.9}>
+                <animate attributeName="cx" values={`${CX};${m.x}`} dur="1.6s" begin={`${i * 0.26}s`} repeatCount="indefinite" />
+                <animate attributeName="cy" values={`${CY};${m.y}`} dur="1.6s" begin={`${i * 0.26}s`} repeatCount="indefinite" />
+                <animate attributeName="opacity" values="0;1;0" dur="1.6s" begin={`${i * 0.26}s`} repeatCount="indefinite" />
+              </circle>
+            </g>
+          ))}
+        </svg>
+
+        {/* back-half modules */}
+        {mods.filter(m => m.depth < 0.5).map((m) => <ErpModule key={m.label} m={m} />)}
+
+        {/* central AI core */}
+        <div className="absolute" style={{ left: CX, top: CY, transform: 'translate(-50%,-50%)', zIndex: 50 }}>
+          <motion.span className="absolute left-1/2 top-1/2 rounded-full pointer-events-none"
+            style={{ width: 150, height: 150, marginLeft: -75, marginTop: -75, border: `1px solid ${color}40` }}
+            animate={{ scale: [1, 1.5], opacity: [0.5, 0] }}
+            transition={{ duration: 2.4, repeat: Infinity, ease: 'easeOut' }} />
+          <motion.span className="absolute left-1/2 top-1/2 rounded-full pointer-events-none"
+            style={{ width: 150, height: 150, marginLeft: -75, marginTop: -75, border: `1px solid ${color}40` }}
+            animate={{ scale: [1, 1.5], opacity: [0.5, 0] }}
+            transition={{ duration: 2.4, repeat: Infinity, ease: 'easeOut', delay: 1.2 }} />
+          <motion.div
+            animate={{ rotateZ: 360 }} transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
+            className="absolute left-1/2 top-1/2 rounded-full"
+            style={{
+              width: 104, height: 104, marginLeft: -52, marginTop: -52,
+              background: `conic-gradient(from 0deg, transparent, ${color}, transparent 55%)`,
+              WebkitMask: 'radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px))',
+              mask: 'radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px))',
+            }} />
+          <div className="relative w-[88px] h-[88px] rounded-full flex flex-col items-center justify-center"
+            style={{
+              background: `radial-gradient(circle at 34% 28%, ${color}, ${color}44 70%)`,
+              boxShadow: `0 0 50px ${color}88, inset 0 2px 6px rgba(255,255,255,0.3)`,
+            }}>
+            <BrainCircuit size={30} className="text-white" strokeWidth={1.6} />
+            <span className="text-white text-[8px] font-bold tracking-[0.18em] uppercase mt-1">AI Core</span>
+          </div>
+        </div>
+
+        {/* front-half modules (over the core) */}
+        {mods.filter(m => m.depth >= 0.5).map((m) => <ErpModule key={m.label} m={m} />)}
+
+        {/* ── floating overlay: AI forecast ── */}
+        <motion.div
+          initial={{ opacity: 0, x: -16, y: 10 }} whileInView={{ opacity: 1, x: 0, y: 0 }}
+          viewport={{ once: true }} transition={{ delay: 0.5, duration: 0.6 }}
+          className="absolute z-[60]" style={{ left: -6, top: -6 }}
+        >
+          <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+            className="w-[150px] rounded-xl p-3" style={glass(color)}>
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <TrendingUp size={12} style={{ color }} />
+              <span className="text-white/55 text-[9px] uppercase tracking-wider">Demand Forecast</span>
+            </div>
+            <svg width="126" height="38" viewBox="0 0 126 38" className="overflow-visible">
+              <motion.path
+                d="M2,32 L22,26 L42,28 L62,18 L82,20 L102,8 L124,4"
+                fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }}
+                transition={{ delay: 0.7, duration: 1.4, ease: 'easeInOut' }}
+                style={{ filter: `drop-shadow(0 0 4px ${color})` }} />
+              <motion.circle cx="124" cy="4" r="3" fill="#fff"
+                initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 2.1 }} />
+            </svg>
+            <div className="flex items-baseline gap-1 mt-1">
+              <CountUp to={94} suffix="%" color="#fff" className="text-white font-bold text-sm" />
+              <span className="text-white/40 text-[9px]">accuracy · 3-mo data</span>
+            </div>
+          </motion.div>
+        </motion.div>
+
+        {/* ── floating overlay: fraud detection ── */}
+        <motion.div
+          initial={{ opacity: 0, x: 16, y: -10 }} whileInView={{ opacity: 1, x: 0, y: 0 }}
+          viewport={{ once: true }} transition={{ delay: 0.7, duration: 0.6 }}
+          className="absolute z-[60]" style={{ right: -6, bottom: 4 }}
+        >
+          <motion.div animate={{ y: [0, 6, 0] }} transition={{ duration: 5.6, repeat: Infinity, ease: 'easeInOut' }}
+            className="w-[176px] rounded-xl p-3 flex items-center gap-2.5" style={glass('#EF4444')}>
+            <div className="relative shrink-0">
+              <motion.span className="absolute inset-0 rounded-full"
+                style={{ background: '#EF4444' }}
+                animate={{ scale: [1, 2.2], opacity: [0.6, 0] }} transition={{ duration: 1.6, repeat: Infinity }} />
+              <div className="relative w-8 h-8 rounded-full flex items-center justify-center"
+                style={{ background: 'rgba(239,68,68,0.18)', border: '1px solid #EF444466' }}>
+                <ShieldAlert size={15} className="text-red-400" />
+              </div>
+            </div>
+            <div className="min-w-0">
+              <div className="text-white text-[11px] font-semibold leading-tight">Anomaly flagged</div>
+              <div className="text-white/45 text-[9.5px] truncate">Duplicate invoice · 98% confidence</div>
+            </div>
+          </motion.div>
+        </motion.div>
+
+        {/* ── floating overlay: multilingual chatbot ── */}
+        <motion.div
+          initial={{ opacity: 0, x: 16, y: 10 }} whileInView={{ opacity: 1, x: 0, y: 0 }}
+          viewport={{ once: true }} transition={{ delay: 0.9, duration: 0.6 }}
+          className="absolute z-[60]" style={{ right: -10, top: -2 }}
+        >
+          <motion.div animate={{ y: [0, -5, 0] }} transition={{ duration: 4.6, repeat: Infinity, ease: 'easeInOut' }}
+            className="w-[168px] rounded-xl p-3" style={glass(color)}>
+            <div className="flex items-center gap-1.5 mb-2">
+              <Languages size={12} style={{ color }} />
+              <span className="text-white/55 text-[9px] uppercase tracking-wider">Ask in any language</span>
+            </div>
+            <div className="h-[34px] flex items-center">
+              <AnimatePresence mode="wait">
+                <motion.div key={chat}
+                  initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.35 }}
+                  className="px-2.5 py-1.5 rounded-lg rounded-bl-sm w-full"
+                  style={{ background: `${color}1E`, border: `1px solid ${color}33` }}>
+                  <div className="text-white text-[11px] leading-tight truncate">{ERP_CHAT[chat].q}</div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+            <div className="flex gap-1 mt-1.5">
+              {ERP_CHAT.map((c, i) => (
+                <span key={i} className="text-[8px] px-1.5 py-0.5 rounded-full"
+                  style={{ color: i === chat ? '#fff' : 'rgba(255,255,255,0.35)', background: i === chat ? `${color}44` : 'transparent' }}>
+                  {c.lang}
+                </span>
+              ))}
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+    </motion.div>
+  )
+}
+
+function ErpModule({ m }) {
+  return (
+    <div className="absolute pointer-events-none"
+      style={{
+        left: m.x, top: m.y, zIndex: m.z,
+        transform: `translate(-50%,-50%) scale(${m.scale})`,
+        opacity: 0.42 + m.depth * 0.58,
+        filter: m.depth < 0.5 ? `blur(${(0.5 - m.depth) * 3}px)` : 'none',
+      }}>
+      <div className="flex items-center gap-2 px-3 py-2 rounded-xl whitespace-nowrap"
+        style={{
+          background: 'rgba(10,14,40,0.82)',
+          backdropFilter: 'blur(8px)',
+          border: `1px solid ${m.tint}66`,
+          boxShadow: `0 8px 24px rgba(0,0,0,0.4), 0 0 18px ${m.tint}33`,
+        }}>
+        <span className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0"
+          style={{ background: `${m.tint}26`, border: `1px solid ${m.tint}55` }}>
+          <m.Icon size={13} style={{ color: m.tint }} />
+        </span>
+        <span className="text-white text-[11px] font-semibold">{m.label}</span>
+      </div>
+    </div>
+  )
+}
+
 const MODULES = {
   web: WebSignature,
   commerce: CommerceSignature,
@@ -544,6 +796,7 @@ const MODULES = {
   ai: AISignature,
   marketing: MarketingSignature,
   brand: BrandSignature,
+  erp: ErpSignature,
 }
 
 /* Just the animated mockup — used as the hero visual on each service page */

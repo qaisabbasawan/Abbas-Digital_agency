@@ -5,7 +5,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
   Globe, ShoppingCart, Smartphone,
-  Bot, TrendingUp, Palette, ArrowUpRight,
+  Bot, TrendingUp, Palette, ArrowUpRight, Boxes,
 } from 'lucide-react'
 import RevealText from './anim/RevealText'
 import TiltCard from './anim/TiltCard'
@@ -48,6 +48,12 @@ const services = [
     title: 'Branding & Design',
     desc: 'Logo design, brand identity, UI/UX and marketing materials that make your business unforgettable.',
     color: '#D97706',
+  },
+  {
+    Icon: Boxes,
+    title: 'ERP Solutions',
+    desc: 'Modular, cloud-native ERP with AI demand forecasting, real-time fraud detection and a multilingual chatbot — built on Next.js + Supabase.',
+    color: '#4F46E5',
   },
 ]
 
@@ -210,7 +216,7 @@ export default function Services() {
             style={{ fontSize: 'clamp(2.4rem, 4.6vw, 4rem)' }}
             stagger={0.08}
           >
-            Six Crafts. One Standard.
+            Seven Crafts. One Standard.
           </RevealText>
           <motion.p
             initial={{ opacity: 0, y: 16 }}

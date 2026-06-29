@@ -7,7 +7,7 @@ import {
 } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import {
-  Globe, ShoppingCart, Smartphone, Bot, TrendingUp, Palette,
+  Globe, ShoppingCart, Smartphone, Bot, TrendingUp, Palette, Boxes,
   ArrowRight, ArrowUpRight, Zap, Users, Award, Clock,
 } from 'lucide-react'
 import Footer from '../components/Footer'
@@ -50,9 +50,15 @@ const services = [
     color: '#D97706', slug: 'branding-design', ambient: 'blobs',
     desc: 'Logo design, full brand identity, UI/UX and marketing materials that make your business unforgettable.',
   },
+  {
+    n: '07', Icon: Boxes, title: 'ERP Solutions', sub: 'Modular, AI-Powered ERP',
+    color: '#4F46E5', slug: 'erp-solutions', ambient: 'grid',
+    desc: 'Cloud-native, modular ERP with AI demand forecasting, real-time fraud detection and a multilingual chatbot — built on Next.js + Supabase.',
+  },
 ]
 
 const COLORS = services.map(s => s.color)
+const LAST = services.length - 1        // index of the final spine card
 
 /* ── Spinning energy ring icon orb ── */
 function IconOrb({ Icon, color, size = 60, iconSize = 22 }) {
@@ -250,6 +256,22 @@ function CardAmbient({ type, color }) {
       </div>
     )
   }
+  if (type === 'grid') {
+    /* modular ERP — connected module nodes on a faint mesh */
+    const cells = [[18, 22], [50, 16], [82, 24], [30, 54], [68, 52], [50, 84]]
+    return (
+      <svg className="absolute inset-0 w-full h-full opacity-25 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 100 100">
+        <g stroke={color} strokeWidth="0.3" opacity="0.5">
+          {cells.map((c, i) => <line key={i} x1="50" y1="50" x2={c[0]} y2={c[1]} />)}
+        </g>
+        {cells.map((c, i) => (
+          <rect key={i} x={c[0] - 3} y={c[1] - 2.4} width="6" height="4.8" rx="1.2"
+            fill={color} className="ambient-node" style={{ animationDelay: `${i * 0.3}s` }} />
+        ))}
+        <circle cx="50" cy="50" r="3" fill={color} className="ambient-node" />
+      </svg>
+    )
+  }
   /* blobs — branding */
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-50">
@@ -323,7 +345,7 @@ const CARD_H = 360
 const ORBIT_R = 440          // orbit radius in px
 
 function SpineCard({ svc, i, p, active }) {
-  const u = useTransform(p, v => v * 5 - i)
+  const u = useTransform(p, v => v * LAST - i)
   const theta = useTransform(u, v => v * Math.PI * 1.1)
 
   const x = useTransform(theta, t => Math.sin(t) * ORBIT_R)
@@ -408,7 +430,7 @@ function NeuralServices() {
 
   useMotionValueEvent(p, 'change', v => {
     storeRef.current.p = v
-    const idx = Math.min(5, Math.max(0, Math.round(v * 5)))
+    const idx = Math.min(LAST, Math.max(0, Math.round(v * LAST)))
     setActive(prev => (prev === idx ? prev : idx))
   })
 
@@ -417,13 +439,13 @@ function NeuralServices() {
     if (!el) return
     const top = el.getBoundingClientRect().top + window.scrollY
     const travel = el.offsetHeight - window.innerHeight
-    const target = top + (0.02 + (i / 5) * 0.95) * travel
+    const target = top + (0.02 + (i / LAST) * 0.95) * travel
     if (window.__lenis) window.__lenis.scrollTo(target, { duration: 1.4 })
     else window.scrollTo({ top: target, behavior: 'smooth' })
   }
 
   return (
-    <section ref={ref} className="relative hidden lg:block bg-bg-dark" style={{ height: '680vh' }}>
+    <section ref={ref} className="relative hidden lg:block bg-bg-dark" style={{ height: `${120 + LAST * 116}vh` }}>
       <div className="sticky top-0 h-screen overflow-hidden" style={{ perspective: 1500 }}>
 
         {/* faint sci-fi grid */}
@@ -458,7 +480,7 @@ function NeuralServices() {
               One Brain.
             </RevealText>{' '}
             <RevealText as="span" className="inline-block" gradient delay={0.22} stagger={0.09}>
-              Six Services.
+              Seven Services.
             </RevealText>
           </h2>
         </div>
@@ -488,7 +510,7 @@ function NeuralServices() {
 
         {/* counter */}
         <span className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 text-white/30 text-[10px] tracking-[0.3em] uppercase">
-          0{active + 1} / 06 — {services[active].title}
+          {String(active + 1).padStart(2, '0')} / {String(services.length).padStart(2, '0')} — {services[active].title}
         </span>
       </div>
     </section>
@@ -505,7 +527,7 @@ function MobileServices() {
           <p className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-3">What We Do</p>
           <h2 className="font-bold leading-[1.05]" style={{ fontSize: 'clamp(2rem, 8vw, 2.6rem)' }}>
             <RevealText as="span" className="text-white inline-block" stagger={0.07}>
-              Six Services.
+              Seven Services.
             </RevealText>{' '}
             <RevealText as="span" className="inline-block" gradient delay={0.22} stagger={0.09}>
               One Vision.
@@ -579,7 +601,7 @@ export default function ServicesPage() {
 
           <h1 className="font-bold leading-[1.0] tracking-tight mb-7" style={{ fontSize: 'clamp(3rem, 7vw, 6.5rem)' }}>
             <RevealText as="span" className="text-white block" stagger={0.09}>
-              Six Services.
+              Seven Services.
             </RevealText>
             <RevealText as="span" className="block" gradient delay={0.3} stagger={0.08}>
               One Digital Vision.
@@ -600,7 +622,7 @@ export default function ServicesPage() {
             <HeroStat value={500} suffix="+" label="Projects" color="#2E55E0" i={0} />
             <HeroStat value={10}  suffix="+" label="Years"    color="#E8155A" i={1} />
             <HeroStat value={50}  suffix="+" label="Clients"  color="#7C3AED" i={2} />
-            <HeroStat value={6}   suffix=""  label="Services" color="#059669" i={3} />
+            <HeroStat value={7}   suffix=""  label="Services" color="#059669" i={3} />
           </div>
         </div>
       </section>

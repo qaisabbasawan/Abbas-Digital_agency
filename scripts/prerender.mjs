@@ -40,6 +40,7 @@ function blogFromDb(b) {
 const SERVICE_SLUGS = [
   'web-development', 'ecommerce', 'mobile-apps',
   'ai-chatbots', 'digital-marketing', 'branding-design',
+  'erp-solutions',
 ]
 
 // Static public routes (admin is intentionally excluded — noindex).
