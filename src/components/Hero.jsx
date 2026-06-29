@@ -235,7 +235,9 @@ export default function Hero() {
           {/* Headline — cinematic per-character 3D reveal.
               One <h1> for SEO; an sr-only phrase carries the primary keyword
               while the animated lines stay as the visible headline. */}
-          <h1 className="mb-6 space-y-0">
+          {/* minHeight reserves exact space for the 3 animated lines so a web-font
+              swap can't change the block height and shift the centered hero (CLS). */}
+          <h1 className="mb-6 space-y-0" style={{ minHeight: 'calc(3 * 0.92 * clamp(3rem, 7.5vw, 7.2rem))' }}>
             <span className="sr-only">Digital Marketing Agency in Islamabad &amp; Montana USA — We Build Digital Excellence</span>
             <HeadlineLine text="We Build"    lineIdx={0} />
             <HeadlineLine text="Digital"     lineIdx={1} gradient />

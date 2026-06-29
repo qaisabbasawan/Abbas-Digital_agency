@@ -22,8 +22,24 @@ export function organizationSchema() {
     logo: LOGO,
     image: `${SITE}/og-image.jpg`,
     description:
-      'Full-service digital marketing agency based in Islamabad, Pakistan and registered as an LLC in Montana, USA. SEO, web design, social media, PPC and branding.',
+      'Full-service digital marketing agency based in Islamabad, Pakistan and registered as an LLC in Montana, USA. SEO, web design, mobile apps, social media, PPC and branding.',
     email: 'info@abbasdigitalagency.com',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'H 1-A, IVY Street, Banigala',
+      addressLocality: 'Islamabad',
+      addressRegion: 'Islamabad Capital Territory',
+      postalCode: '44000',
+      addressCountry: 'PK',
+    },
+    contactPoint: [{
+      '@type': 'ContactPoint',
+      contactType: 'customer service',
+      email: 'info@abbasdigitalagency.com',
+      telephone: '+92-300-5935125',
+      availableLanguage: ['English', 'Urdu'],
+      areaServed: ['PK', 'US', 'GB', 'AE'],
+    }],
     sameAs: SAME_AS,
   }
 }
@@ -156,3 +172,19 @@ export function faqSchema(faqs) {
     })),
   }
 }
+
+/* Homepage FAQ schema — built from the same source as the visible FAQ section
+   (src/data/faqs.js) so the rendered Q&A and the structured data never drift. */
+export function homepageFaqSchema() {
+  return faqSchema(HOMEPAGE_FAQS_FOR_SCHEMA)
+}
+
+// Inlined copy of the FAQ Q/A used for JSON-LD. Kept here (not imported) so
+// schema.js has no module-graph dependency on a data file during SSR prerender.
+const HOMEPAGE_FAQS_FOR_SCHEMA = [
+  { q: 'What services does Abbas Digital Agency offer?', a: 'We offer web development, e-commerce, mobile app development, AI automation & chatbots, digital marketing & SEO, branding & design, and modular ERP solutions for businesses of every size.' },
+  { q: 'Where is Abbas Digital Agency located?', a: 'We are based in Islamabad, Pakistan and are also registered as an LLC in Montana, USA — serving clients across Pakistan, the Middle East, the UK and the United States.' },
+  { q: 'How much do your services cost?', a: 'Pricing depends on scope. Websites typically start from around $500, mobile apps and ERP builds are quoted per module, and marketing is available on monthly retainers. Every project begins with a free consultation and a fixed written quote.' },
+  { q: 'How long does a typical project take?', a: 'Most websites launch in 2–4 weeks, branding projects in 1–3 weeks, and mobile apps or ERP systems in 6–12 weeks depending on complexity. We agree a clear timeline before any work begins.' },
+  { q: 'Do you work with international clients?', a: 'Yes. As a US-registered LLC with a Pakistan delivery team, we work with clients worldwide and bill in USD. We hold meetings across US, UK and Pakistan time zones.' },
+]

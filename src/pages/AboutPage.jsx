@@ -9,6 +9,7 @@ import LinkedInIcon from '../components/icons/LinkedInIcon'
 import Footer from '../components/Footer'
 import useCountUp from '../hooks/useCountUp'
 import SEO from '../components/SEO'
+import { organizationSchema, breadcrumbSchema } from '../lib/schema'
 import RevealText from '../components/anim/RevealText'
 import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
@@ -219,6 +220,13 @@ export default function AboutPage() {
         description="Learn about Abbas Digital Agency LLC — a US-registered, Pakistan-based digital marketing agency serving clients since 2012 with world-class SEO, web design and more."
         keywords="about Abbas Digital Agency, digital agency Pakistan, Abbas Digital Agency LLC Montana, digital marketing Islamabad, Abbas Digital Agency team"
         path="/about"
+        schema={[
+          organizationSchema(),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'About', path: '/about' },
+          ]),
+        ]}
       />
 
       {/* ── Page hero ── */}
@@ -336,6 +344,7 @@ export default function AboutPage() {
                     <img
                       src="/team/qais-abbas.png"
                       alt="Muhammad Qais Abbas"
+                      loading="lazy" decoding="async"
                       className="absolute inset-[5px] w-[calc(100%-10px)] h-[calc(100%-10px)] rounded-full object-cover bg-white"
                     />
                   </div>

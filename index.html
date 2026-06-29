@@ -12,17 +12,18 @@
     <title>Digital Marketing Agency Islamabad | Abbas Digital Agency</title>
     <meta name="description" content="Abbas Digital Agency delivers SEO, web design &amp; digital marketing for businesses in Pakistan &amp; USA. US-registered. Free consultation." />
 
-    <!-- Preconnects for performance -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- DNS prefetch for analytics only. Fonts are self-hosted (see index.css),
+         so there is no external font request and no render-blocking stylesheet. -->
     <link rel="dns-prefetch" href="//www.google-analytics.com" />
     <link rel="dns-prefetch" href="//www.googletagmanager.com" />
 
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <!-- Preload self-hosted primary fonts to avoid FOUT / layout shift -->
+    <link rel="preload" href="/DM_Sans/DMSans-VariableFont_opsz,wght.ttf" as="font" type="font/ttf" crossorigin />
+    <link rel="preload" href="/Urbanist/Urbanist-VariableFont_wght.ttf" as="font" type="font/ttf" crossorigin />
 
-    <!-- Google Analytics 4 -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-B7C1MH1KZQ"></script>
+    <!-- Google Analytics 4 — loaded after first user interaction (see /src/lib/analytics.js)
+         to keep it off the critical path and reduce main-thread JS on load. -->
+    <script type="module" src="/src/lib/analytics.js"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}

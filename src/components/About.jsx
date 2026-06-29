@@ -248,6 +248,7 @@ export default function About() {
                     <img
                       src="/team/qais-abbas.png"
                       alt="Muhammad Qais Abbas"
+                      width={48} height={48} loading="lazy" decoding="async"
                       className="w-12 h-12 rounded-full object-cover bg-white"
                     />
                     <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-green-400 border-2 border-[#0A1130]" />

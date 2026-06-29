@@ -141,7 +141,17 @@ async function main() {
 
   const blogs = await fetchBlogs()
   const ssrData = { blogs }
-  const dataScript = `<script>window.__SSG_DATA__=${safeJson(ssrData)}</script>`
+
+  // HTML-size optimization: the heavy blog `content` is only needed on blog
+  // routes (list + detail). Every other page's body never renders blog content,
+  // and AuthContext re-fetches fresh blogs on mount anyway — so we embed a
+  // lightweight copy (no content) there. This keeps hydration data identical to
+  // the rendered body while shaving tens of KB off non-blog pages.
+  const blogsLight = blogs.map(({ content, ...rest }) => rest)
+  const lightData = { blogs: blogsLight }
+  const isBlogRoute = (r) => r === '/blog' || r.startsWith('/blog/')
+  const dataFor = (r) => (isBlogRoute(r) ? ssrData : lightData)
+  const scriptFor = (r) => `<script>window.__SSG_DATA__=${safeJson(dataFor(r))}</script>`
 
   const seoRoutes = Object.keys(SEO_PAGES).map(s => `/${s}`)
   const serviceRoutes = SERVICE_SLUGS.map(s => `/services/${s}`)
@@ -159,7 +169,7 @@ async function main() {
   let ok = 0, failed = 0
   for (const route of routes) {
     try {
-      const { html } = await render(route, ssrData)
+      const { html } = await render(route, dataFor(route))
       // React 19 renders helmet/metadata inline in the component output; lift
       // those <head> tags out of the body so crawlers see them in <head>.
       const { head, body } = extractHead(html)
@@ -167,7 +177,7 @@ async function main() {
       // Drop template defaults so the per-page title/description win.
       page = page.replace(/<title>[\s\S]*?<\/title>/, '')
       page = page.replace(/<meta\s+name="description"[^>]*>/i, '')
-      page = page.replace('</head>', `${head}${dataScript}</head>`)
+      page = page.replace('</head>', `${head}${scriptFor(route)}</head>`)
       page = page.replace('<div id="root"></div>', `<div id="root">${body}</div>`)
 
       const file = routeToFile(route)
@@ -178,6 +188,23 @@ async function main() {
       failed++
       console.error(`✗ ${route}:`, e.message)
     }
+  }
+
+  // Branded 404 → dist/404.html (Netlify serves this with a real 404 status
+  // via the `/* /404.html 404` fallback in public/_redirects). Not added to the
+  // sitemap and carries a noindex robots tag.
+  try {
+    const { html } = await render('/404', lightData)
+    const { head, body } = extractHead(html)
+    let page = template
+    page = page.replace(/<title>[\s\S]*?<\/title>/, '')
+    page = page.replace(/<meta\s+name="description"[^>]*>/i, '')
+    page = page.replace('</head>', `${head}${scriptFor('/404')}</head>`)
+    page = page.replace('<div id="root"></div>', `<div id="root">${body}</div>`)
+    fs.writeFileSync(path.join(distDir, '404.html'), page)
+    console.log('✓ 404.html written.')
+  } catch (e) {
+    console.error('✗ /404:', e.message)
   }
 
   // Sitemap (only indexable content routes).

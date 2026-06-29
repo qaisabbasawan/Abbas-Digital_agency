@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowUpRight, MapPin, Mail, Clock, Globe } from 'lucide-react'
 import Footer from '../components/Footer'
+import { EmailText } from '../components/EmailLink'
 import SEO from '../components/SEO'
 
 const services = [
@@ -118,7 +119,7 @@ export default function UsaClientsPage() {
             <div className="space-y-4">
               {[
                 { icon: <MapPin size={15} />, text: '1001 S Main St Ste 500, Kalispell, MT 59901, USA' },
-                { icon: <Mail size={15} />, text: 'info@abbasdigitalagency.com' },
+                { icon: <Mail size={15} />, text: <EmailText /> },
                 { icon: <Clock size={15} />, text: 'Available during US business hours' },
               ].map((it, i) => (
                 <div key={i} className="flex items-start gap-3 text-white/60 text-[14px]">

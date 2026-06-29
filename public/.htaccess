@@ -1,8 +1,39 @@
+# Apache fallback config (primary hosting is Netlify via _headers/_redirects).
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+
+  # Canonical host — force non-www, 301 permanent.
+  RewriteCond %{HTTP_HOST} ^www\.abbasdigitalagency\.com [NC]
+  RewriteRule ^(.*)$ https://abbasdigitalagency.com/$1 [R=301,L]
+
+  # SPA fallback — serve index.html for routes without a real file.
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . /index.html [L]
+</IfModule>
+
+# Security headers.
+<IfModule mod_headers.c>
+  Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set X-XSS-Protection "1; mode=block"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>
+
+# Serve .txt as text/plain.
+<IfModule mod_mime.c>
+  AddType text/plain .txt
+</IfModule>
+
+# Long-lived caching for hashed build assets and fonts.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  <FilesMatch "\.(js|css|woff2?|ttf|png|jpe?g|webp|svg|avif)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
 </IfModule>

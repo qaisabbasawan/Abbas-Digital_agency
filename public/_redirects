@@ -2,6 +2,11 @@
 http://www.abbasdigitalagency.com/*   https://abbasdigitalagency.com/:splat   301!
 https://www.abbasdigitalagency.com/*  https://abbasdigitalagency.com/:splat   301!
 
-# SPA fallback for any route that isn't a prerendered static file.
-# (Netlify serves existing files first, so prerendered pages still win.)
-/*  /index.html  200
+# Admin is a client-only SPA area (not prerendered) — serve the app shell
+# with a 200 so React Router can take over.
+/admin/*  /index.html  200
+
+# Prerendered static pages are served first (Netlify checks for a real file
+# before applying these rules). Any path with no matching file falls through
+# to the branded 404 page WITH a real HTTP 404 status (good for SEO).
+/*  /404.html  404

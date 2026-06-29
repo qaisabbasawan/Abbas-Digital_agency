@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
 import SEO from '../components/SEO'
-import { serviceSchema } from '../lib/schema'
+import { serviceSchema, breadcrumbSchema } from '../lib/schema'
 import {
   motion, useInView, useScroll, useTransform,
   useMotionValueEvent,
@@ -564,11 +564,17 @@ export default function ServicesPage() {
         description="SEO, web design, social media marketing, PPC & branding services for businesses in Pakistan & USA. US-registered agency. Get a free quote today."
         keywords="digital marketing services Pakistan, SEO services Pakistan, web design company Pakistan, social media marketing Pakistan, PPC advertising Pakistan, branding agency Pakistan"
         path="/services"
-        schema={serviceSchema(
-          'Digital Marketing Services',
-          'SEO, web design, social media marketing, PPC and branding services for businesses in Pakistan and the USA, delivered by Abbas Digital Agency.',
-          '/services',
-        )}
+        schema={[
+          serviceSchema(
+            'Digital Marketing Services',
+            'SEO, web design, social media marketing, PPC and branding services for businesses in Pakistan and the USA, delivered by Abbas Digital Agency.',
+            '/services',
+          ),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Services', path: '/services' },
+          ]),
+        ]}
       />
 
       {/* ══════════════════════════════════

@@ -1,6 +1,7 @@
 import { useParams, Link, Navigate } from 'react-router-dom'
 import SEO from '../components/SEO'
-import { serviceSchema, breadcrumbSchema } from '../lib/schema'
+import { serviceSchema, breadcrumbSchema, faqSchema } from '../lib/schema'
+import FAQ from '../components/FAQ'
 import { motion } from 'framer-motion'
 import {
   Globe, ShoppingCart, Smartphone, Bot, TrendingUp, Palette,
@@ -365,7 +366,17 @@ export default function ServiceDetailPage() {
 
   if (!svc) return <Navigate to="/services" replace />
 
-  const { title, tagline, color, glow, stats, desc, features, steps, tech, caseStudy, scene } = svc
+  const { title, tagline, color, glow, stats, desc, features, steps, tech, caseStudy, scene, faqs: svcFaqsOverride } = svc
+  const lower = title.toLowerCase()
+
+  // Per-service FAQ — pricing / timeline / deliverables (the exact gaps the
+  // audit flagged). Service-specific overrides win; otherwise sensible defaults.
+  const faqs = svcFaqsOverride || [
+    { q: `How much does ${lower} cost?`, a: `${title} projects are priced to scope after a free consultation — you get a fixed written quote before any work starts, with no hidden fees. Most engagements start in the low hundreds to low thousands of dollars depending on complexity.` },
+    { q: `How long does ${lower} take?`, a: `Timelines depend on scope, but a typical ${lower} project runs from a couple of weeks to a few months. We agree clear milestones up front and give you weekly progress updates.` },
+    { q: `What do I get with your ${lower} service?`, a: `${desc}` },
+    { q: `Do you work with clients outside Pakistan?`, a: `Yes. As a US-registered LLC in Montana with a delivery team in Islamabad, we work with clients across the USA, UK, Middle East and beyond, billing in USD.` },
+  ]
 
   return (
     <div className="min-h-screen bg-bg-dark overflow-hidden">
@@ -381,6 +392,7 @@ export default function ServiceDetailPage() {
             { name: 'Services', path: '/services' },
             { name: title, path: `/services/${slug}` },
           ]),
+          faqSchema(faqs),
         ]}
       />
 
@@ -651,6 +663,7 @@ export default function ServiceDetailPage() {
                   <div className="lg:w-1/2 relative overflow-hidden" style={{ minHeight: 320, background: `linear-gradient(135deg, ${caseStudy.from}, ${caseStudy.to})` }}>
                     <img
                       src={caseStudy.img} alt={caseStudy.title}
+                      loading="lazy" decoding="async"
                       className="w-full h-full object-cover absolute inset-0 group-hover:scale-[1.05] transition-transform duration-700 ease-out"
                       onError={e => { e.target.style.display = 'none' }}
                     />
@@ -735,6 +748,9 @@ export default function ServiceDetailPage() {
           </motion.div>
         </div>
       </section>
+
+      {/* ══════════════ FAQ ══════════════ */}
+      <FAQ faqs={faqs} eyebrow="Common Questions" heading={`${title} — FAQs`} />
 
       <Footer />
     </div>

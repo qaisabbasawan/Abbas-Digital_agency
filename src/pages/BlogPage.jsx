@@ -9,6 +9,7 @@ import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
 import { useAuth } from '../admin/context/AuthContext'
 import SEO from '../components/SEO'
+import { breadcrumbSchema } from '../lib/schema'
 
 const catColors = {
   'Web Development':   '#2E55E0',
@@ -87,7 +88,7 @@ function FeaturedCard({ blog }) {
           <div className="h-60 lg:h-auto lg:min-h-[340px] relative overflow-hidden"
             style={{ background: `linear-gradient(135deg, ${color}30, ${color}08 70%)` }}>
             {blog.image
-              ? <img src={blog.image} alt={blog.title}
+              ? <img src={blog.image} alt={blog.title} loading="lazy" decoding="async"
                   className="w-full h-full object-cover group-hover:scale-[1.06] transition-transform duration-700 ease-out"
                   onError={e => e.target.style.display = 'none'} />
               : (
@@ -174,7 +175,7 @@ function ArticleCard({ blog, i }) {
           <div className="h-44 relative overflow-hidden shrink-0"
             style={{ background: `linear-gradient(135deg, ${color}26, ${color}08)` }}>
             {blog.image
-              ? <img src={blog.image} alt={blog.title}
+              ? <img src={blog.image} alt={blog.title} loading="lazy" decoding="async"
                   className="w-full h-full object-cover group-hover:scale-[1.07] transition-transform duration-700 ease-out"
                   onError={e => e.target.style.display = 'none'} />
               : <div className="w-full h-full flex items-center justify-center">
@@ -235,6 +236,10 @@ export default function BlogPage() {
         description="Expert articles on web development, SEO, digital marketing, AI chatbots, and e-commerce growth strategies. Insights from Abbas Digital Agency Islamabad."
         keywords="digital marketing blog Pakistan, SEO tips Pakistan, web development blog, digital agency blog Islamabad"
         path="/blog"
+        schema={breadcrumbSchema([
+          { name: 'Home', path: '/' },
+          { name: 'Blog', path: '/blog' },
+        ])}
       />
 
       {/* ── 3D Hero ── */}

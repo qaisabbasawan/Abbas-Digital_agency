@@ -15,6 +15,9 @@ const featured = [
     metric: '+40%',
     metricLabel: 'Conversion Rate',
     desc: 'Corporate rebrand with custom CMS, multilingual support & Next.js.',
+    problem: 'A dated, slow corporate site was losing leads and ranked poorly on mobile.',
+    solution: 'We rebuilt it on Next.js with a custom CMS, multilingual support and a performance-first architecture.',
+    result: 'Conversions rose 40% and mobile page-load dropped below 1.5s within two months.',
     tags: ['React', 'Next.js', 'Tailwind'],
     from: '#1A3BBF',
     to: '#2E55E0',
@@ -29,6 +32,9 @@ const featured = [
     metric: '$2M',
     metricLabel: 'Revenue Generated',
     desc: 'Shopify store with virtual try-on, loyalty programme & AR viewer.',
+    problem: 'High return rates and cart abandonment were eating into a new fashion brand’s margins.',
+    solution: 'We launched a Shopify flagship with AR try-on, a loyalty programme and a streamlined checkout.',
+    result: 'The store generated $2M in revenue in year one while cutting returns by a third.',
     tags: ['Shopify', 'Liquid', 'AR'],
     from: '#7C1D6F',
     to: '#E8155A',
@@ -43,6 +49,9 @@ const featured = [
     metric: '50K',
     metricLabel: 'Active Users',
     desc: 'iOS & Android fitness app with AI workout plans and social feed.',
+    problem: 'A fitness startup needed to launch on iOS and Android fast, on a lean budget.',
+    solution: 'We shipped a React Native app with AI-generated workout plans and a social accountability feed.',
+    result: 'The app reached 50K active users within six months of launch.',
     tags: ['React Native', 'Firebase', 'AI'],
     from: '#7C3AED',
     to: '#A855F7',
@@ -57,6 +66,9 @@ const featured = [
     metric: '80%',
     metricLabel: 'Queries Automated',
     desc: 'WhatsApp + Messenger AI chatbot handling orders & returns 24/7.',
+    problem: 'A growing retailer’s support team was overwhelmed by repetitive order and return queries.',
+    solution: 'We built a GPT-4 chatbot on WhatsApp and Messenger to handle orders and returns 24/7.',
+    result: 'It now automates 80% of all support volume, freeing the team for complex cases.',
     tags: ['GPT-4', 'Node.js', 'WhatsApp API'],
     from: '#0C4A6E',
     to: '#2E55E0',
@@ -71,6 +83,9 @@ const featured = [
     metric: '3×',
     metricLabel: 'Organic Traffic',
     desc: 'Technical SEO + content strategy delivering results over 6 months.',
+    problem: 'A property portal had strong listings but almost no organic search visibility.',
+    solution: 'We ran a technical SEO overhaul plus a six-month content strategy targeting buyer intent.',
+    result: 'Organic traffic tripled and cost-per-lead fell by 40%.',
     tags: ['SEO', 'Ahrefs', 'Analytics'],
     from: '#7C2D12',
     to: '#E8155A',
@@ -85,6 +100,9 @@ const featured = [
     metric: 'Full',
     metricLabel: 'Brand System',
     desc: 'Logo, typography, colour system and comprehensive brand guidelines.',
+    problem: 'A tech startup’s inconsistent visuals undermined trust with enterprise buyers.',
+    solution: 'We delivered a full brand system — logo, typography, colour and 60-page guidelines.',
+    result: 'A cohesive identity rolled out across product, web and sales in three weeks.',
     tags: ['Brand Identity', 'Figma', 'Guidelines'],
     from: '#4C1D95',
     to: '#D97706',
@@ -157,6 +175,27 @@ function StackCard({ p, i, total, progress }) {
             </h3>
             <p className="text-white/35 text-[11px] uppercase tracking-[0.2em] mb-5">{p.client} · {p.yr}</p>
             <p className="text-white/55 text-[14.5px] leading-relaxed max-w-md">{p.desc}</p>
+
+            {/* Mini case study — Problem → Solution → Result (credibility + AI proof points) */}
+            {(p.problem || p.solution || p.result) && (
+              <dl className="mt-5 space-y-2.5 max-w-md">
+                {[
+                  { k: 'Problem',  v: p.problem,  c: '#E8155A' },
+                  { k: 'Solution', v: p.solution, c: '#2E55E0' },
+                  { k: 'Result',   v: p.result,   c: '#059669' },
+                ].filter(r => r.v).map(r => (
+                  <div key={r.k} className="flex gap-3">
+                    <dt
+                      className="shrink-0 text-[9.5px] font-bold uppercase tracking-[0.14em] pt-0.5 w-[58px]"
+                      style={{ color: r.c }}
+                    >
+                      {r.k}
+                    </dt>
+                    <dd className="text-white/55 text-[13px] leading-relaxed">{r.v}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
 
             {/* metric + tags + CTA pinned to the bottom */}
             <div className="mt-auto pt-8">

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Mail, MapPin, Send } from 'lucide-react'
 import RevealText from './anim/RevealText'
+import { EmailText } from './EmailLink'
 
 const svcList = [
   'Web Development', 'E-Commerce', 'Mobile Apps',
@@ -9,7 +10,7 @@ const svcList = [
 ]
 
 const info = [
-  { Icon: Mail,   label: 'Email',           val: 'info@abbasdigitalagency.com', color: '#E8155A' },
+  { Icon: Mail,   label: 'Email',           val: '', email: true, color: '#E8155A' },
   { Icon: MapPin, label: 'Visit Us',        val: 'H 1-A, IVY Street, Banigala, Islamabad, Pakistan', color: '#2E55E0' },
   { Icon: MapPin, label: 'Mailing Address', val: '1001 S Main St Ste 500, Kalispell, MT 59901, USA', color: '#7C3AED' },
 ]
@@ -114,7 +115,7 @@ export default function Contact() {
 
             {/* Info rows */}
             <div className="space-y-3">
-              {info.map(({ Icon, label, val, color }, i) => (
+              {info.map(({ Icon, label, val, email, color }, i) => (
                 <motion.div
                   key={label}
                   initial={{ opacity: 0, x: -28 }}
@@ -133,7 +134,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <p className="text-white/35 text-[10.5px] uppercase tracking-[0.2em] mb-0.5">{label}</p>
-                    <p className="text-white text-[13.5px]">{val}</p>
+                    <p className="text-white text-[13.5px]">{email ? <EmailText /> : val}</p>
                   </div>
                 </motion.div>
               ))}

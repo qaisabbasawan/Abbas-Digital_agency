@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowUpRight, MapPin, Phone, Mail, Clock } from 'lucide-react'
 import Footer from '../components/Footer'
+import { EmailText } from '../components/EmailLink'
 import SEO from '../components/SEO'
 import { localBusinessPK, faqSchema, breadcrumbSchema } from '../lib/schema'
 
@@ -125,7 +126,7 @@ export default function IslamabadPage() {
             <div className="space-y-4">
               {[
                 { icon: <MapPin size={15} />, text: 'H 1-A, IVY Street, Banigala, Islamabad, Pakistan' },
-                { icon: <Mail size={15} />, text: 'info@abbasdigitalagency.com' },
+                { icon: <Mail size={15} />, text: <EmailText /> },
                 { icon: <Clock size={15} />, text: 'Mon – Sat · 9 AM – 7 PM PKT' },
               ].map((it, i) => (
                 <div key={i} className="flex items-start gap-3 text-white/60 text-[14px]">

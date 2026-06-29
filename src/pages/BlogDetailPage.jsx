@@ -71,7 +71,7 @@ function RelatedCard({ blog, i }) {
           <div className="h-36 relative overflow-hidden shrink-0"
             style={{ background: `linear-gradient(135deg, ${color}26, ${color}08)` }}>
             {blog.image
-              ? <img src={blog.image} alt={blog.title}
+              ? <img src={blog.image} alt={blog.title} decoding="async" fetchPriority="high"
                   className="w-full h-full object-cover group-hover:scale-[1.07] transition-transform duration-700 ease-out"
                   onError={e => e.target.style.display = 'none'} />
               : <div className="w-full h-full flex items-center justify-center">

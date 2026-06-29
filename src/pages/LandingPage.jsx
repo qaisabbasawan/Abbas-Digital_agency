@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import SEO from '../components/SEO'
-import { organizationSchema, localBusinessPK, localBusinessUSA } from '../lib/schema'
+import { organizationSchema, localBusinessPK, localBusinessUSA, homepageFaqSchema } from '../lib/schema'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -13,6 +13,7 @@ import Process      from '../components/Process'
 import Portfolio    from '../components/Portfolio'
 import Testimonials       from '../components/Testimonials'
 import AIAnalyzerSection  from '../components/AIAnalyzerSection'
+import FAQ          from '../components/FAQ'
 import Contact      from '../components/Contact'
 import Footer       from '../components/Footer'
 
@@ -66,11 +67,11 @@ export default function LandingPage() {
   return (
     <>
       <SEO
-        title="Digital Marketing Agency Islamabad & Montana USA | Abbas Digital Agency"
-        description="Abbas Digital Agency delivers SEO, web design & digital marketing for businesses in Pakistan & the USA. US-registered LLC in Montana. Book a free consultation."
-        keywords="digital marketing agency Islamabad, SEO services Pakistan, web design company Pakistan, digital agency Islamabad, digital marketing Montana, best SEO company Pakistan, social media marketing Pakistan"
+        title="Digital Marketing Agency Islamabad | Abbas Digital Agency"
+        description="Abbas Digital Agency delivers SEO, web design, mobile apps, branding & digital marketing for businesses in Pakistan & the USA. US-registered LLC in Montana. Free quote."
+        keywords="digital marketing agency Islamabad, SEO services Pakistan, web design company Pakistan, mobile app development Pakistan, branding agency Pakistan, digital marketing Montana, best SEO company Pakistan"
         path="/"
-        schema={[organizationSchema(), localBusinessPK(), localBusinessUSA()]}
+        schema={[organizationSchema(), localBusinessPK(), localBusinessUSA(), homepageFaqSchema()]}
       />
       {/* Fixed 3-D background */}
       <div
@@ -101,6 +102,7 @@ export default function LandingPage() {
           <Portfolio />
           <ScrollSection><AIAnalyzerSection /></ScrollSection>
           <ScrollSection><Testimonials /></ScrollSection>
+          <ScrollSection><FAQ /></ScrollSection>
           <ScrollSection><Contact /></ScrollSection>
           <Footer />
         </div>

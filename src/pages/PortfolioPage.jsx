@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { ArrowUpRight } from 'lucide-react'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
+import { breadcrumbSchema } from '../lib/schema'
 import RevealText from '../components/anim/RevealText'
 import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
@@ -196,6 +197,10 @@ export default function PortfolioPage() {
         description="Explore Abbas Digital Agency's portfolio of web design, SEO and digital marketing projects for clients across Pakistan and the USA."
         keywords="Abbas Digital Agency portfolio, web design portfolio Pakistan, digital marketing projects Pakistan"
         path="/portfolio"
+        schema={breadcrumbSchema([
+          { name: 'Home', path: '/' },
+          { name: 'Portfolio', path: '/portfolio' },
+        ])}
       />
 
       {/* Page hero */}

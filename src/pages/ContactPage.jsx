@@ -3,13 +3,14 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { Mail, MapPin, Clock, Send, ArrowRight, Check, ChevronDown } from 'lucide-react'
 import Footer from '../components/Footer'
+import { EmailText } from '../components/EmailLink'
 import ContactScene from '../components/ContactScene'
 import RevealText from '../components/anim/RevealText'
 import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
 import { useAuth } from '../admin/context/AuthContext'
 import SEO from '../components/SEO'
-import { localBusinessPK, localBusinessUSA } from '../lib/schema'
+import { localBusinessPK, localBusinessUSA, breadcrumbSchema } from '../lib/schema'
 
 const svcList = [
   'Web Development', 'E-Commerce', 'Mobile Apps',
@@ -18,7 +19,7 @@ const svcList = [
 const budgets = ['Under $500', '$500 – $1,000', '$1,000 – $3,000', '$3,000 – $10,000', '$10,000+']
 
 const infoItems = [
-  { Icon: Mail,   color: '#E8155A', label: 'Email',           val: 'info@abbasdigitalagency.com' },
+  { Icon: Mail,   color: '#E8155A', label: 'Email',           val: '', email: true },
   { Icon: MapPin, color: '#2E55E0', label: 'Visit Us',        val: 'H 1-A, IVY Street, Banigala, Islamabad, Pakistan' },
   { Icon: MapPin, color: '#7C3AED', label: 'Mailing Address', val: '1001 S Main St Ste 500, Kalispell, MT 59901, USA' },
   { Icon: Clock,  color: '#0891B2', label: 'Response Time',   val: 'Within 24 hours' },
@@ -140,7 +141,14 @@ export default function ContactPage() {
         description="Get in touch with Abbas Digital Agency. Contact our offices in Islamabad, Pakistan or Montana, USA. Free consultation for SEO, web design & digital marketing."
         keywords="contact Abbas Digital Agency, digital marketing agency Islamabad contact, SEO agency Pakistan contact"
         path="/contact"
-        schema={[localBusinessPK(), localBusinessUSA()]}
+        schema={[
+          localBusinessPK(),
+          localBusinessUSA(),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Contact', path: '/contact' },
+          ]),
+        ]}
       />
 
       {/* ── 3D Hero ── */}
@@ -225,7 +233,7 @@ export default function ContactPage() {
                       <InfoOrb Icon={it.Icon} color={it.color} />
                       <div className="min-w-0">
                         <p className="text-white/30 text-[10px] uppercase tracking-[0.2em] mb-1">{it.label}</p>
-                        <p className="text-white text-[14px] leading-snug">{it.val}</p>
+                        <p className="text-white text-[14px] leading-snug">{it.email ? <EmailText /> : it.val}</p>
                       </div>
                     </div>
                   </motion.div>
