@@ -47,6 +47,7 @@ const SERVICE_SLUGS = [
 const STATIC_ROUTES = [
   '/', '/about', '/services', '/portfolio', '/contact',
   '/blog', '/islamabad', '/usa-clients', '/analyzer',
+  '/privacy-policy', '/terms-and-conditions',
 ]
 
 async function fetchBlogs() {
