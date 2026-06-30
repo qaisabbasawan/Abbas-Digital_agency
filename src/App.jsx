@@ -23,6 +23,8 @@ const IslamabadPage        = lazy(() => import('./pages/IslamabadPage'))
 const UsaClientsPage       = lazy(() => import('./pages/UsaClientsPage'))
 const BusinessAnalyzerPage = lazy(() => import('./pages/BusinessAnalyzerPage'))
 const DynamicSeoPage       = lazy(() => import('./pages/DynamicSeoPage'))
+const PrivacyPolicyPage    = lazy(() => import('./pages/PrivacyPolicyPage'))
+const TermsConditionsPage  = lazy(() => import('./pages/TermsConditionsPage'))
 const NotFound             = lazy(() => import('./pages/NotFound'))
 
 const AdminLogin     = lazy(() => import('./admin/AdminLogin'))
@@ -129,6 +131,8 @@ export default function App({ ssrData } = {}) {
             <Route path="/islamabad"      element={<IslamabadPage />} />
             <Route path="/usa-clients"    element={<UsaClientsPage />} />
             <Route path="/analyzer"       element={<BusinessAnalyzerPage />} />
+            <Route path="/privacy-policy"        element={<PrivacyPolicyPage />} />
+            <Route path="/terms-and-conditions"  element={<TermsConditionsPage />} />
             <Route path="/404"            element={<NotFound />} />
             <Route path="/:slug"          element={<DynamicSeoPage />} />
             {/* Any deeper unmatched path → branded 404 */}

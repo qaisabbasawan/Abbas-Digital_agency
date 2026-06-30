@@ -164,6 +164,15 @@ export default function Footer() {
           <p className="text-white/25 text-[12px]">
             © {new Date().getFullYear()} Abbas Digital Agency. All Rights Reserved.
           </p>
+          <nav className="flex items-center gap-5">
+            <Link to="/privacy-policy" className="text-white/40 text-[12px] hover:text-white transition-colors duration-200">
+              Privacy Policy
+            </Link>
+            <span className="w-px h-3 bg-white/15" aria-hidden />
+            <Link to="/terms-and-conditions" className="text-white/40 text-[12px] hover:text-white transition-colors duration-200">
+              Terms &amp; Conditions
+            </Link>
+          </nav>
         </div>
       </div>
     </footer>

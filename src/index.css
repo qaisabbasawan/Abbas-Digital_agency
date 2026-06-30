@@ -315,3 +315,30 @@ input, textarea, select, button {
   }
   html { scroll-behavior: auto; }
 }
+
+/* ── Legal pages (Privacy Policy, Terms & Conditions) long-form content ─── */
+.legal-body ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.legal-body li {
+  position: relative;
+  padding-left: 1.35rem;
+}
+.legal-body li::before {
+  content: '';
+  position: absolute;
+  left: 0.1rem;
+  top: 0.62em;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: #E8155A;
+}
+.legal-body strong { color: rgba(255, 255, 255, 0.85); font-weight: 600; }
+.legal-body a { color: #FF2D72; }
+.legal-body a:hover { text-decoration: underline; }
