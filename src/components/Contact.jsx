@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Mail, MapPin, Send } from 'lucide-react'
 import RevealText from './anim/RevealText'
 import { EmailText } from './EmailLink'
+import { useAuth } from '../admin/context/AuthContext'
 
 const svcList = [
   'Web Development', 'E-Commerce', 'Mobile Apps',
@@ -16,6 +17,7 @@ const info = [
 ]
 
 export default function Contact() {
+  const { addLead } = useAuth()
   const [form, setForm]     = useState({ name:'', email:'', phone:'', service:'', message:'' })
   const [errors, setErrors] = useState({})
   const [sent, setSent]     = useState(false)
@@ -38,6 +40,7 @@ export default function Contact() {
     e.preventDefault()
     const errs = validate()
     if (Object.keys(errs).length) { setErrors(errs); return }
+    addLead({ name: form.name, email: form.email, phone: form.phone, service: form.service, message: form.message })
     setSent(true)
     setForm({ name:'', email:'', phone:'', service:'', message:'' })
     setTimeout(() => setSent(false), 6000)

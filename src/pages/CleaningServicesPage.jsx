@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
+import { useAuth } from '../admin/context/AuthContext'
 
 /* ───────────────────────── data ───────────────────────── */
 
@@ -268,6 +269,7 @@ function HeroCube() {
 /* ───────────────────────── page ───────────────────────── */
 
 export default function CleaningServicesPage() {
+  const { addLead } = useAuth()
   const [openFaq, setOpenFaq] = useState(null)
   const [sent, setSent] = useState(false)
   const [form, setForm] = useState({ name: '', business: '', city: '', phone: '', email: '', message: '' })
@@ -290,6 +292,13 @@ export default function CleaningServicesPage() {
     if (typeof window.gtag === 'function') {
       window.gtag('event', 'generate_lead', { form: 'cleaning_marketing_plan', page: 'cleaningservices' })
     }
+    addLead({
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+      service: 'Cleaning Company Marketing Plan',
+      message: `Business: ${form.business}\nCity: ${form.city}\n\n${form.message || ''}`.trim(),
+    })
     setSent(true)
     setForm({ name: '', business: '', city: '', phone: '', email: '', message: '' })
   }
