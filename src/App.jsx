@@ -21,6 +21,7 @@ const BlogPage             = lazy(() => import('./pages/BlogPage'))
 const BlogDetailPage       = lazy(() => import('./pages/BlogDetailPage'))
 const IslamabadPage        = lazy(() => import('./pages/IslamabadPage'))
 const UsaClientsPage       = lazy(() => import('./pages/UsaClientsPage'))
+const CleaningServicesPage = lazy(() => import('./pages/CleaningServicesPage'))
 const BusinessAnalyzerPage = lazy(() => import('./pages/BusinessAnalyzerPage'))
 const DynamicSeoPage       = lazy(() => import('./pages/DynamicSeoPage'))
 const PrivacyPolicyPage    = lazy(() => import('./pages/PrivacyPolicyPage'))
@@ -130,6 +131,7 @@ export default function App({ ssrData } = {}) {
             <Route path="/blog/:slug"     element={<BlogDetailPage />} />
             <Route path="/islamabad"      element={<IslamabadPage />} />
             <Route path="/usa-clients"    element={<UsaClientsPage />} />
+            <Route path="/cleaningservices" element={<CleaningServicesPage />} />
             <Route path="/analyzer"       element={<BusinessAnalyzerPage />} />
             <Route path="/privacy-policy"        element={<PrivacyPolicyPage />} />
             <Route path="/terms-and-conditions"  element={<TermsConditionsPage />} />

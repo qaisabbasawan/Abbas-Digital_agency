@@ -46,7 +46,7 @@ const SERVICE_SLUGS = [
 // Static public routes (admin is intentionally excluded — noindex).
 const STATIC_ROUTES = [
   '/', '/about', '/services', '/portfolio', '/contact',
-  '/blog', '/islamabad', '/usa-clients', '/analyzer',
+  '/blog', '/islamabad', '/usa-clients', '/cleaningservices', '/analyzer',
   '/privacy-policy', '/terms-and-conditions',
 ]
 
