@@ -264,8 +264,9 @@ export default function Hero() {
             transition={{ delay: 0.65, duration: 0.55 }}
             className="text-white/45 text-[15px] leading-relaxed max-w-md mb-10"
           >
-            Full-service digital agency based in Islamabad.
-            Transforming businesses since 2012 with world-class digital solutions.
+            Full-service digital marketing agency delivering SEO, web design,
+            mobile apps and branding worldwide. Transforming businesses since 2012
+            with results-driven, world-class digital solutions.
           </motion.p>
 
           {/* Buttons */}
