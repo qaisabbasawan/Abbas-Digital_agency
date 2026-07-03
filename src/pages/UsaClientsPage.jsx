@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { ArrowUpRight, MapPin, Mail, Clock, Globe } from 'lucide-react'
+import { ArrowUpRight, MapPin, Mail, Clock, Globe, MessageCircle } from 'lucide-react'
 import Footer from '../components/Footer'
 import { EmailText } from '../components/EmailLink'
 import SEO from '../components/SEO'
@@ -120,6 +120,7 @@ export default function UsaClientsPage() {
               {[
                 { icon: <MapPin size={15} />, text: '1001 S Main St Ste 500, Kalispell, MT 59901, USA' },
                 { icon: <Mail size={15} />, text: <EmailText /> },
+                { icon: <MessageCircle size={15} />, text: <a href="https://wa.me/16677662781" target="_blank" rel="noopener noreferrer" className="hover:text-[#25D366] transition-colors">WhatsApp: +1 (667) 766-2781</a> },
                 { icon: <Clock size={15} />, text: 'Available during US business hours' },
               ].map((it, i) => (
                 <div key={i} className="flex items-start gap-3 text-white/60 text-[14px]">

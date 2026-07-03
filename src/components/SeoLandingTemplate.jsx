@@ -12,7 +12,8 @@ import { localBusinessPK, localBusinessUSA, faqSchema, breadcrumbSchema } from '
 
 // ─── Constants ─────────────────────────────────────────────────────────────
 
-const WA_LINK = 'https://wa.me/923005935125'
+const WA_LINK_PK = 'https://wa.me/923005935125'
+const WA_LINK_US = 'https://wa.me/16677662781'
 const BOOK_LINK = '/contact'
 
 const SERVICES = [
@@ -75,7 +76,7 @@ function SectionLabel({ children }) {
   )
 }
 
-function CTAButtons({ className = '' }) {
+function CTAButtons({ className = '', waLink = WA_LINK_PK }) {
   return (
     <div className={`flex flex-wrap gap-3 ${className}`}>
       <a
@@ -86,7 +87,7 @@ function CTAButtons({ className = '' }) {
         Book Free Strategy Call
       </a>
       <a
-        href={WA_LINK}
+        href={waLink}
         target="_blank"
         rel="noopener noreferrer"
         className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-white/25 text-white font-semibold text-sm hover:border-white/50 hover:bg-white/[0.05] transition-all"
@@ -100,7 +101,7 @@ function CTAButtons({ className = '' }) {
 
 // ─── Sections ───────────────────────────────────────────────────────────────
 
-function HeroSection({ hero }) {
+function HeroSection({ hero, waLink }) {
   const lines = hero.headline.split('\n')
 
   return (
@@ -148,7 +149,7 @@ function HeroSection({ hero }) {
 
           {/* CTAs */}
           <motion.div variants={fadeUp}>
-            <CTAButtons />
+            <CTAButtons waLink={waLink} />
           </motion.div>
         </motion.div>
 
@@ -250,7 +251,7 @@ function ServicesSection() {
   )
 }
 
-function WhySection() {
+function WhySection({ waLink }) {
   return (
     <section className="bg-bg-dark2 py-20">
       <div className="max-w-6xl mx-auto px-5 sm:px-8 lg:px-12">
@@ -275,7 +276,7 @@ function WhySection() {
               ))}
             </motion.div>
             <motion.div variants={fadeUp} className="mt-8">
-              <CTAButtons />
+              <CTAButtons waLink={waLink} />
             </motion.div>
           </motion.div>
 
@@ -470,7 +471,7 @@ function FAQSection({ faqs }) {
   )
 }
 
-function FinalCTA() {
+function FinalCTA({ waLink }) {
   return (
     <section className="bg-bg-dark2 py-20">
       <div className="max-w-4xl mx-auto px-5 sm:px-8 lg:px-12 text-center">
@@ -498,7 +499,7 @@ function FinalCTA() {
               Book Free Strategy Call
             </a>
             <a
-              href={WA_LINK}
+              href={waLink}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg border border-white/25 text-white font-semibold hover:border-white/50 hover:bg-white/[0.05] transition-all"
@@ -563,6 +564,7 @@ export default function SeoLandingTemplate({ page }) {
   const { seo, hero, faqs, slug, type, localContent, map } = page
 
   const isUS = type === 'location-us'
+  const waLink = isUS ? WA_LINK_US : WA_LINK_PK
   const schema = [isUS ? localBusinessUSA() : localBusinessPK()]
   if (faqs && faqs.length > 0) schema.push(faqSchema(faqs))
   schema.push(breadcrumbSchema([
@@ -581,15 +583,15 @@ export default function SeoLandingTemplate({ page }) {
       />
 
       <main>
-        <HeroSection hero={hero} />
+        <HeroSection hero={hero} waLink={waLink} />
         <TrustBar />
         <ServicesSection />
         <LocalAreaSection localContent={localContent} map={map} />
-        <WhySection />
+        <WhySection waLink={waLink} />
         <ProcessSection />
         <IndustriesSection />
         {faqs && faqs.length > 0 && <FAQSection faqs={faqs} />}
-        <FinalCTA />
+        <FinalCTA waLink={waLink} />
       </main>
 
       <Footer />

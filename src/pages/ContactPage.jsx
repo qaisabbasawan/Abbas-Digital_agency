@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { Mail, MapPin, Clock, Send, ArrowRight, Check, ChevronDown } from 'lucide-react'
+import { Mail, MapPin, Clock, Send, ArrowRight, Check, ChevronDown, MessageCircle } from 'lucide-react'
 import Footer from '../components/Footer'
 import { EmailText } from '../components/EmailLink'
 import ContactScene from '../components/ContactScene'
@@ -19,10 +19,11 @@ const svcList = [
 const budgets = ['Under $500', '$500 – $1,000', '$1,000 – $3,000', '$3,000 – $10,000', '$10,000+']
 
 const infoItems = [
-  { Icon: Mail,   color: '#E8155A', label: 'Email',           val: '', email: true },
-  { Icon: MapPin, color: '#2E55E0', label: 'Visit Us',        val: 'H 1-A, IVY Street, Banigala, Islamabad, Pakistan' },
-  { Icon: MapPin, color: '#7C3AED', label: 'Mailing Address', val: '1001 S Main St Ste 500, Kalispell, MT 59901, USA' },
-  { Icon: Clock,  color: '#0891B2', label: 'Response Time',   val: 'Within 24 hours' },
+  { Icon: Mail,          color: '#E8155A', label: 'Email',           val: '', email: true },
+  { Icon: MessageCircle, color: '#25D366', label: 'WhatsApp',        val: '+1 (667) 766-2781', link: 'https://wa.me/16677662781' },
+  { Icon: MapPin,        color: '#2E55E0', label: 'Visit Us',        val: 'H 1-A, IVY Street, Banigala, Islamabad, Pakistan' },
+  { Icon: MapPin,        color: '#7C3AED', label: 'Mailing Address', val: '1001 S Main St Ste 500, Kalispell, MT 59901, USA' },
+  { Icon: Clock,         color: '#0891B2', label: 'Response Time',   val: 'Within 24 hours' },
 ]
 
 /* Spinning conic energy ring around an icon */
@@ -233,7 +234,15 @@ export default function ContactPage() {
                       <InfoOrb Icon={it.Icon} color={it.color} />
                       <div className="min-w-0">
                         <p className="text-white/30 text-[10px] uppercase tracking-[0.2em] mb-1">{it.label}</p>
-                        <p className="text-white text-[14px] leading-snug">{it.email ? <EmailText /> : it.val}</p>
+                        <p className="text-white text-[14px] leading-snug">
+                          {it.email ? (
+                            <EmailText />
+                          ) : it.link ? (
+                            <a href={it.link} target="_blank" rel="noopener noreferrer" className="hover:text-[#25D366] transition-colors">
+                              {it.val}
+                            </a>
+                          ) : it.val}
+                        </p>
                       </div>
                     </div>
                   </motion.div>

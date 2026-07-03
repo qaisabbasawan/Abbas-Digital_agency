@@ -194,6 +194,7 @@ const sections = [
           <li>Email: <a href="mailto:info@abbasdigitalagency.com">info@abbasdigitalagency.com</a></li>
           <li>Phone (Pakistan): +92 300 5935125</li>
           <li>Phone (USA): +1 843 733 0701</li>
+          <li>WhatsApp (USA): <a href="https://wa.me/16677662781" target="_blank" rel="noopener noreferrer">+1 (667) 766-2781</a></li>
           <li>Pakistan Office: H 1-A, IVY Street, Banigala, Islamabad, Pakistan</li>
           <li>USA Office: 1001 S Main St Ste 500, Kalispell, MT 59901, USA</li>
         </ul>
