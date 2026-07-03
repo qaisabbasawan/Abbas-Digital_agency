@@ -6,6 +6,7 @@ import Navbar from './components/Navbar'
 import CustomCursor from './components/CustomCursor'
 import SmoothScroll from './components/SmoothScroll'
 import ScrollProgress from './components/ScrollProgress'
+import WhatsAppButton from './components/WhatsAppButton'
 
 import { AuthProvider, useAuth } from './admin/context/AuthContext'
 
@@ -87,6 +88,7 @@ function PublicLayout() {
         <CustomCursor />
         <Navbar />
         <Outlet />
+        <WhatsAppButton />
       </div>
     </SmoothScroll>
   )
