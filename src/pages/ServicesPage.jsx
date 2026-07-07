@@ -287,7 +287,10 @@ function CardPanel({ svc, active }) {
     <div
       className="group relative w-full h-full rounded-[26px] overflow-hidden flex flex-col p-8 sm:p-9"
       style={{
-        background: 'rgba(10,17,48,0.5)',
+        /* Near-opaque panel: ancestor `filter` (depth blur) disables
+           backdrop-filter in Chrome, so the glass can't rely on it — the
+           bright spine scene behind would wash out the text. */
+        background: 'linear-gradient(160deg, rgba(13,20,52,0.97), rgba(7,12,36,0.95))',
         backdropFilter: 'blur(18px)',
         WebkitBackdropFilter: 'blur(18px)',
         border: `1px solid ${svc.color}55`,
@@ -316,7 +319,7 @@ function CardPanel({ svc, active }) {
         {svc.sub}
       </p>
 
-      <p className="relative text-white/55 text-[14px] leading-relaxed max-w-sm">{svc.desc}</p>
+      <p className="relative text-white/75 text-[14px] leading-relaxed max-w-sm">{svc.desc}</p>
 
       {/* CTA */}
       <Link
