@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom'
 import { MapPin, Phone, Mail } from 'lucide-react'
 import Logo from './Logo'
 import EmailLink from './EmailLink'
+import FooterLinkMarquee from './FooterLinkMarquee'
+import { SERVICE_LINKS, US_LOCATION_LINKS } from '../data/footerMarquee'
 
 const navLinks = [
   { label: 'Home',      path: '/' },
@@ -85,7 +87,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
 
         {/* Main grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 py-16 border-b border-white/[0.06]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 py-16">
 
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
@@ -179,7 +181,15 @@ export default function Footer() {
             </div>
           </div>
         </div>
+      </div>
 
+      {/* Auto-scrolling SEO link bars */}
+      <div className="border-y border-white/[0.06] divide-y divide-white/[0.06]">
+        <FooterLinkMarquee label="Our Services" items={SERVICE_LINKS} direction="right" />
+        <FooterLinkMarquee label="We Serve" items={US_LOCATION_LINKS} direction="left" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
         {/* Bottom bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 py-5">
           <p className="text-white/25 text-[12px]">

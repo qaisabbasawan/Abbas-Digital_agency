@@ -153,6 +153,26 @@ input, textarea, select, button {
 }
 .marquee-wrapper:hover .marquee-track { animation-play-state: paused; }
 
+/* Footer link marquees — two copies of the track, shift by one copy (-50%) */
+@keyframes footer-marquee {
+  to { transform: translateX(-50%); }
+}
+.footer-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: footer-marquee 60s linear infinite;
+  will-change: transform;
+}
+.footer-marquee:hover .footer-marquee-track,
+.footer-marquee:focus-within .footer-marquee-track {
+  animation-play-state: paused;
+}
+/* Reduced motion: global rule above stops the animation; let users
+   scroll the strip by hand instead. */
+@media (prefers-reduced-motion: reduce) {
+  .footer-marquee { overflow-x: auto; }
+}
+
 /* Slow continuous rotation (icon energy rings) */
 @keyframes spin360 {
   to { transform: rotate(360deg); }
