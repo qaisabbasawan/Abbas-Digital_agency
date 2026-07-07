@@ -1,13 +1,14 @@
 import { useState, useRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Save, Send, ArrowLeft, Image, Tag, X, Bold, Italic, Heading1, Heading2, List, Quote, Eye, Edit3, Minus } from 'lucide-react'
+import { Save, Send, ArrowLeft, Image, Tag, X, Bold, Italic, Heading1, Heading2, List, Quote, Eye, Edit3, Minus, UploadCloud, Loader2 } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import remarkBreaks from 'remark-breaks'
 import TurndownService from 'turndown'
 import { useAuth } from '../context/AuthContext'
 import { mdComponents } from '../../lib/mdComponents'
+import { uploadBlogImage } from '../../lib/uploadImage'
 
 const td = new TurndownService({
   headingStyle:     'atx',
@@ -41,6 +42,25 @@ export default function BlogCreate() {
   const [preview,  setPreview]  = useState(false)
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
+
+  // ── featured image upload (converted to WebP client-side) ────────────────
+  const fileRef = useRef(null)
+  const [uploading, setUploading] = useState(false)
+  const [uploadErr, setUploadErr] = useState('')
+
+  const handleImageFile = async (file) => {
+    if (!file || uploading) return
+    setUploadErr('')
+    setUploading(true)
+    try {
+      set('image', await uploadBlogImage(file))
+    } catch (err) {
+      setUploadErr(err.message || 'Upload failed — please try again.')
+    } finally {
+      setUploading(false)
+      if (fileRef.current) fileRef.current.value = ''
+    }
+  }
 
   // ── markdown toolbar helpers ──────────────────────────────────────────────
   const insertMarkdown = (before, after = '') => {
@@ -294,8 +314,35 @@ export default function BlogCreate() {
           {/* Featured image */}
           <div className="p-5 rounded-2xl space-y-3" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
             <h3 className="text-white/60 text-[11px] tracking-widest uppercase font-medium">Featured Image</h3>
+
+            {/* Upload from computer — auto-converts to WebP */}
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={e => handleImageFile(e.target.files?.[0])}
+            />
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              onDragOver={e => e.preventDefault()}
+              onDrop={e => { e.preventDefault(); handleImageFile(e.dataTransfer.files?.[0]) }}
+              disabled={uploading}
+              className="w-full flex flex-col items-center justify-center gap-1.5 py-6 rounded-xl border border-dashed border-white/[0.15] text-white/40 hover:text-white hover:border-white/30 transition-all disabled:opacity-60 disabled:cursor-wait"
+            >
+              {uploading
+                ? <Loader2 size={17} className="animate-spin" />
+                : <UploadCloud size={17} />}
+              <span className="text-[12px] font-medium">
+                {uploading ? 'Converting & uploading…' : 'Upload from computer'}
+              </span>
+              <span className="text-[10px] text-white/25">or drag & drop — auto-converted to WebP</span>
+            </button>
+            {uploadErr && <p className="text-red-400 text-[11px]">{uploadErr}</p>}
+
             <div>
-              <label className="block text-white/40 text-[11px] tracking-widest uppercase mb-2">Image URL</label>
+              <label className="block text-white/40 text-[11px] tracking-widest uppercase mb-2">Or paste image URL</label>
               <div className="relative">
                 <Image size={13} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/25" />
                 <input value={form.image} onChange={e => set('image', e.target.value)}
