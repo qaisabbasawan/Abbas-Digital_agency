@@ -67,9 +67,9 @@ export default function LandingPage() {
   return (
     <>
       <SEO
-        title="Digital Marketing Agency Islamabad | Abbas Digital Agency"
-        description="Abbas Digital Agency delivers SEO, web design, mobile apps, branding & digital marketing for businesses in Pakistan & the USA. US-registered LLC in Montana. Free quote."
-        keywords="digital marketing agency Islamabad, SEO services Pakistan, web design company Pakistan, mobile app development Pakistan, branding agency Pakistan, digital marketing Montana, best SEO company Pakistan"
+        title="Digital Marketing Agency Islamabad & Montana USA | Abbas Digital Agency"
+        description="Abbas Digital Agency — digital marketing agency in Islamabad, Pakistan & Montana, USA. SEO, web design, mobile apps & branding. US-registered LLC. Free quote."
+        keywords="digital marketing agency Islamabad, digital marketing agency Montana, SEO services Pakistan, seo agency montana usa, web design company Pakistan, web design montana, mobile app development Pakistan, branding agency Pakistan, best SEO company Pakistan"
         path="/"
         schema={[organizationSchema(), localBusinessPK(), localBusinessUSA(), homepageFaqSchema()]}
       />
