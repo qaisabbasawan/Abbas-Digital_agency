@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import {
-  FileText, Download, Boxes, Leaf, ArrowUpRight, CheckCircle2, Sparkles, Rocket,
+  FileText, Download, Leaf, ArrowUpRight, CheckCircle2, Sparkles, Rocket,
 } from 'lucide-react'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
@@ -36,18 +36,6 @@ const products = [
     to: '#E8155A',
   },
   {
-    name: 'SmartERP',
-    url: 'https://sap-erp-fyp-project-production.up.railway.app/login',
-    Icon: Boxes,
-    category: 'Enterprise Software',
-    tagline: 'AI-powered ERP for modern businesses',
-    desc: 'A modular, AI-augmented Enterprise Resource Planning system covering inventory, sales, HR and finance — built to bring intelligent automation to everyday business operations.',
-    features: ['Modular business management', 'AI-assisted workflows', 'Secure role-based login'],
-    stat: 'AI-Powered',
-    from: '#4C1D95',
-    to: '#7C3AED',
-  },
-  {
     name: 'AI Plant Doctor',
     url: 'https://ai-plant-doctor-nu.vercel.app/',
     Icon: Leaf,
@@ -73,8 +61,8 @@ export default function SaasProductsPage() {
     <div className="min-h-screen bg-bg-dark pt-[72px]">
       <SEO
         title="SaaS Products | Abbas Digital Agency"
-        description="Explore SaaS products built by Abbas Digital Agency — CV Maker Free, DownloadMyVideo, SmartERP and AI Plant Doctor. Try each product live."
-        keywords="Abbas Digital Agency SaaS products, CV Maker Free, DownloadMyVideo, SmartERP, AI Plant Doctor"
+        description="Explore SaaS products built by Abbas Digital Agency — CV Maker Free, DownloadMyVideo and AI Plant Doctor. Try each product live."
+        keywords="Abbas Digital Agency SaaS products, CV Maker Free, DownloadMyVideo, AI Plant Doctor"
         path="/saas-products"
         schema={[
           breadcrumbSchema([
