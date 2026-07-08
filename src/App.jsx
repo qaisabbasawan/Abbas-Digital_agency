@@ -16,6 +16,7 @@ const LandingPage          = lazy(() => import('./pages/LandingPage'))
 const AboutPage            = lazy(() => import('./pages/AboutPage'))
 const ServicesPage         = lazy(() => import('./pages/ServicesPage'))
 const PortfolioPage        = lazy(() => import('./pages/PortfolioPage'))
+const SaasProductsPage     = lazy(() => import('./pages/SaasProductsPage'))
 const ContactPage          = lazy(() => import('./pages/ContactPage'))
 const ServiceDetailPage    = lazy(() => import('./pages/ServiceDetailPage'))
 const BlogPage             = lazy(() => import('./pages/BlogPage'))
@@ -128,6 +129,7 @@ export default function App({ ssrData } = {}) {
             <Route path="/services"       element={<ServicesPage />} />
             <Route path="/services/:slug" element={<ServiceDetailPage />} />
             <Route path="/portfolio"      element={<PortfolioPage />} />
+            <Route path="/saas-products"  element={<SaasProductsPage />} />
             <Route path="/contact"        element={<ContactPage />} />
             <Route path="/blog"           element={<BlogPage />} />
             <Route path="/blog/:slug"     element={<BlogDetailPage />} />

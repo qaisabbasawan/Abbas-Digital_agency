@@ -19,11 +19,12 @@ const serviceItems = [
 ]
 
 const navLinks = [
-  { label: 'Home',      path: '/' },
-  { label: 'About',     path: '/about' },
-  { label: 'Portfolio', path: '/portfolio' },
-  { label: 'Blog',      path: '/blog' },
-  { label: 'Contact',   path: '/contact' },
+  { label: 'Home',         path: '/' },
+  { label: 'About',        path: '/about' },
+  { label: 'Portfolio',    path: '/portfolio' },
+  { label: 'SaaS Products', path: '/saas-products' },
+  { label: 'Blog',         path: '/blog' },
+  { label: 'Contact',      path: '/contact' },
 ]
 
 export default function Navbar() {
@@ -408,8 +409,13 @@ export default function Navbar() {
                 </AnimatePresence>
               </motion.div>
 
-              {/* Portfolio, Blog & Contact */}
-              {[{ label: 'Portfolio', path: '/portfolio' }, { label: 'Blog', path: '/blog' }, { label: 'Contact', path: '/contact' }].map((l, i) => (
+              {/* Portfolio, SaaS Products, Blog & Contact */}
+              {[
+                { label: 'Portfolio', path: '/portfolio' },
+                { label: 'SaaS Products', path: '/saas-products' },
+                { label: 'Blog', path: '/blog' },
+                { label: 'Contact', path: '/contact' },
+              ].map((l, i) => (
                 <motion.div key={l.label} initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: (i + 3) * 0.06 }}>
                   <Link
                     to={l.path}
