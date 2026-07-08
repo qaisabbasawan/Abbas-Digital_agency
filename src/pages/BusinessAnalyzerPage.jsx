@@ -5,10 +5,14 @@ import {
   ArrowRight, ArrowLeft, BarChart2, Zap, Target, TrendingUp,
   Globe, Monitor, Settings, DollarSign, Star, Users,
   CheckCircle2, AlertCircle, Rocket, ChevronRight, RefreshCw,
-  Phone, Mail,
+  Phone, Mail, ShieldCheck, Sparkles,
 } from 'lucide-react'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
+import AnalyzerScene from '../components/AnalyzerScene'
+import TiltCard from '../components/anim/TiltCard'
+import Magnetic from '../components/anim/Magnetic'
+import RevealText from '../components/anim/RevealText'
 
 // ── Scoring engine ────────────────────────────────────────────────────────────
 
@@ -356,17 +360,14 @@ function LoadingScreen() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-bg-dark pt-[72px] flex flex-col items-center justify-center">
+    <div className="min-h-screen bg-bg-dark pt-[72px] flex flex-col items-center justify-center overflow-hidden">
       <div className="text-center">
-        <div className="relative w-24 h-24 mx-auto mb-8">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1.2, repeat: Infinity, ease: 'linear' }}
-            className="absolute inset-0 rounded-full"
-            style={{ background: 'conic-gradient(from 0deg, #E8155A, #2E55E0, transparent)', mask: 'radial-gradient(farthest-side, transparent calc(100% - 4px), white calc(100% - 4px))' }}
-          />
-          <div className="absolute inset-2 rounded-full bg-bg-dark flex items-center justify-center">
-            <BarChart2 size={28} className="text-brand-pink" />
+        <div className="relative w-72 h-72 sm:w-80 sm:h-80 mx-auto mb-2">
+          <AnalyzerScene mode="loading" progress={(idx + 1) / 5} starCount={700} />
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: 'radial-gradient(circle, rgba(232,21,90,0.18), transparent 70%)' }}>
+              <BarChart2 size={22} className="text-brand-pink" />
+            </div>
           </div>
         </div>
         <motion.h2 key="title" className="text-white font-bold text-2xl mb-3">Generating Report…</motion.h2>
@@ -423,7 +424,7 @@ function PillarBar({ label, value, delay }) {
 
 // ── Report screen ─────────────────────────────────────────────────────────────
 function ReportScreen({ report, answers, onReset }) {
-  const { scores, overall, stage, insights, recommendations } = report
+  const { scores, overall, insights, recommendations } = report
   const count = useCountUp(overall, 2200)
   const stageInfo = getStage(overall)
 
@@ -434,12 +435,6 @@ function ReportScreen({ report, answers, onReset }) {
     { key: 'conversion',      label: 'Conversion' },
     { key: 'automation',      label: 'Automation' },
     { key: 'marketing',       label: 'Marketing' },
-  ]
-
-  const phases = [
-    { num: 1, title: 'Build Digital Foundation', desc: 'Establish a high-converting website and strong brand identity.', color: '#2E55E0' },
-    { num: 2, title: 'Create Lead System',        desc: 'Deploy targeted landing pages and automated capture funnels.',   color: '#7C3AED' },
-    { num: 3, title: 'Automate and Scale',        desc: 'Integrate CRM, email workflows, and scale via paid advertising.',color: '#E8155A' },
   ]
 
   const fade = (delay = 0) => ({
@@ -456,6 +451,11 @@ function ReportScreen({ report, answers, onReset }) {
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-0 left-1/3 w-[600px] h-[500px] rounded-full blur-[200px] opacity-25" style={{ background: 'rgba(46,85,224,0.18)' }} />
         <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full blur-[180px] opacity-20" style={{ background: 'rgba(232,21,90,0.14)' }} />
+      </div>
+
+      {/* 3D growth engine — pillar nodes sized to the business's real scores */}
+      <div className="absolute top-0 inset-x-0 h-[640px] pointer-events-none overflow-hidden opacity-60">
+        <AnalyzerScene mode="report" scores={scores} starCount={1000} />
       </div>
 
       <div className="relative max-w-4xl mx-auto px-5 sm:px-8 py-14">
@@ -481,46 +481,54 @@ function ReportScreen({ report, answers, onReset }) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-8">
 
           {/* Score card */}
-          <motion.div {...fade(0.1)} className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-8 flex flex-col items-center justify-center text-center">
-            <p className="text-white/30 text-[10px] uppercase tracking-[0.25em] mb-5">Overall Digital Maturity</p>
-            <div className="relative w-32 h-32 mx-auto mb-5">
-              <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="8" />
-                <motion.circle
-                  cx="50" cy="50" r="44" fill="none"
-                  stroke="url(#scoreGrad)" strokeWidth="8"
-                  strokeLinecap="round"
-                  strokeDasharray={`${2 * Math.PI * 44}`}
-                  initial={{ strokeDashoffset: 2 * Math.PI * 44 }}
-                  animate={{ strokeDashoffset: 2 * Math.PI * 44 * (1 - overall / 100) }}
-                  transition={{ duration: 2.2, ease: [0.22, 1, 0.36, 1] }}
-                />
-                <defs>
-                  <linearGradient id="scoreGrad" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="#2E55E0" />
-                    <stop offset="100%" stopColor="#E8155A" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="font-bold text-white text-4xl leading-none">{count}</span>
-                <span className="text-white/40 text-[12px]">/ 100</span>
+          <motion.div {...fade(0.1)}>
+            <TiltCard max={7} glareColor="rgba(232,21,90,0.14)">
+              <div className="bg-white/[0.03] backdrop-blur-xl border border-white/[0.07] rounded-2xl p-8 h-full flex flex-col items-center justify-center text-center">
+                <p className="text-white/30 text-[10px] uppercase tracking-[0.25em] mb-5">Overall Digital Maturity</p>
+                <div className="relative w-32 h-32 mx-auto mb-5">
+                  <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="8" />
+                    <motion.circle
+                      cx="50" cy="50" r="44" fill="none"
+                      stroke="url(#scoreGrad)" strokeWidth="8"
+                      strokeLinecap="round"
+                      strokeDasharray={`${2 * Math.PI * 44}`}
+                      initial={{ strokeDashoffset: 2 * Math.PI * 44 }}
+                      animate={{ strokeDashoffset: 2 * Math.PI * 44 * (1 - overall / 100) }}
+                      transition={{ duration: 2.2, ease: [0.22, 1, 0.36, 1] }}
+                    />
+                    <defs>
+                      <linearGradient id="scoreGrad" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="#2E55E0" />
+                        <stop offset="100%" stopColor="#E8155A" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="font-bold text-white text-4xl leading-none">{count}</span>
+                    <span className="text-white/40 text-[12px]">/ 100</span>
+                  </div>
+                </div>
+                <div className="px-4 py-1.5 rounded-full text-[12px] font-semibold" style={{ background: `${stageInfo.color}20`, color: stageInfo.color, border: `1px solid ${stageInfo.color}40` }}>
+                  {stageInfo.label}
+                </div>
               </div>
-            </div>
-            <div className="px-4 py-1.5 rounded-full text-[12px] font-semibold" style={{ background: `${stageInfo.color}20`, color: stageInfo.color, border: `1px solid ${stageInfo.color}40` }}>
-              {stageInfo.label}
-            </div>
+            </TiltCard>
           </motion.div>
 
           {/* Pillar bars */}
-          <motion.div {...fade(0.15)} className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-7">
-            <div className="flex items-center gap-2 mb-6">
-              <BarChart2 size={15} className="text-brand-pink" />
-              <p className="text-white font-semibold text-[15px]">Performance by Pillar</p>
-            </div>
-            {pillars.map((p, i) => (
-              <PillarBar key={p.key} label={p.label} value={scores[p.key]} delay={0.3 + i * 0.12} />
-            ))}
+          <motion.div {...fade(0.15)}>
+            <TiltCard max={7} glareColor="rgba(46,85,224,0.14)">
+              <div className="bg-white/[0.03] backdrop-blur-xl border border-white/[0.07] rounded-2xl p-7 h-full">
+                <div className="flex items-center gap-2 mb-6">
+                  <BarChart2 size={15} className="text-brand-pink" />
+                  <p className="text-white font-semibold text-[15px]">Performance by Pillar</p>
+                </div>
+                {pillars.map((p, i) => (
+                  <PillarBar key={p.key} label={p.label} value={scores[p.key]} delay={0.3 + i * 0.12} />
+                ))}
+              </div>
+            </TiltCard>
           </motion.div>
         </div>
 
@@ -538,16 +546,19 @@ function ReportScreen({ report, answers, onReset }) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.35 + i * 0.1, duration: 0.55 }}
-                className="bg-white/[0.03] border border-white/[0.07] rounded-xl p-5 hover:border-brand-pink/20 transition-colors"
               >
-                <div className="w-9 h-9 rounded-lg mb-4 flex items-center justify-center" style={{ background: 'rgba(232,21,90,0.12)', border: '1px solid rgba(232,21,90,0.2)' }}>
-                  <Icon size={16} className="text-brand-pink" />
-                </div>
-                <h3 className="text-white font-semibold text-[14px] mb-2">{title}</h3>
-                <p className="text-white/40 text-[12px] leading-relaxed">{desc}</p>
-                <div className="flex items-center gap-1 mt-3">
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(232,21,90,0.12)', color: '#E8155A', border: '1px solid rgba(232,21,90,0.2)' }}>HIGH PRIORITY</span>
-                </div>
+                <TiltCard max={6} glareColor="rgba(232,21,90,0.12)">
+                  <div className="bg-white/[0.03] backdrop-blur-xl border border-white/[0.07] rounded-xl p-5 h-full hover:border-brand-pink/20 transition-colors">
+                    <div className="w-9 h-9 rounded-lg mb-4 flex items-center justify-center" style={{ background: 'rgba(232,21,90,0.12)', border: '1px solid rgba(232,21,90,0.2)' }}>
+                      <Icon size={16} className="text-brand-pink" />
+                    </div>
+                    <h3 className="text-white font-semibold text-[14px] mb-2">{title}</h3>
+                    <p className="text-white/40 text-[12px] leading-relaxed">{desc}</p>
+                    <div className="flex items-center gap-1 mt-3">
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(232,21,90,0.12)', color: '#E8155A', border: '1px solid rgba(232,21,90,0.2)' }}>HIGH PRIORITY</span>
+                    </div>
+                  </div>
+                </TiltCard>
               </motion.div>
             ))}
           </div>
@@ -561,31 +572,34 @@ function ReportScreen({ report, answers, onReset }) {
             <p className="text-white/40 text-[14px] max-w-md mx-auto">Based on your analysis, implementing these targeted solutions will provide the highest ROI for your current business stage.</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {recommendations.map(({ Icon, title, tagline, desc, priority, path }, i) => (
+            {recommendations.map(({ Icon, title, tagline, desc, priority }, i) => (
               <motion.div
                 key={title}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 + i * 0.1, duration: 0.55 }}
-                className={`relative bg-white/[0.03] rounded-xl p-6 border transition-colors hover:border-white/20 ${priority ? 'border-brand-pink/40' : 'border-white/[0.07]'}`}
               >
-                {priority && (
-                  <div className="absolute -top-3 left-5">
-                    <span className="bg-brand-pink text-white text-[10px] font-bold px-3 py-0.5 rounded-full tracking-wide">Top Priority</span>
+                <TiltCard max={6} glareColor="rgba(46,85,224,0.12)">
+                  <div className={`relative bg-white/[0.03] backdrop-blur-xl rounded-xl p-6 h-full border transition-colors hover:border-white/20 ${priority ? 'border-brand-pink/40' : 'border-white/[0.07]'}`}>
+                    {priority && (
+                      <div className="absolute -top-3 left-5">
+                        <span className="bg-brand-pink text-white text-[10px] font-bold px-3 py-0.5 rounded-full tracking-wide">Top Priority</span>
+                      </div>
+                    )}
+                    <div className="w-10 h-10 rounded-xl mb-4 flex items-center justify-center" style={{ background: 'rgba(46,85,224,0.12)', border: '1px solid rgba(46,85,224,0.2)' }}>
+                      <Icon size={18} className="text-brand-blue" style={{ color: '#2E55E0' }} />
+                    </div>
+                    <h3 className="text-white font-bold text-[16px] mb-1">{title}</h3>
+                    <div className="flex items-center gap-1.5 mb-3">
+                      <CheckCircle2 size={12} className="text-green-400 shrink-0" />
+                      <span className="text-green-400 text-[11px]">{tagline}</span>
+                    </div>
+                    <p className="text-white/45 text-[13px] leading-relaxed mb-4">{desc}</p>
+                    <Link to="/contact" className="flex items-center gap-1.5 text-brand-pink text-[12px] font-medium hover:gap-2.5 transition-all">
+                      Contact Sales <ChevronRight size={13} />
+                    </Link>
                   </div>
-                )}
-                <div className="w-10 h-10 rounded-xl mb-4 flex items-center justify-center" style={{ background: 'rgba(46,85,224,0.12)', border: '1px solid rgba(46,85,224,0.2)' }}>
-                  <Icon size={18} className="text-brand-blue" style={{ color: '#2E55E0' }} />
-                </div>
-                <h3 className="text-white font-bold text-[16px] mb-1">{title}</h3>
-                <div className="flex items-center gap-1.5 mb-3">
-                  <CheckCircle2 size={12} className="text-green-400 shrink-0" />
-                  <span className="text-green-400 text-[11px]">{tagline}</span>
-                </div>
-                <p className="text-white/45 text-[13px] leading-relaxed mb-4">{desc}</p>
-                <Link to="/contact" className="flex items-center gap-1.5 text-brand-pink text-[12px] font-medium hover:gap-2.5 transition-all">
-                  Contact Sales <ChevronRight size={13} />
-                </Link>
+                </TiltCard>
               </motion.div>
             ))}
           </div>
@@ -637,12 +651,16 @@ function ReportScreen({ report, answers, onReset }) {
               Stop guessing and start growing. Book a free strategy session with our experts to review your results and map out your custom action plan.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link to="/contact" className="shimmer-btn inline-flex items-center justify-center gap-2 px-8 py-3.5 text-sm text-white font-medium hover:opacity-90 transition-opacity">
-                <Phone size={14} /> Book Free Strategy Call
-              </Link>
-              <Link to="/contact" className="inline-flex items-center justify-center gap-2 px-8 py-3.5 text-sm text-white/60 border border-white/15 rounded-xl hover:text-white hover:border-white/30 transition-all">
-                <Mail size={14} /> Contact Sales
-              </Link>
+              <Magnetic>
+                <Link to="/contact" className="shimmer-btn inline-flex items-center justify-center gap-2 px-8 py-3.5 text-sm text-white font-medium hover:opacity-90 transition-opacity">
+                  <Phone size={14} /> Book Free Strategy Call
+                </Link>
+              </Magnetic>
+              <Magnetic>
+                <Link to="/contact" className="inline-flex items-center justify-center gap-2 px-8 py-3.5 text-sm text-white/60 border border-white/15 rounded-xl hover:text-white hover:border-white/30 transition-all">
+                  <Mail size={14} /> Contact Sales
+                </Link>
+              </Magnetic>
             </div>
           </div>
         </motion.div>
@@ -663,11 +681,11 @@ function ReportScreen({ report, answers, onReset }) {
 // ── Main page ─────────────────────────────────────────────────────────────────
 
 const STEPS = [
-  { id: 1, title: 'Basic Information',    subtitle: "Let's start with who you are and what you do." },
-  { id: 2, title: 'Digital Presence',     subtitle: 'Evaluate your current online footprint and brand visibility.' },
-  { id: 3, title: 'Lead Generation',      subtitle: 'How do prospects find you and enter your pipeline?' },
-  { id: 4, title: 'Systems & Automation', subtitle: 'Analyse the tech stack scaling your operations.' },
-  { id: 5, title: 'Challenges & Goals',   subtitle: 'Identify the primary bottlenecks holding you back.' },
+  { id: 1, title: 'Basic Information',    subtitle: "Let's start with who you are and what you do.",       Icon: Users,    color: '#2E55E0' },
+  { id: 2, title: 'Digital Presence',     subtitle: 'Evaluate your current online footprint and brand visibility.', Icon: Globe,    color: '#0891B2' },
+  { id: 3, title: 'Lead Generation',      subtitle: 'How do prospects find you and enter your pipeline?',   Icon: Target,   color: '#E8155A' },
+  { id: 4, title: 'Systems & Automation', subtitle: 'Analyse the tech stack scaling your operations.',      Icon: Settings, color: '#8B5CF6' },
+  { id: 5, title: 'Challenges & Goals',   subtitle: 'Identify the primary bottlenecks holding you back.',   Icon: Zap,      color: '#D97706' },
 ]
 
 export default function BusinessAnalyzerPage() {
@@ -766,6 +784,12 @@ export default function BusinessAnalyzerPage() {
         <div className="absolute bottom-20 right-1/4 w-[400px] h-[350px] rounded-full blur-[140px] opacity-20" style={{ background: 'rgba(232,21,90,0.12)' }} />
       </div>
 
+      {/* 3D growth engine — pillar nodes light up as the form fills in */}
+      <div className="fixed top-[72px] inset-x-0 h-[560px] pointer-events-none overflow-hidden opacity-50">
+        <AnalyzerScene mode="intake" progress={step / 5} starCount={900} />
+      </div>
+      <div className="fixed top-[72px] inset-x-0 h-[420px] pointer-events-none" style={{ background: 'linear-gradient(to bottom, transparent, #05091A 92%)' }} />
+
       <div className="relative max-w-2xl mx-auto px-5 sm:px-8 py-12">
 
         {/* Hero text */}
@@ -777,18 +801,19 @@ export default function BusinessAnalyzerPage() {
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-5"
             style={{ background: 'rgba(232,21,90,0.1)', border: '1px solid rgba(232,21,90,0.2)' }}
           >
-            <BarChart2 size={13} className="text-brand-pink" />
+            <Sparkles size={13} className="text-brand-pink" />
             <span className="text-brand-pink text-[11px] tracking-[0.22em] uppercase font-medium">AI Business Analyzer</span>
           </motion.div>
-          <motion.h1
-            initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} transition={{ delay: 0.15 }}
-            className="font-bold text-white leading-tight mb-3"
-            style={{ fontSize: 'clamp(2rem, 5vw, 3rem)' }}
-          >
-            Discover Your Digital<br />Growth Potential
-          </motion.h1>
+          <h1 className="font-bold text-white leading-tight mb-3" style={{ fontSize: 'clamp(2rem, 5vw, 3rem)' }}>
+            <RevealText as="span" className="block" stagger={0.06} delay={0.1}>
+              Discover Your Digital
+            </RevealText>
+            <RevealText as="span" className="block" gradient stagger={0.07} delay={0.22}>
+              Growth Potential
+            </RevealText>
+          </h1>
           <motion.p
-            initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay: 0.25 }}
+            initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay: 0.45 }}
             className="text-white/45 text-[14px] max-w-sm mx-auto leading-relaxed"
           >
             Answer 5 quick steps and receive a personalised digital maturity report with actionable growth recommendations.
@@ -819,10 +844,20 @@ export default function BusinessAnalyzerPage() {
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: -48, scale: 0.98 }}
             transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-            className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-7 sm:p-9 mb-6"
+            className="bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] rounded-2xl p-7 sm:p-9 mb-6"
           >
-            <h2 className="font-bold text-white text-2xl mb-1">{STEPS[step - 1].title}</h2>
-            <p className="text-white/35 text-[13px] mb-8">{STEPS[step - 1].subtitle}</p>
+            <div className="flex items-center gap-4 mb-8">
+              <div
+                className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
+                style={{ background: `${STEPS[step - 1].color}20`, border: `1px solid ${STEPS[step - 1].color}40` }}
+              >
+                {(() => { const Icon = STEPS[step - 1].Icon; return <Icon size={20} style={{ color: STEPS[step - 1].color }} /> })()}
+              </div>
+              <div>
+                <h2 className="font-bold text-white text-2xl leading-tight">{STEPS[step - 1].title}</h2>
+                <p className="text-white/35 text-[13px]">{STEPS[step - 1].subtitle}</p>
+              </div>
+            </div>
 
             {step === 1 && <Step1 a={answers} err={errors} set={set} />}
             {step === 2 && <Step2 a={answers} err={errors} set={set} />}
@@ -841,14 +876,16 @@ export default function BusinessAnalyzerPage() {
           >
             <ArrowLeft size={14} /> Back
           </button>
-          <motion.button
-            onClick={next}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="shimmer-btn flex items-center gap-2 px-8 py-3 text-[13px] text-white font-medium hover:opacity-90 transition-opacity"
-          >
-            {step === 5 ? <>Generate Report <BarChart2 size={14} /></> : <>Next Step <ArrowRight size={14} /></>}
-          </motion.button>
+          <Magnetic strength={0.2}>
+            <motion.button
+              onClick={next}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="shimmer-btn flex items-center gap-2 px-8 py-3 text-[13px] text-white font-medium hover:opacity-90 transition-opacity"
+            >
+              {step === 5 ? <>Generate Report <BarChart2 size={14} /></> : <>Next Step <ArrowRight size={14} /></>}
+            </motion.button>
+          </Magnetic>
         </div>
 
         {/* Trust bar */}
@@ -858,9 +895,11 @@ export default function BusinessAnalyzerPage() {
           transition={{ delay: 0.4 }}
           className="flex items-center justify-center gap-6 mt-10 flex-wrap"
         >
-          {['Free · No credit card', '2-minute assessment', 'Instant personalised report'].map(t => (
+          {['Free · No credit card', '2-minute assessment', 'Processed in your browser — nothing stored'].map(t => (
             <div key={t} className="flex items-center gap-1.5 text-white/25 text-[11px]">
-              <CheckCircle2 size={11} className="text-brand-pink/60" /> {t}
+              {t.includes('browser')
+                ? <ShieldCheck size={11} className="text-brand-pink/60" />
+                : <CheckCircle2 size={11} className="text-brand-pink/60" />} {t}
             </div>
           ))}
         </motion.div>
