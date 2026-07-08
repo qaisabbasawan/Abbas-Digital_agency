@@ -18,11 +18,12 @@ const catColors = {
   'AI & Chatbots':     '#0891B2',
   'Digital Marketing': '#059669',
   'Branding & Design': '#D97706',
+  'ERP Solutions':     '#4F46E5',
   'Case Studies':      '#F59E0B',
   'Industry Insights': '#6366F1',
 }
 
-const categories = ['All', 'Web Development', 'E-Commerce', 'Mobile Apps', 'AI & Chatbots', 'Digital Marketing', 'Branding & Design', 'Case Studies', 'Industry Insights']
+const categories = ['All', 'Web Development', 'E-Commerce', 'Mobile Apps', 'AI & Chatbots', 'Digital Marketing', 'Branding & Design', 'ERP Solutions', 'Case Studies', 'Industry Insights']
 
 function readTime(content = '') {
   const words = content.split(' ').filter(Boolean).length
