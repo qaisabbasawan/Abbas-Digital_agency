@@ -13,6 +13,7 @@ import AnalyzerScene from '../components/AnalyzerScene'
 import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
 import RevealText from '../components/anim/RevealText'
+import { supabase } from '../lib/supabase'
 
 // ── Scoring engine ────────────────────────────────────────────────────────────
 
@@ -185,6 +186,24 @@ function Step1({ a, err, set }) {
           }`}
         />
         {err.industry && <p className="text-red-400 text-[11px] mt-1">{err.industry}</p>}
+      </div>
+
+      <div>
+        <label className="text-white/60 text-[11px] uppercase tracking-[0.18em] mb-2 block">
+          Email Address <span className="text-brand-pink">*</span>
+        </label>
+        <input
+          type="email"
+          placeholder="e.g. you@company.com"
+          value={a.email}
+          onChange={e => set('email', e.target.value)}
+          className={`w-full bg-white/[0.04] border rounded-xl px-4 py-3 text-white text-[14px] placeholder-white/20 focus:outline-none transition-colors ${
+            err.email ? 'border-red-500/50' : 'border-white/[0.08] focus:border-white/25'
+          }`}
+        />
+        {err.email
+          ? <p className="text-red-400 text-[11px] mt-1">{err.email}</p>
+          : <p className="text-white/25 text-[11px] mt-1.5">So we can follow up with your results and growth recommendations.</p>}
       </div>
 
       <div>
@@ -678,6 +697,60 @@ function ReportScreen({ report, answers, onReset }) {
   )
 }
 
+// ── Lead capture ──────────────────────────────────────────────────────────────
+// Human-readable labels for the coded answer values below — kept in sync with
+// the option lists rendered in Step1–Step5 above, used only to make the lead
+// notification email readable.
+const OPTION_LABELS = {
+  revenue:        { under10: 'Under $10k', '10-50': '$10k – $50k', '50-100': '$50k – $100k', '100plus': '$100k+' },
+  website:        { modern: "Yes, modern and updated", redesign: 'Yes, but needs a major redesign', none: "No website" },
+  socialMedia:    { active: 'Active, posting regularly', inconsistent: 'Inconsistent / not active' },
+  leadSources:    { wom: 'Word of Mouth / Referrals', seo: 'Organic Search (SEO)', social: 'Organic Social Media', paid: 'Paid Ads (Google, Meta)', outreach: 'Cold Outreach' },
+  leadCapture:    { landing: 'Dedicated landing pages & funnels', form: 'Basic contact form', direct: 'Email/call directly', none: "Doesn't capture leads online" },
+  crm:            { active: 'Yes, actively used', basic: 'Yes, but only basically', none: 'No CRM' },
+  emailSequences: { yes: 'Yes, fully automated', no: "No, it's manual" },
+  paidAds:        { yes: 'Yes, actively investing', no: 'No / Not right now' },
+  bottlenecks:    { noLeads: 'Not enough leads/traffic', noConvert: "Leads aren't converting", manual: 'Too much manual/admin work', brand: 'Brand looks outdated', noStrategy: 'No clear marketing strategy' },
+}
+
+/* Notifies the agency of a new AI Analyzer submission: stores it as a lead in
+   the CRM (same "leads" table the contact form uses) and fires a formatted
+   email via a dedicated edge function. Both are fire-and-forget — a failure
+   here must never block the user from seeing their report. */
+function submitAnalyzerLead(a, scores, overall, stageLabel) {
+  const summary = [
+    `Industry: ${a.industry}`,
+    `Monthly Revenue: ${OPTION_LABELS.revenue[a.revenue] || a.revenue}`,
+    '',
+    `Website: ${OPTION_LABELS.website[a.website] || a.website}`,
+    `Social Media: ${OPTION_LABELS.socialMedia[a.socialMedia] || a.socialMedia}`,
+    `Lead Sources: ${a.leadSources.map(v => OPTION_LABELS.leadSources[v] || v).join(', ') || '—'}`,
+    `Lead Capture: ${OPTION_LABELS.leadCapture[a.leadCapture] || a.leadCapture}`,
+    `CRM: ${OPTION_LABELS.crm[a.crm] || a.crm}`,
+    `Email/SMS Automation: ${OPTION_LABELS.emailSequences[a.emailSequences] || a.emailSequences}`,
+    `Paid Advertising: ${OPTION_LABELS.paidAds[a.paidAds] || a.paidAds}`,
+    `Bottlenecks: ${a.bottlenecks.map(v => OPTION_LABELS.bottlenecks[v] || v).join(', ') || '—'}`,
+    '',
+    `Digital Maturity Score: ${overall}/100 (${stageLabel})`,
+  ].join('\n')
+
+  supabase.from('leads').insert({
+    id:      Date.now().toString(),
+    name:    a.businessName,
+    email:   a.email,
+    phone:   '',
+    service: 'AI Business Analyzer',
+    budget:  OPTION_LABELS.revenue[a.revenue] || a.revenue,
+    message: summary,
+    status:  'New',
+    date:    new Date().toISOString(),
+  }).then(({ error }) => { if (error) console.error('Analyzer lead insert failed:', error) })
+
+  supabase.functions.invoke('send-analyzer-lead-email', {
+    body: { lead: { ...a, overall, stageLabel, scores, optionLabels: OPTION_LABELS } },
+  }).catch(err => console.error('Analyzer lead email failed:', err))
+}
+
 // ── Main page ─────────────────────────────────────────────────────────────────
 
 const STEPS = [
@@ -691,7 +764,7 @@ const STEPS = [
 export default function BusinessAnalyzerPage() {
   const [step,    setStep]    = useState(1)
   const [answers, setAnswers] = useState({
-    businessName: '', industry: '', revenue: '',
+    businessName: '', industry: '', email: '', revenue: '',
     website: '', socialMedia: '',
     leadSources: [], leadCapture: '',
     crm: '', emailSequences: '', paidAds: '',
@@ -721,6 +794,7 @@ export default function BusinessAnalyzerPage() {
     if (step === 1) {
       if (!answers.businessName.trim()) e.businessName = 'Required'
       if (!answers.industry.trim())     e.industry     = 'Required'
+      if (!/\S+@\S+\.\S+/.test(answers.email)) e.email = 'Valid email required'
       if (!answers.revenue)             e.revenue      = 'Please select one'
     }
     if (step === 2) {
@@ -747,10 +821,12 @@ export default function BusinessAnalyzerPage() {
     if (Object.keys(e).length) { setErrors(e); return }
     if (step < 5) { setStep(s => s + 1); window.scrollTo({ top: 0, behavior: 'smooth' }); return }
     setLoading(true)
+    const scores = computeScores(answers)
+    const overall = Math.round(Object.values(scores).reduce((a, b) => a + b, 0) / 6)
+    const stageInfo = getStage(overall)
+    submitAnalyzerLead(answers, scores, overall, stageInfo.label)
     setTimeout(() => {
-      const scores = computeScores(answers)
-      const overall = Math.round(Object.values(scores).reduce((a, b) => a + b, 0) / 6)
-      setReport({ scores, overall, stage: getStage(overall), insights: getInsights(scores), recommendations: getRecommendations(scores) })
+      setReport({ scores, overall, stage: stageInfo, insights: getInsights(scores), recommendations: getRecommendations(scores) })
       setLoading(false)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }, 3000)
@@ -760,7 +836,7 @@ export default function BusinessAnalyzerPage() {
 
   const reset = () => {
     setStep(1); setReport(null); setLoading(false)
-    setAnswers({ businessName:'', industry:'', revenue:'', website:'', socialMedia:'', leadSources:[], leadCapture:'', crm:'', emailSequences:'', paidAds:'', bottlenecks:[] })
+    setAnswers({ businessName:'', industry:'', email:'', revenue:'', website:'', socialMedia:'', leadSources:[], leadCapture:'', crm:'', emailSequences:'', paidAds:'', bottlenecks:[] })
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -895,9 +971,9 @@ export default function BusinessAnalyzerPage() {
           transition={{ delay: 0.4 }}
           className="flex items-center justify-center gap-6 mt-10 flex-wrap"
         >
-          {['Free · No credit card', '2-minute assessment', 'Processed in your browser — nothing stored'].map(t => (
+          {['Free · No credit card', '2-minute assessment', 'Your data is never sold or shared'].map(t => (
             <div key={t} className="flex items-center gap-1.5 text-white/25 text-[11px]">
-              {t.includes('browser')
+              {t.includes('sold')
                 ? <ShieldCheck size={11} className="text-brand-pink/60" />
                 : <CheckCircle2 size={11} className="text-brand-pink/60" />} {t}
             </div>
