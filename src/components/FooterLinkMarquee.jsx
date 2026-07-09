@@ -3,18 +3,23 @@ import { Link } from 'react-router-dom'
 /* One copy of the item list. The marquee renders it twice for a seamless
    -50% translateX loop; the second copy is aria-hidden and untabbable so
    screen readers and keyboard users only meet each link once. */
+const LINK_CLS = "whitespace-nowrap px-3 py-0.5 rounded text-[11px] tracking-wide text-white/35 hover:text-white focus-visible:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-pink/70 transition-colors duration-200"
+
 function Track({ items, ariaHidden = false }) {
   return (
     <div className="flex items-center shrink-0" aria-hidden={ariaHidden || undefined}>
       {items.map(item => (
         <span key={item.path} className="flex items-center">
-          <Link
-            to={item.path}
-            tabIndex={ariaHidden ? -1 : undefined}
-            className="whitespace-nowrap px-3 py-0.5 rounded text-[11px] tracking-wide text-white/35 hover:text-white focus-visible:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-pink/70 transition-colors duration-200"
-          >
-            {item.label}
-          </Link>
+          {item.external ? (
+            /* Plain static file outside the SPA router — needs a real page load. */
+            <a href={item.path} tabIndex={ariaHidden ? -1 : undefined} className={LINK_CLS}>
+              {item.label}
+            </a>
+          ) : (
+            <Link to={item.path} tabIndex={ariaHidden ? -1 : undefined} className={LINK_CLS}>
+              {item.label}
+            </Link>
+          )}
           <span className="text-brand-pink/40 text-[7px] leading-none select-none" aria-hidden>
             ◆
           </span>

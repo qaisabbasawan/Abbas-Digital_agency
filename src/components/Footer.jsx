@@ -3,7 +3,7 @@ import { MapPin, Phone, Mail } from 'lucide-react'
 import Logo from './Logo'
 import EmailLink from './EmailLink'
 import FooterLinkMarquee from './FooterLinkMarquee'
-import { SERVICE_LINKS, US_LOCATION_LINKS } from '../data/footerMarquee'
+import { SERVICE_LINKS, US_LOCATION_LINKS, LANDING_PAGE_LINKS } from '../data/footerMarquee'
 
 const navLinks = [
   { label: 'Home',      path: '/' },
@@ -186,7 +186,8 @@ export default function Footer() {
       {/* Auto-scrolling SEO link bars */}
       <div className="border-y border-white/[0.06] divide-y divide-white/[0.06]">
         <FooterLinkMarquee label="Our Services" items={SERVICE_LINKS} direction="right" />
-        <FooterLinkMarquee label="We Serve" items={US_LOCATION_LINKS} direction="left" />
+        <FooterLinkMarquee label="Industries We Serve" items={LANDING_PAGE_LINKS} direction="left" />
+        <FooterLinkMarquee label="We Serve" items={US_LOCATION_LINKS} direction="right" />
       </div>
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">

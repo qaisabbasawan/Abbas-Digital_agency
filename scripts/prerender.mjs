@@ -15,6 +15,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createClient } from '@supabase/supabase-js'
+import { verticals as landingVerticals } from './data/landing-verticals.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const root = path.resolve(__dirname, '..')
@@ -101,7 +102,12 @@ function routeToFile(route) {
   return path.join(distDir, route.replace(/^\//, ''), 'index.html')
 }
 
-function buildSitemap(routes, blogs) {
+// Standalone funnel landing pages (public/landing-<slug>.html). These are
+// static files, not React routes, so they're never passed to render() — they
+// only need a sitemap entry here.
+const LANDING_PAGE_ROUTES = landingVerticals.map(v => `/landing-${v.slug}.html`)
+
+function buildSitemap(routes, blogs, extraRoutes = []) {
   const today = new Date().toISOString().slice(0, 10)
   const lastmodFor = (route) => {
     if (route.startsWith('/blog/')) {
@@ -117,12 +123,13 @@ function buildSitemap(routes, blogs) {
     if (route === '/services' || route.startsWith('/services/')) return '0.9'
     if (route === '/blog') return '0.8'
     if (route.startsWith('/blog/')) return '0.7'
+    if (route.startsWith('/landing-')) return '0.6'
     return '0.7'
   }
   const changefreqFor = (route) =>
     route === '/' || route === '/blog' ? 'weekly' : 'monthly'
 
-  const urls = routes.map(route => `  <url>
+  const urls = [...routes, ...extraRoutes].map(route => `  <url>
     <loc>${SITE}${route === '/' ? '/' : route}</loc>
     <lastmod>${lastmodFor(route)}</lastmod>
     <changefreq>${changefreqFor(route)}</changefreq>
@@ -208,12 +215,13 @@ async function main() {
     console.error('✗ /404:', e.message)
   }
 
-  // Sitemap (only indexable content routes).
-  const sitemap = buildSitemap(routes, blogs)
+  // Sitemap (indexable React routes + the standalone static landing pages,
+  // which are plain files in public/ and never go through render() above).
+  const sitemap = buildSitemap(routes, blogs, LANDING_PAGE_ROUTES)
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemap)
 
   console.log(`\n✓ Prerendered ${ok} routes (${blogRoutes.length} blog posts), ${failed} failed.`)
-  console.log(`✓ sitemap.xml written with ${routes.length} URLs.`)
+  console.log(`✓ sitemap.xml written with ${routes.length + LANDING_PAGE_ROUTES.length} URLs (incl. ${LANDING_PAGE_ROUTES.length} landing pages).`)
   if (failed > 0) process.exitCode = 1
 }
 
