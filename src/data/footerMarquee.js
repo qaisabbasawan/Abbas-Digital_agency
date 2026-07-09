@@ -1,5 +1,5 @@
 import { SEO_PAGES } from './seoPages'
-import { verticals as landingVerticals } from '../../scripts/data/landing-verticals.mjs'
+import { INDUSTRY_LANDING_PAGES } from './industryLandingPages'
 
 /* Core service detail pages (/services/:slug).
    Data for these lives in src/pages/ServiceDetailPage.jsx — importing that
@@ -31,12 +31,9 @@ export const US_LOCATION_LINKS = Object.values(SEO_PAGES)
   .filter(p => p.type === 'location-us')
   .map(p => ({ label: p.hero.headline.replace(/\n/g, ' '), path: `/${p.slug}` }))
 
-/* Standalone funnel landing pages (public/landing-<slug>.html, built by
-   scripts/gen-landing-pages.mjs). These are plain static files outside the
-   React Router SPA, so `external: true` tells FooterLinkMarquee to render a
-   real <a> (full page load) instead of a router <Link>. */
-export const LANDING_PAGE_LINKS = landingVerticals.map(v => ({
+/* Industry funnel landing pages (/landing-<slug>) — real SPA routes served
+   through the /:slug catch-all (DynamicSeoPage), so they're normal <Link>s. */
+export const LANDING_PAGE_LINKS = INDUSTRY_LANDING_PAGES.map(v => ({
   label: v.name,
-  path: `/landing-${v.slug}.html`,
-  external: true,
+  path: `/${v.routeSlug}`,
 }))
