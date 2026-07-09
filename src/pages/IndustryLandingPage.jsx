@@ -5,10 +5,11 @@ import {
   TrendingDown, DollarSign, Search, Clock,
   Flag, Brain, BarChart3, Lock,
   Package, Globe, MessageCircle,
-  ChevronDown, Phone, ArrowUpRight,
+  ChevronDown, ArrowUpRight,
 } from 'lucide-react'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
+import IndustryHeroVisual from '../components/IndustryHeroVisual'
 import { useAuth } from '../admin/context/AuthContext'
 
 /* Positional icon sets — every vertical's content follows the same rhythm
@@ -77,61 +78,6 @@ function Counter({ to, suffix }) {
     <span ref={ref} className="bg-gradient-to-r from-brand-pink via-brand-pink-light to-brand-blue-light bg-clip-text text-transparent">
       {isFloat ? val.toFixed(1) : val}{suffix}
     </span>
-  )
-}
-
-/* 3D rotating cube hero visual — brand-themed CSS 3D, one face swapped per
-   industry so the hero visual still feels distinct per vertical. */
-function HeroCube({ icon, proof }) {
-  const faces = ['✨', '📈', icon, '📍', '⭐', '📞']
-  const transforms = [
-    'translateZ(80px)', 'rotateY(90deg) translateZ(80px)', 'rotateY(180deg) translateZ(80px)',
-    'rotateY(-90deg) translateZ(80px)', 'rotateX(90deg) translateZ(80px)', 'rotateX(-90deg) translateZ(80px)',
-  ]
-  return (
-    <div className="relative h-[420px] hidden lg:flex items-center justify-center" style={{ perspective: '1100px' }} aria-hidden="true">
-      <div className="absolute top-6 left-8 w-28 h-28 rounded-full bg-brand-pink/25 blur-2xl animate-pulse" />
-      <div className="absolute bottom-10 right-6 w-20 h-20 rounded-full bg-brand-blue-light/30 blur-2xl animate-pulse" style={{ animationDelay: '1.2s' }} />
-
-      <div className="relative w-40 h-40" style={{ transformStyle: 'preserve-3d', animation: 'il-spin 16s linear infinite' }}>
-        {faces.map((f, i) => (
-          <div
-            key={i}
-            className="absolute inset-0 grid place-items-center rounded-2xl border border-brand-pink/30 text-4xl backdrop-blur-sm"
-            style={{
-              transform: transforms[i],
-              background: 'linear-gradient(135deg, rgba(232,21,90,0.12), rgba(46,85,224,0.12))',
-              boxShadow: 'inset 0 0 40px rgba(232,21,90,0.08)',
-            }}
-          >
-            {f}
-          </div>
-        ))}
-      </div>
-
-      {[
-        { icon: <Phone size={15} className="text-brand-pink" />, big: proof[0].big, small: proof[0].small, cls: 'top-4 right-0', delay: '0s' },
-        { icon: <MapPin size={15} className="text-brand-blue-light" />, big: proof[1].big, small: proof[1].small, cls: 'bottom-8 left-0', delay: '-2s' },
-        { icon: <Star size={15} className="text-yellow-400" />, big: '4.9 rating', small: '100+ reviews', cls: 'top-1/2 -right-4', delay: '-4s' },
-      ].map((c, i) => (
-        <div
-          key={i}
-          className={`absolute ${c.cls} flex items-center gap-3 rounded-2xl border border-white/10 bg-bg-dark2/85 px-4 py-3 backdrop-blur-md shadow-[0_18px_50px_rgba(0,0,0,0.45)]`}
-          style={{ animation: 'il-float 6s ease-in-out infinite', animationDelay: c.delay }}
-        >
-          <span className="grid h-9 w-9 flex-none place-items-center rounded-xl bg-white/[0.06]">{c.icon}</span>
-          <span>
-            <b className="block text-[14px] text-white leading-tight">{c.big}</b>
-            <span className="text-[11px] text-white/40">{c.small}</span>
-          </span>
-        </div>
-      ))}
-
-      <style>{`
-        @keyframes il-spin { from { transform: rotateX(-18deg) rotateY(0) } to { transform: rotateX(-18deg) rotateY(360deg) } }
-        @keyframes il-float { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-14px) } }
-      `}</style>
-    </div>
   )
 }
 
@@ -265,7 +211,12 @@ export default function IndustryLandingPage({ data }) {
             </motion.div>
           </div>
 
-          <HeroCube icon={data.icon} proof={proof} />
+          <IndustryHeroVisual
+            variant={data.heroVariant}
+            icon={data.icon}
+            satellites={data.heroIcons}
+            proof={proof}
+          />
         </div>
       </section>
 
