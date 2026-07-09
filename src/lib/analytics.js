@@ -6,7 +6,7 @@
    so it never blocks the main thread on initial load. Queued commands replay
    automatically once the real library arrives. */
 
-const GA_ID = 'G-B7C1MH1KZQ'
+const GA_ID = 'G-538004144'
 const SRC = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`
 
 let loaded = false

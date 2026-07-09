@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import { ExternalLink, Globe, Smartphone, Monitor, BookOpen, TrendingUp, Users, Mail, BarChart2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
-const GA_ID   = 'G-B7C1MH1KZQ'
+const GA_ID   = 'G-538004144'
 const GA_LINK = 'https://analytics.google.com/analytics/web/'
 
 export default function Analytics() {

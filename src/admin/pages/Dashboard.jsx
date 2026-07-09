@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Users, BookOpen, TrendingUp, ArrowUpRight, PenSquare, ExternalLink, BarChart2, Mail } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
-const GA_ID = 'G-B7C1MH1KZQ'
+const GA_ID = 'G-538004144'
 
 const statusColors = {
   New:       'bg-blue-500/15 text-blue-400',

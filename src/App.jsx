@@ -41,7 +41,7 @@ const Settings       = lazy(() => import('./admin/pages/Settings'))
 
 gsap.registerPlugin(ScrollTrigger)
 
-const GA_ID = 'G-B7C1MH1KZQ'
+const GA_ID = 'G-538004144'
 
 function GATracker() {
   const location = useLocation()
