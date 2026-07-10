@@ -16,6 +16,11 @@ export default function SEO({
 }) {
   const url = `${BASE_URL}${path}`
   const ogImage = image && image.startsWith('http') ? image : `${BASE_URL}${image || ''}`
+  // Only the site default is guaranteed to be exactly 1200x630 — per-post
+  // images (Unsplash/Pexels URLs or admin uploads) vary in aspect ratio, and
+  // declaring wrong dimensions in og:image:width/height is worse than
+  // omitting them (crawlers just measure the file themselves).
+  const isDefaultImage = ogImage === DEFAULT_IMAGE
   const schemas = schema ? (Array.isArray(schema) ? schema : [schema]) : []
 
   // Serialise JSON-LD and guard against </script> breakouts. These scripts are
@@ -48,8 +53,8 @@ export default function SEO({
       <meta property="og:description" content={description} />
       <meta property="og:url" content={url} />
       <meta property="og:image" content={ogImage} />
-      <meta property="og:image:width" content="1200" />
-      <meta property="og:image:height" content="630" />
+      {isDefaultImage && <meta property="og:image:width" content="1200" />}
+      {isDefaultImage && <meta property="og:image:height" content="630" />}
       <meta property="og:locale" content="en_US" />
       {type === 'article' && publishedTime && (
         <meta property="article:published_time" content={publishedTime} />
