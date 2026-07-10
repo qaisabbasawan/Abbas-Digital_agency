@@ -18,7 +18,7 @@ const td = new TurndownService({
 // Keep line breaks inside list items
 td.keep(['br'])
 
-const categories = ['Web Development', 'E-Commerce', 'Mobile Apps', 'AI & Chatbots', 'Digital Marketing', 'Branding & Design', 'Case Studies', 'Industry Insights']
+const categories = ['Web Development', 'E-Commerce', 'Mobile Apps', 'AI & Chatbots', 'Digital Marketing', 'Branding & Design', 'ERP Solutions', 'Case Studies', 'Industry Insights']
 
 export default function BlogCreate() {
   const { blogs, persistBlogs, user } = useAuth()
