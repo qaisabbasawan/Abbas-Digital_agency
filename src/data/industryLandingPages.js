@@ -743,6 +743,53 @@ const RAW = [
       { q: 'Is parent communication included in the base platform?', a: 'Yes, the parent communication portal is a core part of the school management software, not an add-on.' },
     ],
   },
+  {
+    slug: 'home-services',
+    name: 'Home Service',
+    icon: '🛠️',
+    heroVariant: 'orbit',
+    heroIcons: ['🔧', '⚡', '🚿', '🔨'],
+    h1: 'Digital Marketing for Home Service Businesses That Keeps Your Calendar Booked Solid',
+    sub: 'Local SEO, Google Ads, and conversion-ready websites built to turn "near me" searches into booked jobs — for HVAC, plumbing, electrical, roofing, landscaping and every home service trade.',
+    metaTitle: 'Home Service Business Marketing Agency | Keep Your Calendar Booked Solid',
+    metaDesc: 'Local SEO, Google Ads & lead generation for home service businesses — HVAC, plumbing, electrical, roofing, landscaping & more — across the USA. Get a free marketing plan.',
+    keywords: ['home service business marketing', 'home services SEO', 'lead generation for home service businesses', 'Google Ads for home services', 'HVAC plumbing electrical marketing agency USA', 'local SEO for contractors', 'home service company website design'],
+    painPoints: [
+      { title: 'Feast-or-Famine Job Volume', desc: 'Some weeks your techs are slammed, others your schedule is wide open. Without lead gen that runs 24/7, revenue swings instead of growing.' },
+      { title: 'Buried Below the Map Pack', desc: 'Homeowners search "[your trade] near me" and rarely scroll past the top 3 map-pack listings — if you’re not there, you’re invisible.' },
+      { title: 'Slow-Season Cash Crunches', desc: 'HVAC, roofing and landscaping all have slow months. Without year-round demand generation, idle trucks and techs eat straight into profit.' },
+      { title: 'Stuck on Referrals Alone', desc: 'Word-of-mouth built your business, but it can’t scale it. One slow referral quarter and your whole pipeline dries up.' },
+    ],
+    services: [
+      { title: 'Local SEO for Home Service Businesses', desc: 'Rank in the Google Map Pack for every trade and city you serve — HVAC, plumbing, electrical, roofing and more.' },
+      { title: 'Google Ads & Local Services Ads', desc: 'High-intent PPC and Google Guaranteed campaigns that put you in front of homeowners searching for your service right now.' },
+      { title: 'Google Business Profile Optimization', desc: 'Categories, service areas, photos and Q&A tuned to win calls straight from Google Maps.' },
+      { title: 'Home Service Website Design', desc: 'Fast, mobile-first websites with booking, quote requests and click-to-call — built to turn visitors into scheduled jobs.' },
+      { title: 'Review & Reputation Management', desc: 'Automated review requests that build the 5-star reputation homeowners check before they ever call.' },
+      { title: 'Multi-Trade & Seasonal Campaigns', desc: 'Dedicated campaigns for every service line and season — AC tune-ups in summer, furnace checks in winter, storm response year-round.' },
+    ],
+    whyUs: [
+      { title: 'US-Registered LLC', desc: 'Registered in Montana, USA — a real, accountable partner serving home service businesses in all 50 states.' },
+      { title: 'Service-Industry Experience', desc: '13+ years marketing local trades. We know how homeowners search, compare and book across every home service category.' },
+      { title: 'Results, Not Reports', desc: 'We measure success in booked jobs and cost per lead — and you see every number in a live dashboard.' },
+      { title: 'No Long-Term Contracts', desc: 'Month-to-month engagements. We earn your business every 30 days by delivering leads that turn into revenue.' },
+    ],
+    stats: [
+      { to: 3, suffix: 'x', label: 'Organic traffic growth' },
+      { to: 38, suffix: '%', label: 'Lower cost-per-lead' },
+      { to: 140, suffix: '+', label: 'Monthly leads generated' },
+      { to: 75, suffix: ' days', label: 'To page-one rankings' },
+    ],
+    testimonial: { quote: 'Within two months our phone was ringing with real, booked jobs across every service line — not just referrals. We finally have a marketing partner instead of a vendor.', name: 'Owner', role: 'Multi-Trade Home Service Company — USA' },
+    tierPrices: [500, 700, 1000],
+    faq: [
+      { q: 'Do you work with every type of home service business?', a: 'Yes — HVAC, plumbing, electrical, roofing, landscaping, pest control, garage doors, painting and more. Campaigns are built around how your specific trade’s customers search.' },
+      { q: 'How long until I see new leads?', a: 'Google Ads and Local Services Ads can generate calls within 1-2 weeks. Local SEO typically shows meaningful ranking and traffic gains within 60-90 days and keeps compounding after that.' },
+      { q: 'Do I need a long-term contract?', a: 'No. We work month-to-month and earn your business by delivering booked jobs, not by locking you into a contract.' },
+      { q: 'Can you help with multiple service areas or locations?', a: 'Yes, we build local SEO and ad campaigns for every city, county or service area you cover, whether you’re single-location or multi-branch.' },
+      { q: 'What does marketing for a home service business cost?', a: 'Plans start at $500/month, with tiers at $700 and $1,000/month depending on scope. Custom plans are built around your exact trade, service areas and goals.' },
+    ],
+  },
 ]
 
 export const INDUSTRY_LANDING_PAGES = RAW.map((v) => {
