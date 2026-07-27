@@ -20,5 +20,30 @@ export const mdComponents = {
   code: ({ inline, children }) => inline
     ? <code style={{ background: 'rgba(255,255,255,0.08)', padding: '0.15em 0.4em', borderRadius: '4px', fontSize: '13px', color: '#93c5fd' }}>{children}</code>
     : <pre style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '8px', overflowX: 'auto', marginBottom: '1rem' }}><code style={{ fontSize: '13px', color: '#93c5fd' }}>{children}</code></pre>,
-  a: ({ href, children }) => <a href={href} style={{ color: '#2E55E0', textDecoration: 'underline' }} target="_blank" rel="noopener noreferrer">{children}</a>,
+  // Internal links stay in the same tab so crawlers follow them as normal
+  // site navigation; external links open in a new tab.
+  a: ({ href = '', children }) => {
+    const internal = href.startsWith('/') || href.startsWith('#')
+    return (
+      <a href={href} style={{ color: '#2E55E0', textDecoration: 'underline' }}
+        {...(internal ? {} : { target: '_blank', rel: 'noopener noreferrer' })}>
+        {children}
+      </a>
+    )
+  },
+  // Tables scroll horizontally on mobile instead of stretching the page.
+  table: ({ children }) => (
+    <div style={{ overflowX: 'auto', marginBottom: '1.5rem', WebkitOverflowScrolling: 'touch' }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px', minWidth: '480px' }}>{children}</table>
+    </div>
+  ),
+  thead: ({ children }) => <thead style={{ background: 'rgba(255,255,255,0.05)' }}>{children}</thead>,
+  th: ({ children }) => (
+    <th style={{ padding: '0.7rem 0.9rem', textAlign: 'left', color: '#fff', fontWeight: 600,
+      borderBottom: '1px solid rgba(255,255,255,0.14)', whiteSpace: 'nowrap' }}>{children}</th>
+  ),
+  td: ({ children }) => (
+    <td style={{ padding: '0.7rem 0.9rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6,
+      borderBottom: '1px solid rgba(255,255,255,0.07)', verticalAlign: 'top' }}>{children}</td>
+  ),
 }
