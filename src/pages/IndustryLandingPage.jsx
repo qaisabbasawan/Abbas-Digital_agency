@@ -11,6 +11,7 @@ import Footer from '../components/Footer'
 import SEO from '../components/SEO'
 import IndustryHeroVisual from '../components/IndustryHeroVisual'
 import { useAuth } from '../admin/context/AuthContext'
+import { breadcrumbSchema } from '../lib/schema'
 
 /* Positional icon sets — every vertical's content follows the same rhythm
    (foundational → paid → platform → showcase → automation → trust for
@@ -147,6 +148,10 @@ export default function IndustryLandingPage({ data }) {
         acceptedAnswer: { '@type': 'Answer', text: f.a },
       })),
     },
+    breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: data.name, path: `/${data.routeSlug}` },
+    ]),
   ]
 
   const proof = [

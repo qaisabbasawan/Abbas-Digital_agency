@@ -14,6 +14,7 @@ import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
 import RevealText from '../components/anim/RevealText'
 import { supabase } from '../lib/supabase'
+import { breadcrumbSchema } from '../lib/schema'
 
 // ── Scoring engine ────────────────────────────────────────────────────────────
 
@@ -464,7 +465,15 @@ function ReportScreen({ report, answers, onReset }) {
 
   return (
     <div className="min-h-screen bg-bg-dark pt-[72px]">
-      <SEO title="Your Digital Maturity Report | Abbas Digital Agency" description="Your personalised digital maturity report from Abbas Digital Agency." path="/analyzer" />
+      <SEO
+        title="Your Digital Maturity Report | Abbas Digital Agency"
+        description="Your personalised digital maturity report from Abbas Digital Agency."
+        path="/analyzer"
+        schema={breadcrumbSchema([
+          { name: 'Home', path: '/' },
+          { name: 'AI Business Analyzer', path: '/analyzer' },
+        ])}
+      />
 
       {/* Glow */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
@@ -852,6 +861,23 @@ export default function BusinessAnalyzerPage() {
         description="Get your free digital maturity report in minutes. Our analyzer evaluates your brand, website, lead generation, automation and marketing to reveal your biggest growth opportunities."
         keywords="AI business analyzer, digital maturity report, business growth analysis, digital marketing audit Pakistan"
         path="/analyzer"
+        schema={[
+          {
+            '@context': 'https://schema.org',
+            '@type': 'WebApplication',
+            name: 'AI Business Analyzer',
+            description: 'Free digital maturity report tool that evaluates a business\'s brand, website, lead generation, automation and marketing to reveal growth opportunities.',
+            url: 'https://abbasdigitalagency.com/analyzer',
+            applicationCategory: 'BusinessApplication',
+            operatingSystem: 'Web',
+            offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+            provider: { '@type': 'Organization', name: 'Abbas Digital Agency', url: 'https://abbasdigitalagency.com' },
+          },
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'AI Business Analyzer', path: '/analyzer' },
+          ]),
+        ]}
       />
 
       {/* Background glow */}

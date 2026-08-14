@@ -8,6 +8,7 @@ import {
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
 import { useAuth } from '../admin/context/AuthContext'
+import { breadcrumbSchema } from '../lib/schema'
 
 /* ───────────────────────── data ───────────────────────── */
 
@@ -148,6 +149,10 @@ const pageSchema = [
       acceptedAnswer: { '@type': 'Answer', text: f.a },
     })),
   },
+  breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'Cleaning Services', path: '/cleaningservices' },
+  ]),
 ]
 
 /* ───────────────────────── helpers ───────────────────────── */

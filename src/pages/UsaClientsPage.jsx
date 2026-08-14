@@ -4,6 +4,7 @@ import { ArrowUpRight, MapPin, Mail, Clock, Globe, MessageCircle } from 'lucide-
 import Footer from '../components/Footer'
 import { EmailText } from '../components/EmailLink'
 import SEO from '../components/SEO'
+import { localBusinessUSA, faqSchema, breadcrumbSchema } from '../lib/schema'
 
 const services = [
   { title: 'Web Design for US Clients', desc: 'Pixel-perfect, conversion-focused websites for American businesses — at a fraction of US agency rates.' },
@@ -43,6 +44,14 @@ export default function UsaClientsPage() {
         description="Abbas Digital Agency LLC — US-registered digital marketing, SEO, web design and app development agency serving clients across the United States. Montana-based, world-class quality."
         keywords="digital marketing agency USA, SEO agency for US clients, web design company USA, affordable web development USA, offshore digital agency Montana"
         path="/usa-clients"
+        schema={[
+          localBusinessUSA(),
+          faqSchema(faqs),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'USA Clients', path: '/usa-clients' },
+          ]),
+        ]}
       />
 
       {/* Hero */}
