@@ -10,7 +10,7 @@ import Magnetic from '../components/anim/Magnetic'
 import { useAuth } from '../admin/context/AuthContext'
 import { mdComponents } from '../lib/mdComponents'
 import SEO from '../components/SEO'
-import { articleSchema, breadcrumbSchema } from '../lib/schema'
+import { articleSchema, breadcrumbSchema, blogFaqSchema } from '../lib/schema'
 
 const catColors = {
   'Web Development':   '#2E55E0',
@@ -160,7 +160,8 @@ export default function BlogDetailPage() {
             { name: 'Blog', path: '/blog' },
             { name: blog.title, path: `/blog/${blog.slug}` },
           ]),
-        ]}
+          blogFaqSchema(blog.content),
+        ].filter(Boolean)}
       />
 
       {/* Breadcrumb navigation */}

@@ -41,11 +41,6 @@ export default function SEO({
       <meta name="author" content="Abbas Digital Agency" />
       <link rel="canonical" href={url} />
 
-      {/* hreflang — dual market (Pakistan + USA), English */}
-      <link rel="alternate" hrefLang="en-pk" href={url} />
-      <link rel="alternate" hrefLang="en-us" href={url} />
-      <link rel="alternate" hrefLang="x-default" href={url} />
-
       {/* Open Graph */}
       <meta property="og:type" content={type} />
       <meta property="og:site_name" content="Abbas Digital Agency" />

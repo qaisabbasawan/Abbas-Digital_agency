@@ -11,6 +11,33 @@ const SAME_AS = [
   'https://www.instagram.com/abbasdigitalagency',
 ]
 
+/* People — the founder and team shown on /about. Declared as schema.org
+   Person entities so search and AI engines can connect expertise (and blog
+   bylines) to real, verifiable people. */
+export const FOUNDER = {
+  name: 'Muhammad Qais Abbas',
+  jobTitle: 'Founder & CEO',
+  image: '/team/qais-abbas.png',
+  linkedin: 'https://www.linkedin.com/in/qaisabbas/',
+}
+
+const slugify = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+export const personId = (name) => `${SITE}/about#${slugify(name)}`
+
+export function personSchema({ name, jobTitle, image, linkedin }) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    '@id': personId(name),
+    name,
+    jobTitle,
+    ...(image ? { image: `${SITE}${image}` } : {}),
+    url: `${SITE}/about`,
+    worksFor: { '@id': `${SITE}/#organization` },
+    ...(linkedin ? { sameAs: [linkedin] } : {}),
+  }
+}
+
 export function organizationSchema() {
   return {
     '@context': 'https://schema.org',
@@ -24,6 +51,8 @@ export function organizationSchema() {
     description:
       'Full-service digital marketing agency based in Islamabad, Pakistan and registered as an LLC in Montana, USA. SEO, web design, mobile apps, social media, PPC and branding.',
     email: 'info@abbasdigitalagency.com',
+    foundingDate: '2012',
+    founder: { '@type': 'Person', '@id': personId(FOUNDER.name), name: FOUNDER.name },
     address: {
       '@type': 'PostalAddress',
       streetAddress: 'H 1-A, IVY Street, Banigala',
@@ -122,6 +151,60 @@ export function localBusinessUSA() {
   }
 }
 
+// Team members a blog post can be credited to (names as typed in the admin
+// "author" field). Anyone else falls back to the Organization.
+const AUTHORS = {
+  'muhammad qais abbas': { jobTitle: 'Founder & CEO', linkedin: FOUNDER.linkedin },
+  'qais abbas': { name: FOUNDER.name, jobTitle: 'Founder & CEO', linkedin: FOUNDER.linkedin },
+  'muhammad yasin': { jobTitle: 'MERN-Stack Developer', linkedin: 'https://www.linkedin.com/in/muhammad-yasin-86b417413/' },
+  'nabeel faisal': { jobTitle: 'AI Automation Specialist', linkedin: 'https://www.linkedin.com/in/nabeel-faisal-sheikh/' },
+  'gohar abbas': { jobTitle: 'Project Manager', linkedin: 'https://www.linkedin.com/in/gohar-abbas-a95288409/' },
+  'umme farwa': { jobTitle: 'Digital Marketing Expert', linkedin: 'https://www.linkedin.com/in/umm-e-farwa-7b057928a/' },
+}
+
+function authorFor(name) {
+  const known = name && AUTHORS[name.trim().toLowerCase()]
+  if (!known) return { '@type': 'Organization', '@id': `${SITE}/#organization`, name: 'Abbas Digital Agency', url: SITE }
+  const fullName = known.name || name.trim()
+  return {
+    '@type': 'Person',
+    '@id': personId(fullName),
+    name: fullName,
+    jobTitle: known.jobTitle,
+    url: `${SITE}/about`,
+    sameAs: [known.linkedin],
+    worksFor: { '@id': `${SITE}/#organization` },
+  }
+}
+
+/* FAQPage schema from a blog post's "## Frequently Asked Questions" section.
+   Questions are **bold** lines or ### headings; the answer is the text that
+   follows. Returns null when the post has no FAQ section. */
+export function blogFaqSchema(markdown) {
+  if (!markdown) return null
+  const m = markdown.match(/^##\s+(?:Frequently Asked Questions|FAQs?)\s*$([\s\S]*?)(?=^##\s|(?![\s\S]))/im)
+  if (!m) return null
+  const plain = (t) => t
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/[*_`]+/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+  const faqs = []
+  let current = null
+  for (const line of m[1].split('\n')) {
+    const q = line.match(/^\s*(?:\*\*(.+?)\*\*|###\s+(.+?))\s*$/)
+    if (q) {
+      current = { q: plain(q[1] || q[2]), a: '' }
+      faqs.push(current)
+    } else if (current && line.trim()) {
+      current.a += ` ${line}`
+    }
+  }
+  const valid = faqs.map(f => ({ q: f.q, a: plain(f.a) })).filter(f => f.q && f.a)
+  return valid.length ? faqSchema(valid) : null
+}
+
 export function articleSchema(blog) {
   const url = `${SITE}/blog/${blog.slug}`
   const published = blog.date ? new Date(blog.date).toISOString() : undefined
@@ -135,7 +218,7 @@ export function articleSchema(blog) {
     image: blog.image ? [blog.image] : [`${SITE}/og-image.jpg`],
     datePublished: published,
     dateModified: modified,
-    author: { '@type': 'Organization', name: 'Abbas Digital Agency', url: SITE },
+    author: authorFor(blog.author),
     publisher: {
       '@type': 'Organization',
       name: 'Abbas Digital Agency',

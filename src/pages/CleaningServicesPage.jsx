@@ -314,8 +314,8 @@ export default function CleaningServicesPage() {
   return (
     <div className="min-h-screen bg-bg-dark pt-[72px]">
       <SEO
-        title="Digital Marketing for Cleaning Companies in the USA | Abbas Digital Agency"
-        description="Digital marketing for cleaning companies that fills your schedule. Local SEO, Google Ads & lead generation for cleaning businesses across the USA. Get a free marketing plan from a US-registered agency operating since 2012."
+        title="Cleaning Company Marketing USA | Abbas Digital Agency"
+        description="Local SEO, Google Ads & lead generation that fill the schedules of US cleaning companies. Get a free marketing plan from a US-registered agency, since 2012."
         keywords="digital marketing for cleaning companies, cleaning business marketing agency USA, SEO for cleaning services, Google Ads for cleaning companies, local SEO for cleaning business, lead generation for cleaning companies, commercial cleaning marketing, cleaning company website design"
         path="/cleaningservices"
         schema={pageSchema}

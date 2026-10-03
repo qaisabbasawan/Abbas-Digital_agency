@@ -41,7 +41,7 @@ export default function UsaClientsPage() {
     <div className="min-h-screen bg-bg-dark pt-[72px]">
       <SEO
         title="Digital Marketing Agency for US Clients | Abbas Digital Agency USA"
-        description="Abbas Digital Agency LLC — US-registered digital marketing, SEO, web design and app development agency serving clients across the United States. Montana-based, world-class quality."
+        description="Abbas Digital Agency LLC is a US-registered agency in Montana offering SEO, web design, digital marketing and app development to clients across the USA."
         keywords="digital marketing agency USA, SEO agency for US clients, web design company USA, affordable web development USA, offshore digital agency Montana"
         path="/usa-clients"
         schema={[

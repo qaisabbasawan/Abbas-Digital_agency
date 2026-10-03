@@ -102,7 +102,8 @@ function routeToFile(route) {
 }
 
 function buildSitemap(routes, blogs) {
-  const today = new Date().toISOString().slice(0, 10)
+  // Only blog posts have a real modification date. Stamping every static page
+  // with the build date teaches Google to ignore lastmod, so omit it there.
   const lastmodFor = (route) => {
     if (route.startsWith('/blog/')) {
       const slug = route.slice('/blog/'.length)
@@ -110,7 +111,7 @@ function buildSitemap(routes, blogs) {
       const d = b?.updatedAt || b?.date
       if (d) return new Date(d).toISOString().slice(0, 10)
     }
-    return today
+    return null
   }
   const priorityFor = (route) => {
     if (route === '/') return '1.0'
@@ -124,8 +125,8 @@ function buildSitemap(routes, blogs) {
     route === '/' || route === '/blog' ? 'weekly' : 'monthly'
 
   const urls = routes.map(route => `  <url>
-    <loc>${SITE}${route === '/' ? '/' : route}</loc>
-    <lastmod>${lastmodFor(route)}</lastmod>
+    <loc>${SITE}${route === '/' ? '/' : route}</loc>${lastmodFor(route) ? `
+    <lastmod>${lastmodFor(route)}</lastmod>` : ''}
     <changefreq>${changefreqFor(route)}</changefreq>
     <priority>${priorityFor(route)}</priority>
   </url>`).join('\n')
@@ -134,6 +135,46 @@ function buildSitemap(routes, blogs) {
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls}
 </urlset>
+`
+}
+
+/* llms.txt (https://llmstxt.org) — a plain-Markdown map of the site for AI
+   assistants and answer engines, rebuilt from the same route list each build. */
+function buildLlmsTxt(pages, blogs) {
+  const strip = (t) => (t || '').replace(/\s*\|\s*Abbas Digital Agency\s*$/, '').trim()
+  const line = (route) => {
+    const p = pages.get(route)
+    if (!p) return null
+    return `- [${strip(p.title)}](${SITE}${route === '/' ? '/' : route})${p.description ? `: ${p.description}` : ''}`
+  }
+  const section = (heading, routes) => {
+    const lines = routes.map(line).filter(Boolean)
+    return lines.length ? `## ${heading}\n\n${lines.join('\n')}\n` : ''
+  }
+  const all = [...pages.keys()]
+  const core = ['/', '/about', '/services', '/portfolio', '/contact', '/blog', '/saas-products', '/analyzer']
+  const services = all.filter(r => r.startsWith('/services/'))
+  const posts = blogs.map(b => `/blog/${b.slug}`)
+  const rest = all.filter(r => !core.includes(r) && !services.includes(r) && !posts.includes(r) &&
+    !['/privacy-policy', '/terms-and-conditions'].includes(r))
+
+  return `# Abbas Digital Agency
+
+> Full-service digital agency founded in 2012 by Muhammad Qais Abbas. Delivery team in Islamabad, Pakistan (H 1-A, IVY Street, Banigala) and a US-registered LLC in Kalispell, Montana (1001 S Main St Ste 500, Kalispell, MT 59901). Services: web development, e-commerce (Shopify/WooCommerce), mobile apps, AI chatbots & automation, SEO and digital marketing, branding and ERP systems. Clients in Pakistan, the USA, the UK and the Gulf; billing in USD.
+
+Key facts:
+- Websites typically start from around $500; marketing is on monthly retainers; apps and ERP are quoted per module. Every project starts with a free consultation and a fixed written quote.
+- Typical timelines: websites 2–4 weeks, branding 1–3 weeks, mobile apps and ERP 6–12 weeks.
+- Contact: info@abbasdigitalagency.com · Pakistan +92 300 5935125 · USA +1 (667) 766-2781 (WhatsApp)
+
+${section('Main pages', core)}
+${section('Services', services)}
+${section('Blog articles', posts)}
+${section('Locations and industries', rest)}
+## Optional
+
+- [Privacy Policy](${SITE}/privacy-policy)
+- [Terms & Conditions](${SITE}/terms-and-conditions)
 `
 }
 
@@ -171,6 +212,13 @@ async function main() {
 
   const template = fs.readFileSync(path.join(distDir, 'index.html'), 'utf8')
 
+  // Bare SPA shell (no prerendered markup) for client-only routes such as
+  // /admin — served by the Apache/LiteSpeed fallback in public/.htaccess so
+  // React renders fresh instead of hydrating mismatched homepage markup.
+  fs.writeFileSync(path.join(distDir, 'app-shell.html'),
+    template.replace('</head>', '<meta name="robots" content="noindex" /></head>'))
+
+  const pageMeta = new Map()
   let ok = 0, failed = 0
   for (const route of routes) {
     try {
@@ -178,6 +226,11 @@ async function main() {
       // React 19 renders helmet/metadata inline in the component output; lift
       // those <head> tags out of the body so crawlers see them in <head>.
       const { head, body } = extractHead(html)
+      const decode = (t) => (t || '').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#x27;|&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+      pageMeta.set(route, {
+        title: decode(head.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]),
+        description: decode(head.match(/<meta\s+name="description"\s+content="([^"]*)"/i)?.[1]),
+      })
       let page = template
       // Drop template defaults so the per-page title/description win.
       page = page.replace(/<title>[\s\S]*?<\/title>/, '')
@@ -215,9 +268,11 @@ async function main() {
   // Sitemap (only indexable content routes).
   const sitemap = buildSitemap(routes, blogs)
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemap)
+  fs.writeFileSync(path.join(distDir, 'llms.txt'), buildLlmsTxt(pageMeta, blogs))
 
   console.log(`\n✓ Prerendered ${ok} routes (${blogRoutes.length} blog posts, ${landingRoutes.length} industry landing pages), ${failed} failed.`)
   console.log(`✓ sitemap.xml written with ${routes.length} URLs.`)
+  console.log('✓ llms.txt and app-shell.html written.')
   if (failed > 0) process.exitCode = 1
 }
 

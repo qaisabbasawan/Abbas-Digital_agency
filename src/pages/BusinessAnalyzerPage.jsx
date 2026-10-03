@@ -857,8 +857,8 @@ export default function BusinessAnalyzerPage() {
   return (
     <div className="min-h-screen bg-bg-dark pt-[72px]">
       <SEO
-        title="AI Business Analyzer | Free Digital Maturity Report | Abbas Digital Agency"
-        description="Get your free digital maturity report in minutes. Our analyzer evaluates your brand, website, lead generation, automation and marketing to reveal your biggest growth opportunities."
+        title="Free AI Business Analyzer | Abbas Digital Agency"
+        description="Get a free digital maturity report in minutes. We score your brand, website, lead generation, automation and marketing, and show your biggest growth gaps."
         keywords="AI business analyzer, digital maturity report, business growth analysis, digital marketing audit Pakistan"
         path="/analyzer"
         schema={[

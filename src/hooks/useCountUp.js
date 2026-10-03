@@ -32,5 +32,7 @@ export default function useCountUp(target, duration = 2000) {
     requestAnimationFrame(animate)
   }, [triggered, target, duration])
 
-  return { count, ref }
+  // Until the count-up starts, render the real value so the prerendered HTML
+  // (what search engines and AI crawlers read) says "500+", not "0+".
+  return { count: triggered ? count : target, ref }
 }

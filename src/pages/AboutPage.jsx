@@ -9,7 +9,7 @@ import LinkedInIcon from '../components/icons/LinkedInIcon'
 import Footer from '../components/Footer'
 import useCountUp from '../hooks/useCountUp'
 import SEO from '../components/SEO'
-import { organizationSchema, breadcrumbSchema } from '../lib/schema'
+import { organizationSchema, breadcrumbSchema, personSchema, FOUNDER } from '../lib/schema'
 import RevealText from '../components/anim/RevealText'
 import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
@@ -226,6 +226,8 @@ export default function AboutPage() {
             { name: 'Home', path: '/' },
             { name: 'About', path: '/about' },
           ]),
+          personSchema(FOUNDER),
+          ...team.map(m => personSchema({ name: m.name, jobTitle: m.role, image: m.img, linkedin: m.linkedin })),
         ]}
       />
 

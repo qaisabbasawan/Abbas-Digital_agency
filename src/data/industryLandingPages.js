@@ -67,7 +67,7 @@ const RAW = [
     heroIcons: ['🔑', '📍', '💰', '✅'],
     h1: 'Digital Marketing for Real Estate Agents & Agencies That Fills Your Pipeline',
     sub: 'Local SEO, listing-driven ad campaigns, and IDX-ready websites that turn home searches into signed clients.',
-    metaTitle: 'Real Estate Digital Marketing Agency | Fill Your Listing Pipeline',
+    metaTitle: 'Real Estate Marketing Agency USA',
     metaDesc: 'Local SEO, Google Ads & IDX website design for real estate agents and agencies across the USA. Get more qualified buyer & seller leads. Free strategy session.',
     keywords: ['real estate digital marketing', 'real estate SEO', 'real estate lead generation', 'Google Ads for realtors', 'real estate agent marketing agency USA', 'real estate website design', 'listing marketing', 'IDX website SEO'],
     painPoints: [
@@ -115,7 +115,7 @@ const RAW = [
     heroIcons: ['🛒', '⭐', '📈'],
     h1: 'Amazon Marketing & Growth Agency That Scales Your Store’s Sales',
     sub: 'PPC, listing optimization, and brand-store design built to turn browsers into Buy Box sales.',
-    metaTitle: 'Amazon Marketing Agency | Amazon PPC & SEO That Scales Sales',
+    metaTitle: 'Amazon Marketing Agency: PPC & SEO',
     metaDesc: 'Amazon PPC management, listing optimization & Amazon SEO built to grow your store’s sales and lower ACoS. Get a free Amazon growth audit.',
     keywords: ['Amazon marketing agency', 'Amazon PPC management', 'Amazon SEO optimization', 'Amazon listing optimization', 'grow Amazon sales', 'Amazon store management USA'],
     painPoints: [
@@ -162,7 +162,7 @@ const RAW = [
     heroIcons: ['📐', '🔨', '🏗️'],
     h1: 'Digital Marketing for Granny Flat & ADU Builders That Books More Consultations',
     sub: 'Local SEO, Google Ads, and portfolio-driven websites that turn homeowner research into booked consultations.',
-    metaTitle: 'Granny Flat & ADU Builder Marketing Agency | Book More Consultations',
+    metaTitle: 'ADU & Granny Flat Builder Marketing',
     metaDesc: 'Local SEO, Google Ads & portfolio websites for ADU and granny flat builders across the USA. Get more qualified homeowner consultations.',
     keywords: ['granny flat builder marketing', 'ADU builder marketing', 'granny flats SEO', 'local SEO for ADU builders', 'lead generation for construction builders USA'],
     painPoints: [
@@ -210,7 +210,7 @@ const RAW = [
     heroIcons: ['🎥', '🔒', '🚨'],
     h1: 'Marketing Agency for Security Solution Companies That Drives Qualified Leads',
     sub: 'SEO, PPC, and trust-focused websites that win commercial and residential security contracts.',
-    metaTitle: 'Security Company Marketing Agency | Drive Qualified Leads',
+    metaTitle: 'Security Company Marketing Agency',
     metaDesc: 'Local & commercial SEO, PPC and trust-focused websites for security solution companies. Win more residential and B2B security contracts.',
     keywords: ['security company marketing', 'security systems SEO', 'commercial security lead generation', 'Google Ads for security companies', 'security business website design USA'],
     painPoints: [
@@ -257,7 +257,7 @@ const RAW = [
     heroIcons: ['⚡', '🔋'],
     h1: 'Solar Company Marketing Agency That Fills Your Installation Calendar',
     sub: 'SEO, solar-specific PPC, and quote-request funnels built to fill your installation calendar.',
-    metaTitle: 'Solar Company Marketing Agency | Fill Your Installation Calendar',
+    metaTitle: 'Solar Company Marketing Agency USA',
     metaDesc: 'Solar SEO, PPC and quote-request funnels built for solar installers across the USA. Get more exclusive, qualified solar leads.',
     keywords: ['solar company marketing', 'solar SEO', 'solar lead generation', 'Google Ads for solar companies', 'solar panel installer marketing USA', 'solar digital marketing agency'],
     painPoints: [
@@ -306,7 +306,7 @@ const RAW = [
     h1SplitOn: ' — ',
     badge: 'For US Digital Agency Owners',
     sub: 'Confidential SEO, PPC, and web fulfillment for agencies who need to scale delivery without adding headcount.',
-    metaTitle: 'Whitelabel Fulfillment Partner for Digital Agencies | NDA-Secured',
+    metaTitle: 'White-Label Agency Fulfillment (NDA)',
     metaDesc: 'Confidential whitelabel SEO, PPC & web development fulfillment for agencies. Scale delivery without hiring. Strict NDA, zero client contact.',
     keywords: ['whitelabel digital marketing agency', 'whitelabel SEO fulfillment', 'whitelabel PPC management', 'NDA whitelabel partner', 'agency fulfillment partner USA'],
     painPoints: [
@@ -353,7 +353,7 @@ const RAW = [
     heroIcons: ['🏠', '🔧', '⛈️'],
     h1: 'Roofing Company Marketing That Keeps Your Crews Booked Year-Round',
     sub: 'Local SEO, Local Services Ads, and review generation built to keep your crews booked in every season.',
-    metaTitle: 'Roofing Company Marketing Agency | Keep Crews Booked Year-Round',
+    metaTitle: 'Roofing Company Marketing Agency',
     metaDesc: 'Local SEO, storm campaigns & Google Local Services Ads for roofing contractors across the USA. Get more estimate requests, year-round.',
     keywords: ['roofing company marketing', 'roofing SEO', 'roofing lead generation', 'Google Ads for roofers', 'roofing contractor marketing agency USA'],
     painPoints: [
@@ -401,7 +401,7 @@ const RAW = [
     h1: 'Construction Company Marketing That Wins More Bids and Builds a Full Pipeline',
     h1SplitOn: ' That ',
     sub: 'SEO, portfolio websites, and RFQ funnels built to bring qualified bids to general and specialty contractors.',
-    metaTitle: 'Construction Company Marketing Agency | Win More Bids',
+    metaTitle: 'Construction Company Marketing',
     metaDesc: 'Local & commercial SEO, portfolio websites and RFQ funnels for general contractors and construction companies across the USA.',
     keywords: ['construction company marketing', 'construction SEO', 'general contractor marketing agency', 'lead generation for construction companies USA', 'construction website design'],
     painPoints: [
@@ -448,7 +448,7 @@ const RAW = [
     heroIcons: ['📄', '💼', '🖋️'],
     h1: 'Marketing for Law Firms & Tax Practices That Brings in High-Value Clients',
     sub: 'Compliant SEO, PPC, and consultation-booking funnels built to bring high-value clients to your practice.',
-    metaTitle: 'Law Firm & Tax Practice Marketing Agency | High-Value Clients',
+    metaTitle: 'Law Firm & Tax Practice Marketing',
     metaDesc: 'Compliant SEO, Google Ads and consultation-booking funnels for law firms and tax practices across the USA. Fill your calendar with real cases.',
     keywords: ['law firm marketing agency', 'tax firm marketing', 'attorney SEO', 'Google Ads for lawyers', 'legal marketing agency USA', 'CPA marketing agency'],
     painPoints: [
@@ -495,7 +495,7 @@ const RAW = [
     heroIcons: ['💰', '🏦', '📊'],
     h1: 'Marketing for Financial Services Companies That Builds Trust and Drives Qualified Leads',
     sub: 'Compliant SEO, LinkedIn and Google Ads, and trust-building websites that turn cold traffic into qualified consultations.',
-    metaTitle: 'Financial Services Marketing Agency | Trust-Building Lead Generation',
+    metaTitle: 'Financial Services Marketing Agency',
     metaDesc: 'Compliant SEO, Google & LinkedIn Ads and trust-focused websites for financial advisors and fintech companies across the USA.',
     keywords: ['financial services marketing', 'finance company SEO', 'Google Ads for financial advisors', 'fintech marketing agency USA', 'wealth management lead generation'],
     painPoints: [
@@ -542,8 +542,8 @@ const RAW = [
     heroIcons: ['✈️', '🌍', '📄', '✅'],
     h1: 'Marketing for Immigration Consultants & Law Firms That Fills Your Client Calendar',
     sub: 'Multilingual SEO, case-type funnels, and WhatsApp lead capture built to fill your consultation calendar.',
-    metaTitle: 'Immigration Consultant & Law Firm Marketing Agency | Fill Your Calendar',
-    metaDesc: 'Multilingual SEO, Google Ads and consultation funnels for immigration consultants and law firms across the USA.',
+    metaTitle: 'Immigration Law Firm Marketing',
+    metaDesc: 'Multilingual SEO, Google Ads and consultation-booking funnels for immigration consultants and law firms across the USA. Get a free strategy session.',
     keywords: ['immigration consultant marketing', 'immigration law firm SEO', 'Google Ads for immigration lawyers', 'visa consultancy marketing agency USA'],
     painPoints: [
       { title: 'Multilingual Audience Challenges', desc: 'Your clients search in multiple languages, but your marketing only speaks one.' },
@@ -589,7 +589,7 @@ const RAW = [
     heroIcons: ['🧾', '🍔', '⭐'],
     h1: 'Marketing & Custom POS Solutions for Restaurants That Drive More Orders',
     sub: 'Local marketing and a custom POS system built to drive direct orders and cut delivery-app commissions.',
-    metaTitle: 'Restaurant Marketing Agency & Custom POS Systems | Drive More Orders',
+    metaTitle: 'Restaurant Marketing & POS Systems',
     metaDesc: 'Local SEO, social marketing and custom POS + online ordering systems for restaurants and fast food brands across the USA.',
     keywords: ['restaurant marketing agency', 'restaurant SEO', 'fast food digital marketing', 'Google Ads for restaurants', 'restaurant POS system', 'online ordering marketing USA'],
     painPoints: [
@@ -646,8 +646,8 @@ const RAW = [
     heroIcons: ['❤️', '💊', '🩺'],
     h1: 'Digital Marketing for Hospitals & Clinics That Builds Patient Trust and Fills Appointments',
     sub: 'HIPAA-compliant SEO, Google Ads, and appointment funnels built to earn patient trust and fill your calendar.',
-    metaTitle: 'Healthcare Marketing Agency for Hospitals & Clinics | Fill Appointments',
-    metaDesc: 'HIPAA-compliant SEO, Google Ads and appointment-booking funnels for hospitals and clinics across the USA.',
+    metaTitle: 'Hospital & Clinic Marketing Agency',
+    metaDesc: 'HIPAA-compliant SEO, Google Ads and appointment-booking funnels for hospitals and clinics across the USA. Fill your schedule with new patients. Free audit.',
     keywords: ['healthcare digital marketing', 'hospital SEO', 'clinic marketing agency', 'Google Ads for clinics', 'patient acquisition marketing USA', 'medical practice SEO'],
     painPoints: [
       { title: 'Strict HIPAA/Compliance Constraints', desc: 'Most agencies don’t understand healthcare advertising rules, putting your practice at risk.' },
@@ -693,8 +693,8 @@ const RAW = [
     heroIcons: ['📚', '✏️', '🏆'],
     h1: 'Marketing & Technology Solutions for Schools That Boost Enrollment',
     sub: 'Enrollment marketing and a custom LMS + school management platform built to fill seats and cut admin work.',
-    metaTitle: 'School Marketing Agency & LMS Software | Boost Enrollment',
-    metaDesc: 'Enrollment marketing, admissions websites and custom LMS & school management software for schools across the USA.',
+    metaTitle: 'School Marketing Agency & LMS',
+    metaDesc: 'Enrollment marketing, admissions websites and custom LMS & school management software for private schools across the USA. Book a free strategy call.',
     keywords: ['school marketing agency', 'school enrollment marketing', 'LMS software for schools', 'school management system', 'education marketing USA', 'private school SEO'],
     painPoints: [
       { title: 'Declining/Competitive Enrollment', desc: 'Families compare more schools than ever, and a weak digital presence loses them early.' },
@@ -751,8 +751,8 @@ const RAW = [
     heroIcons: ['🔧', '⚡', '🚿', '🔨'],
     h1: 'Digital Marketing for Home Service Businesses That Keeps Your Calendar Booked Solid',
     sub: 'Local SEO, Google Ads, and conversion-ready websites built to turn "near me" searches into booked jobs — for HVAC, plumbing, electrical, roofing, landscaping and every home service trade.',
-    metaTitle: 'Home Service Business Marketing Agency | Keep Your Calendar Booked Solid',
-    metaDesc: 'Local SEO, Google Ads & lead generation for home service businesses — HVAC, plumbing, electrical, roofing, landscaping & more — across the USA. Get a free marketing plan.',
+    metaTitle: 'Home Services Marketing Agency USA',
+    metaDesc: 'Local SEO, Google Ads & lead generation for US home service businesses — HVAC, plumbing, electrical, roofing and landscaping. Get a free marketing plan.',
     keywords: ['home service business marketing', 'home services SEO', 'lead generation for home service businesses', 'Google Ads for home services', 'HVAC plumbing electrical marketing agency USA', 'local SEO for contractors', 'home service company website design'],
     painPoints: [
       { title: 'Feast-or-Famine Job Volume', desc: 'Some weeks your techs are slammed, others your schedule is wide open. Without lead gen that runs 24/7, revenue swings instead of growing.' },

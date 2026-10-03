@@ -360,6 +360,27 @@ function StatChip({ value, label, color, i }) {
 /* ──────────────────────────────────────────
    Page component
 ────────────────────────────────────────── */
+/* Meta description from the service intro, trimmed to ~155 chars on a word
+   boundary so it isn't cut off in search results. */
+function metaDescription(desc) {
+  const suffix = ' Free consultation.'
+  if (desc.length + suffix.length <= 158) return desc + suffix
+  if (desc.length <= 158) return desc
+  return desc.slice(0, 155).replace(/[\s,—–-]+\S*$/, '') + '…'
+}
+
+/* Plain-language "What is X?" answers — the definition pattern answer engines
+   lift for featured snippets and AI Overviews. */
+const DEFINITIONS = {
+  'web-development': { q: 'What is web development?', a: 'Web development is the design and build of websites and web applications — the code, content management system, hosting and integrations behind them. A well-built business site loads fast, works on every device, is structured for search engines and turns visitors into enquiries or sales.' },
+  'ecommerce': { q: 'What is e-commerce development?', a: 'E-commerce development is building an online store where customers browse products, pay and track orders. It covers the platform (Shopify, WooCommerce or Amazon), product catalogue, checkout, payment gateways, shipping rules and the marketing that brings buyers to the store.' },
+  'mobile-apps': { q: 'What is mobile app development?', a: 'Mobile app development is the process of designing, building, testing and publishing applications for iOS and Android phones. Apps can be native (Swift, Kotlin) or cross-platform (React Native, Flutter), and usually connect to a backend that stores users, content and payments.' },
+  'ai-chatbots': { q: 'What is an AI chatbot?', a: 'An AI chatbot is software that understands customer messages in natural language and replies automatically — on WhatsApp, Facebook Messenger or a website. Business chatbots answer FAQs, qualify leads, take orders and hand complex conversations to a human, 24/7.' },
+  'digital-marketing': { q: 'What is digital marketing?', a: 'Digital marketing is promoting a business through online channels — search engine optimisation (SEO), Google and Meta ads, social media, email and content. Unlike traditional advertising, every click, lead and sale can be tracked, so budgets move to whatever delivers the best return.' },
+  'branding-design': { q: 'What is branding?', a: 'Branding is the visual and verbal identity that makes a business recognisable: logo, colour palette, typography, tone of voice and how these are applied across a website, social media and print. Consistent branding builds trust and lets a business charge for perceived quality.' },
+  'erp-solutions': { q: 'What is ERP software?', a: 'ERP (Enterprise Resource Planning) software connects a company’s core operations — inventory, sales, purchasing, accounting, HR and reporting — in one system with a single database. It replaces disconnected spreadsheets so managers see real-time figures and teams stop re-entering the same data.' },
+}
+
 export default function ServiceDetailPage() {
   const { slug } = useParams()
   const svc = services[slug]
@@ -371,18 +392,19 @@ export default function ServiceDetailPage() {
 
   // Per-service FAQ — pricing / timeline / deliverables (the exact gaps the
   // audit flagged). Service-specific overrides win; otherwise sensible defaults.
-  const faqs = svcFaqsOverride || [
+  const baseFaqs = svcFaqsOverride || [
     { q: `How much does ${lower} cost?`, a: `${title} projects are priced to scope after a free consultation — you get a fixed written quote before any work starts, with no hidden fees. Most engagements start in the low hundreds to low thousands of dollars depending on complexity.` },
     { q: `How long does ${lower} take?`, a: `Timelines depend on scope, but a typical ${lower} project runs from a couple of weeks to a few months. We agree clear milestones up front and give you weekly progress updates.` },
     { q: `What do I get with your ${lower} service?`, a: `${desc}` },
     { q: `Do you work with clients outside Pakistan?`, a: `Yes. As a US-registered LLC in Montana with a delivery team in Islamabad, we work with clients across the USA, UK, Middle East and beyond, billing in USD.` },
   ]
+  const faqs = DEFINITIONS[slug] ? [DEFINITIONS[slug], ...baseFaqs] : baseFaqs
 
   return (
     <div className="min-h-screen bg-bg-dark overflow-hidden">
       <SEO
         title={`${title} in Pakistan | Abbas Digital Agency`}
-        description={`${tagline} — Abbas Digital Agency delivers professional ${title.toLowerCase()} services for businesses in Pakistan & USA. US-registered. Free consultation.`}
+        description={metaDescription(desc)}
         keywords={`${title.toLowerCase()} Pakistan, ${title.toLowerCase()} Islamabad, Abbas Digital Agency, digital marketing Pakistan`}
         path={`/services/${slug}`}
         schema={[
@@ -424,7 +446,7 @@ export default function ServiceDetailPage() {
             {/* tagline — one <h1> for SEO; an sr-only phrase carries the full
                 keyword line while the animated lines stay the visible headline. */}
             <h1 className="mb-7" style={{ perspective: 900 }}>
-              <span className="sr-only">{`${title} — ${tagline.join(' ')}`}</span>
+              <span className="sr-only">{`${title} — `}</span>
               {tagline.map((line, i) => (
                 <span key={line} aria-hidden className="block overflow-hidden pb-[0.08em] -mb-[0.08em]">
                   <motion.span
