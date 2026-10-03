@@ -74,6 +74,14 @@ export function organizationSchema() {
         '@type': 'ContactPoint',
         contactType: 'customer service',
         email: 'info@abbasdigitalagency.com',
+        telephone: '+1-843-733-0701',
+        availableLanguage: ['English'],
+        areaServed: ['US'],
+      },
+      {
+        '@type': 'ContactPoint',
+        contactType: 'sales',
+        description: 'WhatsApp',
         telephone: '+1-667-766-2781',
         availableLanguage: ['English'],
         areaServed: ['US'],
@@ -129,7 +137,7 @@ export function localBusinessUSA() {
     image: `${SITE}/og-image.jpg`,
     description:
       'US-registered digital marketing agency in Kalispell, Montana — SEO, web design and digital marketing for businesses across Montana and the United States.',
-    telephone: '+1-667-766-2781',
+    telephone: '+1-843-733-0701',
     email: 'info@abbasdigitalagency.com',
     priceRange: '$$',
     address: {

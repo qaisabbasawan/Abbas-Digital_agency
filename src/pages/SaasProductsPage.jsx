@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import {
-  FileText, Download, Leaf, ArrowUpRight, CheckCircle2, Sparkles, Rocket,
+  FileText, Leaf, ArrowUpRight, CheckCircle2, Sparkles, Rocket,
 } from 'lucide-react'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
@@ -22,18 +22,6 @@ const products = [
     stat: '100% Free',
     from: '#1A3BBF',
     to: '#2E55E0',
-  },
-  {
-    name: 'DownloadMyVideo',
-    url: 'https://downloadmyvideo.com/',
-    Icon: Download,
-    category: 'Media Tool',
-    tagline: 'Download videos from 1,000+ platforms',
-    desc: 'A fast, privacy-first video downloader supporting YouTube, TikTok, Instagram, Facebook and more — up to 4K quality, with no watermark, signup or tracking.',
-    features: ['Up to 4K video & MP3 audio', '1,000+ supported platforms', 'No signup, no watermark, no tracking'],
-    stat: '90M+ Downloads',
-    from: '#7C1D6F',
-    to: '#E8155A',
   },
   {
     name: 'AI Plant Doctor',
@@ -61,8 +49,8 @@ export default function SaasProductsPage() {
     <div className="min-h-screen bg-bg-dark pt-[72px]">
       <SEO
         title="SaaS Products | Abbas Digital Agency"
-        description="Explore SaaS products built by Abbas Digital Agency — CV Maker Free, DownloadMyVideo and AI Plant Doctor. Try each product live."
-        keywords="Abbas Digital Agency SaaS products, CV Maker Free, DownloadMyVideo, AI Plant Doctor"
+        description="SaaS products built by Abbas Digital Agency — CV Maker Free, a free résumé builder, and AI Plant Doctor, an AI plant-disease diagnosis app. Try them live."
+        keywords="Abbas Digital Agency SaaS products, CV Maker Free, AI Plant Doctor"
         path="/saas-products"
         schema={[
           breadcrumbSchema([

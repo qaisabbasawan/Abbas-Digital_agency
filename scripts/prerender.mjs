@@ -165,7 +165,7 @@ function buildLlmsTxt(pages, blogs) {
 Key facts:
 - Websites typically start from around $500; marketing is on monthly retainers; apps and ERP are quoted per module. Every project starts with a free consultation and a fixed written quote.
 - Typical timelines: websites 2–4 weeks, branding 1–3 weeks, mobile apps and ERP 6–12 weeks.
-- Contact: info@abbasdigitalagency.com · Pakistan +92 300 5935125 · USA +1 (667) 766-2781 (WhatsApp)
+- Contact: info@abbasdigitalagency.com · Pakistan +92 300 5935125 · USA +1 (843) 733-0701 (phone) and +1 (667) 766-2781 (WhatsApp)
 
 ${section('Main pages', core)}
 ${section('Services', services)}
