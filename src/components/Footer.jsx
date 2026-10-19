@@ -83,7 +83,7 @@ function WhatsAppGlyph(props) {
 
 export default function Footer() {
   return (
-    <footer className="bg-bg-dark border-t border-white/[0.06]">
+    <footer className="bg-bg-dark border-t border-white/6">
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
 
         {/* Main grid */}
@@ -103,7 +103,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="w-9 h-9 rounded-lg bg-white/[0.04] border border-white/[0.07] flex items-center justify-center text-white/40 hover:text-white hover:border-white/25 hover:bg-white/[0.08] transition-all duration-200"
+                  className="w-9 h-9 rounded-lg bg-white/4 border border-white/[0.07] flex items-center justify-center text-white/40 hover:text-white hover:border-white/25 hover:bg-white/8 transition-all duration-200"
                 >
                   {svg}
                 </a>
@@ -184,7 +184,7 @@ export default function Footer() {
       </div>
 
       {/* Auto-scrolling SEO link bars */}
-      <div className="border-y border-white/[0.06] divide-y divide-white/[0.06]">
+      <div className="border-y border-white/6 divide-y divide-white/6">
         <FooterLinkMarquee label="Our Services" items={SERVICE_LINKS} direction="right" />
         <FooterLinkMarquee label="Industries We Serve" items={LANDING_PAGE_LINKS} direction="left" />
         <FooterLinkMarquee label="We Serve" items={US_LOCATION_LINKS} direction="right" />

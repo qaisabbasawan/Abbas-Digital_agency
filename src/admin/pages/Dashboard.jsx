@@ -179,8 +179,8 @@ export default function Dashboard() {
         ) : (
           <div className="space-y-1">
             {recentLeads.map(lead => (
-              <div key={lead.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/[0.03] transition-colors">
-                <div className="w-8 h-8 rounded-lg bg-white/[0.06] flex items-center justify-center text-[11px] font-bold text-white/60 shrink-0">
+              <div key={lead.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/3 transition-colors">
+                <div className="w-8 h-8 rounded-lg bg-white/6 flex items-center justify-center text-[11px] font-bold text-white/60 shrink-0">
                   {lead.name.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -208,7 +208,7 @@ export default function Dashboard() {
           </div>
           <div className="space-y-2">
             {blogs.slice(0,4).map(b => (
-              <div key={b.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/[0.03] transition-colors">
+              <div key={b.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/3 transition-colors">
                 <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full shrink-0 ${b.status === 'published' ? 'bg-green-500/15 text-green-400' : 'bg-amber-500/15 text-amber-400'}`}>
                   {b.status}
                 </span>

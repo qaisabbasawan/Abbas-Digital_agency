@@ -90,7 +90,7 @@ function CTAButtons({ className = '', waLink = WA_LINK_PK }) {
         href={waLink}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-white/25 text-white font-semibold text-sm hover:border-white/50 hover:bg-white/[0.05] transition-all"
+        className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-white/25 text-white font-semibold text-sm hover:border-white/50 hover:bg-white/5 transition-all"
       >
         <MessageCircle size={15} />
         WhatsApp Us
@@ -165,7 +165,7 @@ function HeroSection({ hero, waLink }) {
             <motion.div
               key={s.label}
               variants={fadeUp}
-              className="bg-white/[0.03] border border-white/[0.07] rounded-xl p-5 text-center"
+              className="bg-white/3 border border-white/[0.07] rounded-xl p-5 text-center"
             >
               <p className="gradient-text font-heading text-3xl font-bold">{s.value}</p>
               <p className="text-white/45 text-[12px] mt-1">{s.label}</p>
@@ -187,7 +187,7 @@ function TrustBar() {
   ]
 
   return (
-    <section className="bg-bg-dark2 border-y border-white/[0.06] py-5">
+    <section className="bg-bg-dark2 border-y border-white/6 py-5">
       <div className="max-w-6xl mx-auto px-5 sm:px-8 lg:px-12">
         <div className="flex flex-wrap justify-center gap-x-8 gap-y-3">
           {badges.map(({ Icon, text }) => (
@@ -233,7 +233,7 @@ function ServicesSection() {
             <motion.div
               key={title}
               variants={fadeUp}
-              className="group bg-white/[0.03] border border-white/[0.07] rounded-xl p-6 hover:border-white/20 hover:bg-white/[0.06] transition-all duration-300"
+              className="group bg-white/3 border border-white/[0.07] rounded-xl p-6 hover:border-white/20 hover:bg-white/6 transition-all duration-300"
             >
               <div
                 className="w-10 h-10 rounded-lg flex items-center justify-center mb-4"
@@ -297,7 +297,7 @@ function WhySection({ waLink }) {
               <motion.div
                 key={label}
                 variants={fadeUp}
-                className="bg-white/[0.03] border border-white/[0.07] rounded-xl p-6"
+                className="bg-white/3 border border-white/[0.07] rounded-xl p-6"
               >
                 <div className="mb-3">{icon}</div>
                 <p className="font-heading text-2xl font-bold gradient-text">{value}</p>
@@ -339,7 +339,7 @@ function ProcessSection() {
             <motion.div
               key={step}
               variants={fadeUp}
-              className="relative bg-white/[0.03] border border-white/[0.07] rounded-xl p-6"
+              className="relative bg-white/3 border border-white/[0.07] rounded-xl p-6"
             >
               <p className="gradient-text font-heading text-4xl font-bold mb-4">{step}</p>
               <h3 className="font-heading font-semibold text-lg mb-2">{title}</h3>
@@ -383,7 +383,7 @@ function IndustriesSection() {
             <motion.span
               key={industry}
               variants={fadeUp}
-              className="px-4 py-2 rounded-full border border-white/[0.10] bg-white/[0.03] text-white/60 text-[13px] hover:border-brand-pink/40 hover:text-white hover:bg-brand-pink/[0.07] transition-all duration-200 cursor-default"
+              className="px-4 py-2 rounded-full border border-white/10 bg-white/3 text-white/60 text-[13px] hover:border-brand-pink/40 hover:text-white hover:bg-brand-pink/[0.07] transition-all duration-200 cursor-default"
             >
               {industry}
             </motion.span>
@@ -480,7 +480,7 @@ function FinalCTA({ waLink }) {
           whileInView="visible"
           viewport={{ once: true, margin: '-80px' }}
           variants={stagger}
-          className="bg-gradient-to-br from-brand-blue/20 via-transparent to-brand-pink/20 border border-white/[0.08] rounded-2xl px-8 py-14"
+          className="bg-linear-to-br from-brand-blue/20 via-transparent to-brand-pink/20 border border-white/8 rounded-2xl px-8 py-14"
         >
           <motion.div variants={fadeUp}><SectionLabel>Get Started Today</SectionLabel></motion.div>
           <motion.h2 variants={fadeUp} className="font-heading text-3xl sm:text-4xl font-bold mb-4">
@@ -502,7 +502,7 @@ function FinalCTA({ waLink }) {
               href={waLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg border border-white/25 text-white font-semibold hover:border-white/50 hover:bg-white/[0.05] transition-all"
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg border border-white/25 text-white font-semibold hover:border-white/50 hover:bg-white/5 transition-all"
             >
               <MessageCircle size={16} />
               WhatsApp Us Now
@@ -540,7 +540,7 @@ function LocalAreaSection({ localContent, map }) {
           {map && (
             <motion.div
               initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }} variants={fadeUp}
-              className="rounded-2xl overflow-hidden border border-white/[0.08] min-h-[320px] h-full"
+              className="rounded-2xl overflow-hidden border border-white/8 min-h-[320px] h-full"
             >
               <iframe
                 title={`${localContent?.heading || 'Location'} map`}

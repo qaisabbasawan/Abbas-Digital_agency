@@ -79,7 +79,7 @@ function RelatedCard({ blog, i }) {
                   <BookOpen size={28} style={{ color: `${color}70` }} strokeWidth={1.5} />
                 </div>
             }
-            <div className="absolute inset-0 bg-gradient-to-t from-bg-dark/45 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-bg-dark/45 to-transparent" />
           </div>
           <div className="p-4 flex flex-col flex-1">
             <span className="self-start text-[9.5px] font-semibold px-2 py-0.5 rounded-full mb-2.5"
@@ -190,7 +190,7 @@ export default function BlogDetailPage() {
             <div className="w-full h-full" style={{ background: `radial-gradient(ellipse 80% 90% at 50% 10%, ${color}30, transparent 70%)` }} />
           )}
           {/* readability gradients */}
-          <div className="absolute inset-0 bg-gradient-to-t from-bg-dark via-bg-dark/55 to-bg-dark/20" />
+          <div className="absolute inset-0 bg-linear-to-t from-bg-dark via-bg-dark/55 to-bg-dark/20" />
           <div className="absolute inset-0 opacity-50 pointer-events-none"
             style={{ background: `radial-gradient(ellipse 60% 50% at 50% 100%, ${color}1E, transparent 70%)` }} />
 
@@ -217,7 +217,7 @@ export default function BlogDetailPage() {
                 )}
               </motion.div>
 
-              <div className="overflow-hidden pb-[0.1em] -mb-[0.1em]" style={{ perspective: 900 }}>
+              <div className="overflow-hidden pb-[0.1em] mb-[-0.1em]" style={{ perspective: 900 }}>
                 <motion.h1
                   initial={{ y: '105%', rotateX: -55, opacity: 0 }}
                   animate={{ y: 0, rotateX: 0, opacity: 1 }}

@@ -676,7 +676,7 @@ function ErpSignature({ color }) {
         <motion.div
           initial={{ opacity: 0, x: -16, y: 10 }} whileInView={{ opacity: 1, x: 0, y: 0 }}
           viewport={{ once: true }} transition={{ delay: 0.5, duration: 0.6 }}
-          className="absolute z-[60]" style={{ left: -6, top: -6 }}
+          className="absolute z-60" style={{ left: -6, top: -6 }}
         >
           <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
             className="w-[150px] rounded-xl p-3" style={glass(color)}>
@@ -705,7 +705,7 @@ function ErpSignature({ color }) {
         <motion.div
           initial={{ opacity: 0, x: 16, y: -10 }} whileInView={{ opacity: 1, x: 0, y: 0 }}
           viewport={{ once: true }} transition={{ delay: 0.7, duration: 0.6 }}
-          className="absolute z-[60]" style={{ right: -6, bottom: 4 }}
+          className="absolute z-60" style={{ right: -6, bottom: 4 }}
         >
           <motion.div animate={{ y: [0, 6, 0] }} transition={{ duration: 5.6, repeat: Infinity, ease: 'easeInOut' }}
             className="w-[176px] rounded-xl p-3 flex items-center gap-2.5" style={glass('#EF4444')}>
@@ -729,7 +729,7 @@ function ErpSignature({ color }) {
         <motion.div
           initial={{ opacity: 0, x: 16, y: 10 }} whileInView={{ opacity: 1, x: 0, y: 0 }}
           viewport={{ once: true }} transition={{ delay: 0.9, duration: 0.6 }}
-          className="absolute z-[60]" style={{ right: -10, top: -2 }}
+          className="absolute z-60" style={{ right: -10, top: -2 }}
         >
           <motion.div animate={{ y: [0, -5, 0] }} transition={{ duration: 4.6, repeat: Infinity, ease: 'easeInOut' }}
             className="w-[168px] rounded-xl p-3" style={glass(color)}>

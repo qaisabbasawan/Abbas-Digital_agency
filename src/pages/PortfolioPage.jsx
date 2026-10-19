@@ -5,110 +5,10 @@ import { ArrowUpRight } from 'lucide-react'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
 import { breadcrumbSchema } from '../lib/schema'
+import { clientSites } from '../data/clientSites'
 import RevealText from '../components/anim/RevealText'
 import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
-
-// Live homepage snapshot of a client site, rendered by WordPress.com's mShots service
-const snap = domain =>
-  `https://s.wordpress.com/mshots/v1/${encodeURIComponent(`https://${domain}/`)}?w=1200&h=750`
-
-const clientSites = [
-  {
-    id: 13,
-    title: 'Chai Karak',
-    domain: 'mychaikarak.com',
-    cat: 'E-Commerce',
-    metric: '8 Flavours',
-    desc: 'Online store for a Birmingham brand of instant 3-in-1 chai premixes — Karak, Masala, Kashmiri Pink and more, sweetened or unsweetened, delivered across the UK.',
-    tags: ['E-Commerce', 'Food & Beverage', 'UK Delivery'],
-    from: '#7C2D12',
-    to: '#D97706',
-  },
-  {
-    id: 14,
-    title: 'JinWheels',
-    domain: 'jinwheels.com',
-    cat: 'Web',
-    metric: '200+ Point Checks',
-    desc: 'Car services website for an Islamabad team offering rentals with or without driver, airport transfers, car buying and selling, and inspections across Pakistan.',
-    tags: ['Car Rental', 'Automotive', 'Pakistan'],
-    from: '#9F1239',
-    to: '#E8155A',
-  },
-  {
-    id: 15,
-    title: 'Swiss Elite Transfers',
-    domain: 'swisselitetransfers.com',
-    cat: 'Web',
-    metric: '24/7 Chauffeur',
-    desc: 'Luxury chauffeur website for a Geneva company — fixed-price airport transfers from GVA, ZRH and BSL, ski resort transfers and executive travel across Switzerland, France and Italy.',
-    tags: ['Chauffeur', 'Airport Transfers', 'Switzerland'],
-    from: '#7F1D1D',
-    to: '#DC2626',
-  },
-  {
-    id: 16,
-    title: 'Granny Flats Ireland',
-    domain: 'grannyflats.ie',
-    cat: 'Web',
-    metric: 'Turnkey Builds',
-    desc: 'Website for a Dublin builder of fully finished granny flats and garden apartments — from design and ICF construction to fitted kitchens, bathrooms and final finishes.',
-    tags: ['Construction', 'Lead Generation', 'Dublin'],
-    from: '#065F46',
-    to: '#059669',
-  },
-  {
-    id: 17,
-    title: 'Home Bridge',
-    domain: 'homebridge.id',
-    cat: 'Web',
-    metric: 'Verified Staff',
-    desc: 'Recruitment website connecting Bali employers with verified Indonesian staff — covering sourcing, verification, placement and ongoing support.',
-    tags: ['Recruitment', 'Staffing', 'Bali'],
-    from: '#1A3BBF',
-    to: '#2E55E0',
-  },
-  {
-    id: 18,
-    title: 'KEYANA Botanicals',
-    domain: 'keyanabotanicals.com',
-    cat: 'E-Commerce',
-    metric: 'Cold-Pressed',
-    desc: 'Brand store for a premium cold-pressed candlenut hair oil made with Indonesian botanicals to strengthen, restore and nourish hair from root to tip.',
-    tags: ['Hair Care', 'Beauty', 'Product Brand'],
-    from: '#3F6212',
-    to: '#84CC16',
-  },
-  {
-    id: 19,
-    title: 'Skybridge Communication',
-    domain: 'skybridgecommunication.com',
-    cat: 'Web',
-    metric: 'BPO Services',
-    desc: 'Corporate website for a business process outsourcing company providing lead generation, sales and customer support for auto insurance, medical billing, home security and more.',
-    tags: ['BPO', 'Lead Generation', 'Customer Support'],
-    from: '#0C4A6E',
-    to: '#0891B2',
-  },
-  {
-    id: 20,
-    title: 'Ride Growth',
-    domain: 'ridegrowth.com',
-    cat: 'Web',
-    metric: 'Worldwide',
-    desc: 'SaaS website for booking software, websites, apps and marketing built only for transfer and taxi businesses — in any country and any currency.',
-    tags: ['SaaS', 'Taxi & Transfers', 'Booking Software'],
-    from: '#4C1D95',
-    to: '#A855F7',
-  },
-].map(site => ({
-  ...site,
-  client: site.domain,
-  yr: 'Live',
-  url: `https://${site.domain}/`,
-  img: snap(site.domain),
-}))
 
 const caseStudies = [
   {
@@ -317,7 +217,7 @@ export default function PortfolioPage() {
       />
 
       {/* Page hero */}
-      <section className="relative py-20 lg:py-28 border-b border-white/[0.06] overflow-hidden">
+      <section className="relative py-20 lg:py-28 border-b border-white/6 overflow-hidden">
         {/* dot grid + aurora */}
         <div
           className="absolute inset-0 pointer-events-none"
@@ -329,7 +229,7 @@ export default function PortfolioPage() {
           }}
         />
         <div className="absolute -top-24 right-0 w-[460px] h-[460px] bg-brand-pink/[0.07] rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-0 left-1/4 w-[380px] h-[380px] bg-brand-blue/[0.08] rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-[380px] h-[380px] bg-brand-blue/8 rounded-full blur-[120px] pointer-events-none" />
 
         {/* ghost watermark */}
         <span
@@ -348,7 +248,7 @@ export default function PortfolioPage() {
           <motion.p {...fade(0)} className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-5">
             Our Portfolio
           </motion.p>
-          <h1 className="font-bold leading-[1.0] mb-6" style={{ fontSize: 'clamp(3rem, 7vw, 6rem)' }}>
+          <h1 className="font-bold leading-none mb-6" style={{ fontSize: 'clamp(3rem, 7vw, 6rem)' }}>
             <RevealText as="span" className="text-white inline-block" stagger={0.09}>
               Selected
             </RevealText>{' '}
@@ -453,7 +353,7 @@ export default function PortfolioPage() {
                           className="absolute inset-0 mix-blend-soft-light pointer-events-none"
                           style={{ background: `linear-gradient(135deg, ${p.from}66, transparent 60%)` }}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#0A1130] via-black/15 to-black/10 pointer-events-none" />
+                        <div className="absolute inset-0 bg-linear-to-t from-[#0A1130] via-black/15 to-black/10 pointer-events-none" />
 
                         {/* Category chip */}
                         <div
@@ -533,7 +433,7 @@ export default function PortfolioPage() {
       </section>
 
       {/* CTA section */}
-      <section className="py-24 bg-bg-dark2 border-t border-white/[0.06]">
+      <section className="py-24 bg-bg-dark2 border-t border-white/6">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 text-center">
           <motion.p
             {...fade(0)}

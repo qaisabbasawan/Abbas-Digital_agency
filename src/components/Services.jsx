@@ -193,7 +193,7 @@ export default function Services() {
     <section id="services" ref={sectionRef} className="relative bg-bg-dark overflow-hidden">
       {/* Ambient glows */}
       <div className="absolute top-1/4 left-0 w-[480px] h-[480px] bg-brand-blue/[0.07] rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-[420px] h-[420px] bg-brand-pink/[0.05] rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[420px] h-[420px] bg-brand-pink/5 rounded-full blur-[120px] pointer-events-none" />
 
       <div
         ref={trackRef}
@@ -273,10 +273,10 @@ export default function Services() {
 
       {/* Horizontal progress line (desktop) */}
       <div className="hidden lg:block absolute bottom-9 left-1/2 -translate-x-1/2 w-[220px]">
-        <div className="h-px bg-white/[0.08]" />
+        <div className="h-px bg-white/8" />
         <div
           ref={progressRef}
-          className="h-[2px] -mt-[1.5px] origin-left rounded-full"
+          className="h-[2px] mt-[-1.5px] origin-left rounded-full"
           style={{ background: 'linear-gradient(90deg, #2E55E0, #E8155A)', transform: 'scaleX(0)' }}
         />
       </div>

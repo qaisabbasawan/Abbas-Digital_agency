@@ -53,7 +53,7 @@ export default function Analytics() {
             <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" /> Live Tracking
           </span>
           <a href={GA_LINK} target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-[11px] px-3 py-1.5 rounded-full bg-white/[0.05] text-white/50 border border-white/[0.08] hover:text-white hover:border-white/20 transition-colors">
+            className="flex items-center gap-1.5 text-[11px] px-3 py-1.5 rounded-full bg-white/5 text-white/50 border border-white/8 hover:text-white hover:border-white/20 transition-colors">
             Open in GA4 <ExternalLink size={10} />
           </a>
         </div>
@@ -71,7 +71,7 @@ export default function Analytics() {
             transition={{ delay: i * 0.07 }}
             className="p-4 rounded-2xl relative overflow-hidden"
             style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
-            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-[40px] pointer-events-none" style={{ background: `${s.color}25` }} />
+            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl pointer-events-none" style={{ background: `${s.color}25` }} />
             <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3" style={{ background: `${s.color}18`, border: `1px solid ${s.color}30` }}>
               <s.icon size={16} style={{ color: s.color }} strokeWidth={1.8} />
             </div>
@@ -102,7 +102,7 @@ export default function Analytics() {
             Open Google Analytics <ExternalLink size={12} />
           </a>
         </div>
-        <div className="mt-4 pt-4 border-t border-white/[0.06] grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+        <div className="mt-4 pt-4 border-t border-white/6 grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
           {['Pageviews', 'Sessions', 'Traffic Sources', 'Device Types'].map(m => (
             <div key={m}>
               <p className="text-white/25 text-[10px] uppercase tracking-wide mb-1">{m}</p>
@@ -161,7 +161,7 @@ export default function Analytics() {
                     <span className="text-white/60 text-[12px]">{s.label}</span>
                     <span className="text-white/60 text-[12px] font-medium">{s.count} lead{s.count !== 1 ? 's' : ''}</span>
                   </div>
-                  <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+                  <div className="h-1.5 rounded-full bg-white/6 overflow-hidden">
                     <motion.div initial={{ width: 0 }}
                       animate={{ width: leads.length ? `${(s.count / leads.length) * 100}%` : '0%' }}
                       transition={{ delay: 0.5 + i * 0.08, duration: 0.65, ease: 'easeOut' }}
@@ -187,14 +187,14 @@ export default function Analytics() {
         ) : (
           <div className="space-y-3">
             {topServices.map(([service, count], i) => (
-              <div key={service} className="flex items-center gap-4 py-2.5 px-3 rounded-xl hover:bg-white/[0.03] transition-colors">
+              <div key={service} className="flex items-center gap-4 py-2.5 px-3 rounded-xl hover:bg-white/3 transition-colors">
                 <span className="text-white/25 text-[12px] w-5 shrink-0">{i + 1}</span>
                 <div className="flex-1">
                   <div className="flex justify-between mb-1">
                     <span className="text-white/70 text-[13px] font-medium">{service}</span>
                     <span className="text-white/50 text-[12px]">{count} lead{count !== 1 ? 's' : ''}</span>
                   </div>
-                  <div className="h-1 rounded-full bg-white/[0.06] overflow-hidden">
+                  <div className="h-1 rounded-full bg-white/6 overflow-hidden">
                     <motion.div initial={{ width: 0 }}
                       animate={{ width: `${(count / leads.length) * 100}%` }}
                       transition={{ delay: 0.55 + i * 0.08, duration: 0.6, ease: 'easeOut' }}

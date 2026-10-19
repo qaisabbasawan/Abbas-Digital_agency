@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 /* ─────────────────────────────────────────────────────────────────────────
    ScrollPathLine — 3-wire neon weave (performance build)
    Performance: NO SVG feGaussianBlur filters. Each wire is grouped in a <g>
-   with a CSS drop-shadow filter — one cheap GPU composite per wire instead
+   with a CSS drop-shadow-sm filter — one cheap GPU composite per wire instead
    of 5 expensive SVG filter renders per wire.
 ────────────────────────────────────────────────────────────────────────── */
 

@@ -105,11 +105,11 @@ export default function About() {
       {/* Aurora glows with parallax */}
       <motion.div
         style={{ y: yGlow }}
-        className="absolute top-1/3 -left-24 w-[420px] h-[420px] bg-brand-blue/[0.10] rounded-full blur-[130px] pointer-events-none"
+        className="absolute top-1/3 -left-24 w-[420px] h-[420px] bg-brand-blue/10 rounded-full blur-[130px] pointer-events-none"
       />
       <motion.div
         style={{ y: yPanel }}
-        className="absolute bottom-0 -right-20 w-[380px] h-[380px] bg-brand-pink/[0.08] rounded-full blur-[120px] pointer-events-none"
+        className="absolute bottom-0 -right-20 w-[380px] h-[380px] bg-brand-pink/8 rounded-full blur-[120px] pointer-events-none"
       />
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 relative">

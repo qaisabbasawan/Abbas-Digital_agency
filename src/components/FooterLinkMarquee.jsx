@@ -11,7 +11,7 @@ function Track({ items, ariaHidden = false }) {
           <Link
             to={item.path}
             tabIndex={ariaHidden ? -1 : undefined}
-            className="whitespace-nowrap px-3 py-0.5 rounded text-[11px] tracking-wide text-white/35 hover:text-white focus-visible:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-pink/70 transition-colors duration-200"
+            className="whitespace-nowrap px-3 py-0.5 rounded-sm text-[11px] tracking-wide text-white/35 hover:text-white focus-visible:text-white focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-brand-pink/70 transition-colors duration-200"
           >
             {item.label}
           </Link>
@@ -49,8 +49,8 @@ export default function FooterLinkMarquee({ label, items, direction = 'left' }) 
           <Track items={items} />
           <Track items={items} ariaHidden />
         </div>
-        <span className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-bg-dark to-transparent" aria-hidden />
-        <span className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-bg-dark to-transparent" aria-hidden />
+        <span className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-linear-to-r from-bg-dark to-transparent" aria-hidden />
+        <span className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-linear-to-l from-bg-dark to-transparent" aria-hidden />
       </div>
     </nav>
   )

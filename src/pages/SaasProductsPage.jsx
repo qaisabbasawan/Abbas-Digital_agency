@@ -89,7 +89,7 @@ export default function SaasProductsPage() {
       />
 
       {/* ── Hero ── */}
-      <section className="relative py-20 lg:py-28 border-b border-white/[0.06] overflow-hidden">
+      <section className="relative py-20 lg:py-28 border-b border-white/6 overflow-hidden">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -99,8 +99,8 @@ export default function SaasProductsPage() {
             WebkitMaskImage: 'radial-gradient(ellipse 70% 80% at 65% 45%, #000 25%, transparent 75%)',
           }}
         />
-        <div className="absolute -top-24 left-0 w-[460px] h-[460px] bg-brand-blue/[0.08] rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-[380px] h-[380px] bg-brand-pink/[0.08] rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute -top-24 left-0 w-[460px] h-[460px] bg-brand-blue/8 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-[380px] h-[380px] bg-brand-pink/8 rounded-full blur-[120px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 relative grid lg:grid-cols-[1.1fr_0.9fr] gap-12 items-center">
           <div>
@@ -108,7 +108,7 @@ export default function SaasProductsPage() {
               <Sparkles size={13} strokeWidth={2} />
               Our Products
             </motion.p>
-            <h1 className="font-bold leading-[1.0] mb-6" style={{ fontSize: 'clamp(2.8rem, 6vw, 5.2rem)' }}>
+            <h1 className="font-bold leading-none mb-6" style={{ fontSize: 'clamp(2.8rem, 6vw, 5.2rem)' }}>
               <RevealText as="span" className="text-white block" stagger={0.09}>
                 Products We've
               </RevealText>
@@ -241,7 +241,7 @@ export default function SaasProductsPage() {
                     <ul className="space-y-2.5 mb-7">
                       {p.features.map(f => (
                         <li key={f} className="flex items-start gap-2.5 text-white/60 text-[13px] leading-snug">
-                          <CheckCircle2 size={15} strokeWidth={2} style={{ color: p.to }} className="shrink-0 mt-[1px]" />
+                          <CheckCircle2 size={15} strokeWidth={2} style={{ color: p.to }} className="shrink-0 mt-px" />
                           {f}
                         </li>
                       ))}
@@ -281,7 +281,7 @@ export default function SaasProductsPage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="py-24 bg-bg-dark2 border-t border-white/[0.06]">
+      <section className="py-24 bg-bg-dark2 border-t border-white/6">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 text-center">
           <motion.p {...fade(0)} className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-4">
             Got a Product Idea?

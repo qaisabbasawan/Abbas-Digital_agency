@@ -11,7 +11,7 @@ export default function FAQ({ faqs = HOMEPAGE_FAQS, eyebrow = 'Questions & Answe
 
   return (
     <section id="faq" className="relative py-20 lg:py-28 bg-bg-dark overflow-hidden">
-      <div className="absolute left-1/2 top-0 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-brand-blue/[0.06] blur-[130px] pointer-events-none" />
+      <div className="absolute left-1/2 top-0 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-brand-blue/6 blur-[130px] pointer-events-none" />
 
       <div className="relative max-w-3xl mx-auto px-5 sm:px-8 lg:px-12">
         <div className="text-center mb-12">

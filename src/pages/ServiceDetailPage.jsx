@@ -403,7 +403,7 @@ export default function ServiceDetailPage() {
           <div className="absolute top-1/4 -right-20 w-[520px] h-[520px] rounded-full blur-[150px] opacity-50" style={{ background: glow }} />
           <div className="absolute -bottom-10 left-1/4 w-[400px] h-[400px] rounded-full blur-[140px] opacity-30" style={{ background: glow }} />
         </div>
-        <div className="absolute inset-x-0 bottom-0 h-40 pointer-events-none bg-gradient-to-t from-bg-dark to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-40 pointer-events-none bg-linear-to-t from-bg-dark to-transparent" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 w-full py-20 grid lg:grid-cols-2 gap-12 lg:gap-10 items-center">
           {/* ─── left: copy ─── */}
@@ -426,7 +426,7 @@ export default function ServiceDetailPage() {
             <h1 className="mb-7" style={{ perspective: 900 }}>
               <span className="sr-only">{`${title} — ${tagline.join(' ')}`}</span>
               {tagline.map((line, i) => (
-                <span key={line} aria-hidden className="block overflow-hidden pb-[0.08em] -mb-[0.08em]">
+                <span key={line} aria-hidden className="block overflow-hidden pb-[0.08em] mb-[-0.08em]">
                   <motion.span
                     initial={{ y: '110%', rotateX: -70, opacity: 0 }}
                     animate={{ y: 0, rotateX: 0, opacity: 1 }}
@@ -466,7 +466,7 @@ export default function ServiceDetailPage() {
             >
               <Magnetic>
                 <Link to="/contact"
-                  className="shimmer-btn inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full text-sm tracking-[0.1em] uppercase text-white font-medium hover:opacity-90 active:scale-[0.98] transition-all duration-200">
+                  className="shimmer-btn inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full text-sm tracking-widest uppercase text-white font-medium hover:opacity-90 active:scale-[0.98] transition-all duration-200">
                   Get a Free Quote <ArrowRight size={15} strokeWidth={2} />
                 </Link>
               </Magnetic>
@@ -543,7 +543,7 @@ export default function ServiceDetailPage() {
       </section>
 
       {/* ══════════════ PROCESS ══════════════ */}
-      <section className="relative py-20 lg:py-28 overflow-hidden border-y border-white/[0.06]"
+      <section className="relative py-20 lg:py-28 overflow-hidden border-y border-white/6"
         style={{ background: 'rgba(255,255,255,0.012)' }}>
         <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full blur-[140px] pointer-events-none opacity-35" style={{ background: glow }} />
 
@@ -638,7 +638,7 @@ export default function ServiceDetailPage() {
       </section>
 
       {/* ══════════════ CASE STUDY ══════════════ */}
-      <section className="relative py-20 lg:py-28 overflow-hidden border-t border-white/[0.06]">
+      <section className="relative py-20 lg:py-28 overflow-hidden border-t border-white/6">
         <div className="relative max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
           <motion.p {...fade(0)} className="text-[11px] tracking-[0.28em] uppercase mb-3" style={{ color }}>
             Featured Project
@@ -667,7 +667,7 @@ export default function ServiceDetailPage() {
                       className="w-full h-full object-cover absolute inset-0 group-hover:scale-[1.05] transition-transform duration-700 ease-out"
                       onError={e => { e.target.style.display = 'none' }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent to-bg-dark/60" />
+                    <div className="absolute inset-0 bg-linear-to-r from-transparent to-bg-dark/60" />
                     <div className="absolute top-5 left-5 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full backdrop-blur-md"
                       style={{ background: `${color}30`, border: `1px solid ${color}60`, boxShadow: `0 0 20px ${color}40` }}>
                       <span className="text-[10.5px] font-bold tracking-widest uppercase text-white">{caseStudy.metric}</span>
@@ -735,7 +735,7 @@ export default function ServiceDetailPage() {
             <div className="relative flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Magnetic>
                 <Link to="/contact"
-                  className="shimmer-btn inline-flex items-center gap-2.5 px-9 py-4 rounded-full text-sm tracking-[0.1em] uppercase text-white font-medium hover:opacity-90 active:scale-[0.98] transition-all duration-200">
+                  className="shimmer-btn inline-flex items-center gap-2.5 px-9 py-4 rounded-full text-sm tracking-widest uppercase text-white font-medium hover:opacity-90 active:scale-[0.98] transition-all duration-200">
                   Get a Free Quote <ArrowRight size={15} strokeWidth={2} />
                 </Link>
               </Magnetic>
