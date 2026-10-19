@@ -9,7 +9,102 @@ import RevealText from '../components/anim/RevealText'
 import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
 
-const projects = [
+// Live homepage snapshot of a client site, rendered by WordPress.com's mShots service
+const snap = domain =>
+  `https://s.wordpress.com/mshots/v1/${encodeURIComponent(`https://${domain}/`)}?w=1200&h=750`
+
+const clientSites = [
+  {
+    id: 13,
+    title: 'My Chai Karak',
+    domain: 'mychaikarak.com',
+    industry: 'Food & Beverage',
+    desc: 'Brand website for a karak chai concept — warm, on-brand visuals, a menu showcase and a mobile-first layout built to turn visitors into customers.',
+    tags: ['Web Design', 'Menu Showcase', 'Mobile-First'],
+    from: '#7C2D12',
+    to: '#D97706',
+  },
+  {
+    id: 14,
+    title: 'Jin Wheels',
+    domain: 'jinwheels.com',
+    industry: 'Automotive',
+    desc: 'Automotive wheels website presenting the product range through bold, image-led layouts with clear enquiry paths for buyers.',
+    tags: ['Web Design', 'Product Catalogue', 'SEO'],
+    from: '#9F1239',
+    to: '#E8155A',
+  },
+  {
+    id: 15,
+    title: 'Swiss Elite Transfers',
+    domain: 'swisselitetransfers.com',
+    industry: 'Travel & Transport',
+    desc: 'Premium chauffeur and airport transfer website for Switzerland, built around trust signals, fleet presentation and fast booking enquiries.',
+    tags: ['Web Design', 'Booking Enquiries', 'SEO'],
+    from: '#7F1D1D',
+    to: '#DC2626',
+  },
+  {
+    id: 16,
+    title: 'Granny Flats Ireland',
+    domain: 'grannyflats.ie',
+    industry: 'Construction',
+    desc: 'Lead-generation website for an Irish granny flat and garden home provider — designs, process and quote requests in one clear journey.',
+    tags: ['Web Design', 'Lead Generation', 'Local SEO'],
+    from: '#065F46',
+    to: '#059669',
+  },
+  {
+    id: 17,
+    title: 'HomeBridge',
+    domain: 'homebridge.id',
+    industry: 'Real Estate',
+    desc: 'Property and home website with a clean structure that guides visitors from discovering listings and services to getting in touch.',
+    tags: ['Web Design', 'Responsive', 'SEO'],
+    from: '#1A3BBF',
+    to: '#2E55E0',
+  },
+  {
+    id: 18,
+    title: 'Keyana Botanicals',
+    domain: 'keyanabotanicals.com',
+    industry: 'Beauty & Wellness',
+    desc: 'Natural, plant-based beauty brand website with a soft botanical aesthetic and product-first storytelling.',
+    tags: ['Web Design', 'Brand Storytelling', 'E-Commerce'],
+    from: '#3F6212',
+    to: '#84CC16',
+  },
+  {
+    id: 19,
+    title: 'Skybridge Communication',
+    domain: 'skybridgecommunication.com',
+    industry: 'Communications',
+    desc: 'Corporate website for a communications company, presenting its services with a confident, modern layout and clear calls to action.',
+    tags: ['Corporate Website', 'Responsive', 'SEO'],
+    from: '#0C4A6E',
+    to: '#0891B2',
+  },
+  {
+    id: 20,
+    title: 'Ride Growth',
+    domain: 'ridegrowth.com',
+    industry: 'Growth & Marketing',
+    desc: 'Growth-focused business website with service breakdowns, credibility sections and conversion-focused CTAs.',
+    tags: ['Web Design', 'Conversion-Focused', 'SEO'],
+    from: '#4C1D95',
+    to: '#A855F7',
+  },
+].map(site => ({
+  ...site,
+  client: site.domain,
+  cat: 'Web',
+  yr: 'Live',
+  metric: site.industry,
+  url: `https://${site.domain}/`,
+  img: snap(site.domain),
+}))
+
+const caseStudies = [
   {
     id: 1,
     title: 'TechCorp Solutions',
@@ -168,6 +263,8 @@ const projects = [
   },
 ]
 
+const projects = [...clientSites, ...caseStudies]
+
 const tabs = ['All', 'Web', 'E-Commerce', 'Mobile', 'AI', 'Marketing', 'Branding']
 
 const catColors = {
@@ -177,6 +274,16 @@ const catColors = {
   AI: '#0891B2',
   Marketing: '#F97316',
   Branding: '#D97706',
+}
+
+/* Live client sites open in a new tab; case studies render as plain cards */
+function CardShell({ url, title, children, ...rest }) {
+  if (!url) return <div {...rest}>{children}</div>
+  return (
+    <a href={url} target="_blank" rel="noopener noreferrer" aria-label={`Visit ${title} website`} {...rest}>
+      {children}
+    </a>
+  )
 }
 
 const fade = (delay = 0) => ({
@@ -244,7 +351,7 @@ export default function PortfolioPage() {
             </RevealText>
           </h1>
           <motion.p {...fade(0.3)} className="text-white/50 text-[15px] max-w-md leading-relaxed">
-            12 featured projects spanning web, mobile, AI, marketing and branding — a slice of 500+ delivered.
+            {projects.length} featured projects, including live client websites, spanning web, mobile, AI, marketing and branding — a slice of 500+ delivered.
           </motion.p>
         </div>
       </section>
@@ -308,7 +415,9 @@ export default function PortfolioPage() {
                   className="h-full"
                 >
                   <TiltCard max={8} glareColor={`${p.from}29`}>
-                    <div
+                    <CardShell
+                      url={p.url}
+                      title={p.title}
                       className="group relative flex flex-col h-full rounded-3xl overflow-hidden cursor-pointer"
                       style={{
                         background: `linear-gradient(165deg, ${p.from}1C, transparent 50%), linear-gradient(#0A1130, #0A1130)`,
@@ -328,8 +437,8 @@ export default function PortfolioPage() {
                       >
                         <img
                           src={p.img}
-                          alt={p.title}
-                          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                          alt={p.url ? `${p.title} website homepage` : p.title}
+                          className={`w-full h-full object-cover ${p.url ? 'object-top' : ''} transition-transform duration-700 ease-out group-hover:scale-110`}
                           loading="lazy"
                           onError={e => { e.target.style.display = 'none' }}
                         />
@@ -408,7 +517,7 @@ export default function PortfolioPage() {
                           ))}
                         </div>
                       </div>
-                    </div>
+                    </CardShell>
                   </TiltCard>
                 </motion.div>
               ))}
