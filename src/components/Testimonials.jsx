@@ -51,8 +51,8 @@ export default function Testimonials() {
     <section id="testimonials" className="py-28 lg:py-36 bg-bg-dark relative overflow-hidden">
 
       {/* Ambient aurora */}
-      <div className="absolute top-1/2 -left-32 w-[420px] h-[420px] -translate-y-1/2 bg-brand-blue/[0.08] rounded-full blur-[130px] pointer-events-none" />
-      <div className="absolute top-1/3 right-0 w-[360px] h-[360px] bg-brand-pink/[0.06] rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/2 -left-32 w-[420px] h-[420px] -translate-y-1/2 bg-brand-blue/8 rounded-full blur-[130px] pointer-events-none" />
+      <div className="absolute top-1/3 right-0 w-[360px] h-[360px] bg-brand-pink/6 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 relative">
         <div className="grid grid-cols-1 lg:grid-cols-[5fr_7fr] gap-14 lg:gap-20 items-center">
@@ -132,7 +132,7 @@ export default function Testimonials() {
                   <button
                     onClick={prev}
                     aria-label="Previous testimonial"
-                    className="w-11 h-11 rounded-full border border-white/15 flex items-center justify-center text-white/60 hover:text-white hover:border-white/40 hover:bg-white/[0.05] transition-all duration-300"
+                    className="w-11 h-11 rounded-full border border-white/15 flex items-center justify-center text-white/60 hover:text-white hover:border-white/40 hover:bg-white/5 transition-all duration-300"
                   >
                     <ArrowLeft size={16} strokeWidth={1.8} />
                   </button>
@@ -141,7 +141,7 @@ export default function Testimonials() {
                   <button
                     onClick={next}
                     aria-label="Next testimonial"
-                    className="w-11 h-11 rounded-full border border-white/15 flex items-center justify-center text-white/60 hover:text-white hover:border-white/40 hover:bg-white/[0.05] transition-all duration-300"
+                    className="w-11 h-11 rounded-full border border-white/15 flex items-center justify-center text-white/60 hover:text-white hover:border-white/40 hover:bg-white/5 transition-all duration-300"
                   >
                     <ArrowRight size={16} strokeWidth={1.8} />
                   </button>

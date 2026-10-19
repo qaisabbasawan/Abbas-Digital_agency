@@ -44,7 +44,7 @@ function CtaButton({ href = '#get-plan', location, page, children, ghost = false
       className={
         ghost
           ? 'inline-flex items-center gap-2 rounded-full border border-white/15 px-8 py-4 text-[14.5px] font-semibold text-white hover:border-brand-pink/60 hover:shadow-[0_0_32px_rgba(232,21,90,0.18)] transition-all duration-300'
-          : 'group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-brand-pink via-brand-pink-light to-brand-blue-light px-8 py-4 text-[14.5px] font-semibold text-white shadow-[0_8px_32px_rgba(232,21,90,0.35)] hover:shadow-[0_12px_44px_rgba(232,21,90,0.5)] hover:-translate-y-0.5 transition-all duration-300'
+          : 'group inline-flex items-center gap-2 rounded-full bg-linear-to-r from-brand-pink via-brand-pink-light to-brand-blue-light px-8 py-4 text-[14.5px] font-semibold text-white shadow-[0_8px_32px_rgba(232,21,90,0.35)] hover:shadow-[0_12px_44px_rgba(232,21,90,0.5)] hover:-translate-y-0.5 transition-all duration-300'
       }
     >
       {children}
@@ -76,7 +76,7 @@ function Counter({ to, suffix }) {
   }, [inView, to, isFloat])
 
   return (
-    <span ref={ref} className="bg-gradient-to-r from-brand-pink via-brand-pink-light to-brand-blue-light bg-clip-text text-transparent">
+    <span ref={ref} className="bg-linear-to-r from-brand-pink via-brand-pink-light to-brand-blue-light bg-clip-text text-transparent">
       {isFloat ? val.toFixed(1) : val}{suffix}
     </span>
   )
@@ -125,7 +125,7 @@ export default function IndustryLandingPage({ data }) {
   }
 
   const inputCls = (f) =>
-    `w-full rounded-xl bg-white/[0.03] border ${errors[f] ? 'border-red-500/60' : 'border-white/10'} px-4 py-3.5 text-[14.5px] text-white placeholder-white/30 focus:outline-none focus:border-brand-pink/60 focus:bg-white/[0.05] focus:shadow-[0_0_28px_rgba(232,21,90,0.14)] transition-all duration-300`
+    `w-full rounded-xl bg-white/3 border ${errors[f] ? 'border-red-500/60' : 'border-white/10'} px-4 py-3.5 text-[14.5px] text-white placeholder-white/30 focus:outline-hidden focus:border-brand-pink/60 focus:bg-white/5 focus:shadow-[0_0_28px_rgba(232,21,90,0.14)] transition-all duration-300`
 
   const pageSchema = [
     {
@@ -173,9 +173,9 @@ export default function IndustryLandingPage({ data }) {
       />
 
       {/* ── Hero ── */}
-      <section className="relative py-20 lg:py-28 overflow-hidden border-b border-white/[0.06]">
-        <div className="absolute top-0 right-0 w-[520px] h-[520px] bg-brand-blue/[0.1] rounded-full blur-[150px] pointer-events-none" />
-        <div className="absolute bottom-0 -left-24 w-[420px] h-[420px] bg-brand-pink/[0.08] rounded-full blur-[140px] pointer-events-none" />
+      <section className="relative py-20 lg:py-28 overflow-hidden border-b border-white/6">
+        <div className="absolute top-0 right-0 w-[520px] h-[520px] bg-brand-blue/10 rounded-full blur-[150px] pointer-events-none" />
+        <div className="absolute bottom-0 -left-24 w-[420px] h-[420px] bg-brand-pink/8 rounded-full blur-[140px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 relative grid grid-cols-1 lg:grid-cols-[7fr_5fr] gap-12 items-center">
           <div>
@@ -191,7 +191,7 @@ export default function IndustryLandingPage({ data }) {
             >
               {data.h1Pre}
               {data.h1Highlight && (
-                <span className="bg-gradient-to-r from-brand-pink via-brand-pink-light to-brand-blue-light bg-clip-text text-transparent">
+                <span className="bg-linear-to-r from-brand-pink via-brand-pink-light to-brand-blue-light bg-clip-text text-transparent">
                   {data.h1Highlight}
                 </span>
               )}
@@ -203,7 +203,7 @@ export default function IndustryLandingPage({ data }) {
 
             <motion.div {...fade(0.24)} className="flex flex-wrap gap-3 mb-9">
               {[['Since 2012', 'in business'], ['500+', 'projects completed'], ['US-registered', 'LLC (Montana)']].map(([b, s]) => (
-                <div key={b} className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-[13px]">
+                <div key={b} className="flex items-center gap-2 rounded-full border border-white/10 bg-white/3 px-4 py-2 text-[13px]">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
                   <strong className="text-white font-semibold">{b}</strong>
                   <span className="text-white/45">{s}</span>
@@ -231,7 +231,7 @@ export default function IndustryLandingPage({ data }) {
           <motion.p {...fade(0)} className="text-brand-pink text-[11px] tracking-[0.28em] uppercase text-center mb-4">Sound Familiar?</motion.p>
           <motion.h2 {...fade(0.06)} className="font-heading font-bold text-white text-center leading-tight mb-5" style={{ fontSize: 'clamp(1.8rem, 3.6vw, 2.8rem)' }}>
             Great {data.name} Businesses Lose to{' '}
-            <span className="bg-gradient-to-r from-brand-pink to-brand-blue-light bg-clip-text text-transparent">Better-Marketed</span> Competitors
+            <span className="bg-linear-to-r from-brand-pink to-brand-blue-light bg-clip-text text-transparent">Better-Marketed</span> Competitors
           </motion.h2>
           <motion.p {...fade(0.12)} className="text-white/45 text-[15px] text-center max-w-2xl mx-auto mb-14">
             You deliver great work — but if the right people can't find you online, they're going
@@ -245,7 +245,7 @@ export default function IndustryLandingPage({ data }) {
                 <motion.div
                   key={p.title}
                   {...fade(0.08 * i)}
-                  className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-7 hover:border-brand-pink/40 hover:-translate-y-1.5 transition-all duration-300"
+                  className="rounded-2xl border border-white/[0.07] bg-white/2 p-7 hover:border-brand-pink/40 hover:-translate-y-1.5 transition-all duration-300"
                 >
                   <div className="mb-5 grid h-12 w-12 place-items-center rounded-xl bg-brand-pink/10 border border-brand-pink/20">
                     <Icon size={20} className="text-brand-pink" />
@@ -265,7 +265,7 @@ export default function IndustryLandingPage({ data }) {
           <motion.p {...fade(0)} className="text-brand-pink text-[11px] tracking-[0.28em] uppercase text-center mb-4">The Solution</motion.p>
           <motion.h2 {...fade(0.06)} className="font-heading font-bold text-white text-center leading-tight mb-5" style={{ fontSize: 'clamp(1.8rem, 3.6vw, 2.8rem)' }}>
             Everything Your {data.name} Business Needs to{' '}
-            <span className="bg-gradient-to-r from-brand-pink to-brand-blue-light bg-clip-text text-transparent">Get More Clients Online</span>
+            <span className="bg-linear-to-r from-brand-pink to-brand-blue-light bg-clip-text text-transparent">Get More Clients Online</span>
           </motion.h2>
           <motion.p {...fade(0.12)} className="text-white/45 text-[15px] text-center max-w-2xl mx-auto mb-14">
             A complete growth system — not random tactics. Every service is built around one goal:
@@ -279,9 +279,9 @@ export default function IndustryLandingPage({ data }) {
                 <motion.div
                   key={s.title}
                   {...fade(0.06 * i)}
-                  className="group rounded-2xl border border-white/[0.07] bg-white/[0.02] p-7 hover:border-brand-blue-light/40 hover:bg-white/[0.04] hover:-translate-y-1.5 transition-all duration-300"
+                  className="group rounded-2xl border border-white/[0.07] bg-white/2 p-7 hover:border-brand-blue-light/40 hover:bg-white/4 hover:-translate-y-1.5 transition-all duration-300"
                 >
-                  <div className="mb-5 grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-brand-pink/15 to-brand-blue/15 border border-white/10 group-hover:border-brand-pink/30 transition-colors">
+                  <div className="mb-5 grid h-12 w-12 place-items-center rounded-xl bg-linear-to-br from-brand-pink/15 to-brand-blue/15 border border-white/10 group-hover:border-brand-pink/30 transition-colors">
                     <Icon size={20} className="text-brand-pink-light" />
                   </div>
                   <h3 className="text-white font-semibold text-[16px] mb-2.5">{s.title}</h3>
@@ -316,7 +316,7 @@ export default function IndustryLandingPage({ data }) {
                   <motion.div
                     key={f.title}
                     {...fade(0.08 * i)}
-                    className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-7 hover:border-brand-pink/40 hover:-translate-y-1.5 transition-all duration-300"
+                    className="rounded-2xl border border-white/[0.07] bg-white/2 p-7 hover:border-brand-pink/40 hover:-translate-y-1.5 transition-all duration-300"
                   >
                     <div className="mb-5 grid h-12 w-12 place-items-center rounded-xl bg-brand-blue/15 border border-brand-blue-light/25">
                       <Icon size={20} className="text-brand-blue-light" />
@@ -350,7 +350,7 @@ export default function IndustryLandingPage({ data }) {
                 <motion.div
                   key={w.title}
                   {...fade(0.08 * i)}
-                  className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-7 hover:border-brand-pink/40 hover:-translate-y-1.5 transition-all duration-300"
+                  className="rounded-2xl border border-white/[0.07] bg-white/2 p-7 hover:border-brand-pink/40 hover:-translate-y-1.5 transition-all duration-300"
                 >
                   <div className="mb-5 grid h-12 w-12 place-items-center rounded-xl bg-brand-blue/15 border border-brand-blue-light/25">
                     <Icon size={20} className="text-brand-blue-light" />
@@ -370,12 +370,12 @@ export default function IndustryLandingPage({ data }) {
           <motion.p {...fade(0)} className="text-brand-pink text-[11px] tracking-[0.28em] uppercase text-center mb-4">Our Process</motion.p>
           <motion.h2 {...fade(0.06)} className="font-heading font-bold text-white text-center leading-tight mb-16" style={{ fontSize: 'clamp(1.8rem, 3.6vw, 2.8rem)' }}>
             From Audit to a{' '}
-            <span className="bg-gradient-to-r from-brand-pink to-brand-blue-light bg-clip-text text-transparent">Full Pipeline</span> in 4 Steps
+            <span className="bg-linear-to-r from-brand-pink to-brand-blue-light bg-clip-text text-transparent">Full Pipeline</span> in 4 Steps
           </motion.h2>
 
           <div className="relative grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-6">
             <motion.div
-              className="hidden md:block absolute top-7 left-[10%] right-[10%] h-px origin-left bg-gradient-to-r from-brand-pink via-brand-pink-light to-brand-blue-light"
+              className="hidden md:block absolute top-7 left-[10%] right-[10%] h-px origin-left bg-linear-to-r from-brand-pink via-brand-pink-light to-brand-blue-light"
               initial={{ scaleX: 0 }}
               whileInView={{ scaleX: 1 }}
               viewport={{ once: true, margin: '-80px' }}
@@ -400,12 +400,12 @@ export default function IndustryLandingPage({ data }) {
           <motion.p {...fade(0)} className="text-brand-pink text-[11px] tracking-[0.28em] uppercase text-center mb-4">Real Results</motion.p>
           <motion.h2 {...fade(0.06)} className="font-heading font-bold text-white text-center leading-tight mb-14" style={{ fontSize: 'clamp(1.8rem, 3.6vw, 2.8rem)' }}>
             The Numbers {data.name} Owners{' '}
-            <span className="bg-gradient-to-r from-brand-pink to-brand-blue-light bg-clip-text text-transparent">Care About</span>
+            <span className="bg-linear-to-r from-brand-pink to-brand-blue-light bg-clip-text text-transparent">Care About</span>
           </motion.h2>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-12">
             {data.stats.map((s, i) => (
-              <motion.div key={s.label} {...fade(0.08 * i)} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] py-9 px-4 text-center">
+              <motion.div key={s.label} {...fade(0.08 * i)} className="rounded-2xl border border-white/[0.07] bg-white/2 py-9 px-4 text-center">
                 <div className="font-heading font-bold" style={{ fontSize: 'clamp(1.9rem, 3.5vw, 2.8rem)' }}>
                   <Counter to={s.to} suffix={s.suffix} />
                 </div>
@@ -415,7 +415,7 @@ export default function IndustryLandingPage({ data }) {
           </div>
 
           <motion.div {...fade(0.1)} className="grid grid-cols-1 md:grid-cols-2 rounded-2xl overflow-hidden border border-white/[0.07]">
-            <div className="p-9 bg-red-500/[0.04]">
+            <div className="p-9 bg-red-500/4">
               <h3 className="text-red-400 text-[12px] tracking-[0.2em] uppercase font-semibold mb-5">Before — Typical {data.name} Business</h3>
               <ul className="space-y-3">
                 {beforeBullets.map((li) => (
@@ -425,7 +425,7 @@ export default function IndustryLandingPage({ data }) {
                 ))}
               </ul>
             </div>
-            <div className="p-9 bg-emerald-500/[0.04]">
+            <div className="p-9 bg-emerald-500/4">
               <h3 className="text-emerald-400 text-[12px] tracking-[0.2em] uppercase font-semibold mb-5">After Working With Us</h3>
               <ul className="space-y-3">
                 {afterBullets.map((li) => (
@@ -451,7 +451,7 @@ export default function IndustryLandingPage({ data }) {
             Trusted by {data.name} Businesses Across the USA
           </motion.h2>
 
-          <motion.div {...fade(0.1)} className="flex flex-col rounded-2xl border border-white/[0.07] bg-white/[0.02] p-9 hover:border-brand-pink/30 transition-colors duration-300">
+          <motion.div {...fade(0.1)} className="flex flex-col rounded-2xl border border-white/[0.07] bg-white/2 p-9 hover:border-brand-pink/30 transition-colors duration-300">
             <div className="flex gap-1 mb-4" aria-label="5 out of 5 stars">
               {[...Array(5)].map((_, j) => <Star key={j} size={16} className="text-yellow-400 fill-yellow-400" />)}
             </div>
@@ -470,7 +470,7 @@ export default function IndustryLandingPage({ data }) {
           <motion.p {...fade(0)} className="text-brand-pink text-[11px] tracking-[0.28em] uppercase text-center mb-4">Simple Pricing</motion.p>
           <motion.h2 {...fade(0.06)} className="font-heading font-bold text-white text-center leading-tight mb-12" style={{ fontSize: 'clamp(1.8rem, 3.6vw, 2.8rem)' }}>
             Plans Built Around{' '}
-            <span className="bg-gradient-to-r from-brand-pink to-brand-blue-light bg-clip-text text-transparent">Your Growth Goals</span>
+            <span className="bg-linear-to-r from-brand-pink to-brand-blue-light bg-clip-text text-transparent">Your Growth Goals</span>
           </motion.h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 items-stretch">
@@ -480,12 +480,12 @@ export default function IndustryLandingPage({ data }) {
                 {...fade(0.08 * i)}
                 className={`relative flex flex-col rounded-3xl border p-7 transition-all duration-500 hover:-translate-y-2 ${
                   p.highlight
-                    ? 'border-brand-pink/50 bg-gradient-to-b from-brand-pink/[0.09] to-brand-blue/[0.07] shadow-[0_20px_60px_rgba(232,21,90,0.16)]'
-                    : 'border-white/[0.08] bg-white/[0.02] hover:border-brand-pink/30 hover:shadow-[0_20px_60px_rgba(232,21,90,0.1)]'
+                    ? 'border-brand-pink/50 bg-linear-to-b from-brand-pink/9 to-brand-blue/[0.07] shadow-[0_20px_60px_rgba(232,21,90,0.16)]'
+                    : 'border-white/8 bg-white/2 hover:border-brand-pink/30 hover:shadow-[0_20px_60px_rgba(232,21,90,0.1)]'
                 }`}
               >
                 {p.highlight && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-brand-pink to-brand-blue-light px-4 py-1 text-[10.5px] font-bold tracking-[0.14em] uppercase text-white shadow-[0_6px_20px_rgba(232,21,90,0.4)]">
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-linear-to-r from-brand-pink to-brand-blue-light px-4 py-1 text-[10.5px] font-bold tracking-[0.14em] uppercase text-white shadow-[0_6px_20px_rgba(232,21,90,0.4)]">
                     Most Popular
                   </span>
                 )}
@@ -496,7 +496,7 @@ export default function IndustryLandingPage({ data }) {
                 <div className="mb-6">
                   <span className={`font-heading font-bold text-[2.1rem] leading-none ${
                     p.highlight
-                      ? 'bg-gradient-to-r from-brand-pink via-brand-pink-light to-brand-blue-light bg-clip-text text-transparent'
+                      ? 'bg-linear-to-r from-brand-pink via-brand-pink-light to-brand-blue-light bg-clip-text text-transparent'
                       : 'text-white'
                   }`}>
                     {p.price}
@@ -517,7 +517,7 @@ export default function IndustryLandingPage({ data }) {
                   onClick={() => trackCta(`pricing_${p.name.toLowerCase()}`, data.routeSlug)}
                   className={`block rounded-full px-6 py-3 text-center text-[13.5px] font-semibold transition-all duration-300 ${
                     p.highlight
-                      ? 'bg-gradient-to-r from-brand-pink via-brand-pink-light to-brand-blue-light text-white shadow-[0_8px_28px_rgba(232,21,90,0.35)] hover:shadow-[0_12px_40px_rgba(232,21,90,0.5)]'
+                      ? 'bg-linear-to-r from-brand-pink via-brand-pink-light to-brand-blue-light text-white shadow-[0_8px_28px_rgba(232,21,90,0.35)] hover:shadow-[0_12px_40px_rgba(232,21,90,0.5)]'
                       : 'border border-white/15 text-white hover:border-brand-pink/60 hover:shadow-[0_0_28px_rgba(232,21,90,0.16)]'
                   }`}
                 >
@@ -547,7 +547,7 @@ export default function IndustryLandingPage({ data }) {
               <motion.div
                 key={f.q}
                 {...fade(0.04 * i)}
-                className={`rounded-2xl border transition-colors duration-300 overflow-hidden ${openFaq === i ? 'border-brand-pink/40 bg-white/[0.03]' : 'border-white/[0.07] bg-white/[0.02]'}`}
+                className={`rounded-2xl border transition-colors duration-300 overflow-hidden ${openFaq === i ? 'border-brand-pink/40 bg-white/3' : 'border-white/[0.07] bg-white/2'}`}
               >
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
@@ -570,21 +570,21 @@ export default function IndustryLandingPage({ data }) {
 
       {/* ── Final CTA / lead form ── */}
       <section id="get-plan" className="relative py-20 lg:py-28 bg-bg-dark2 overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-brand-blue/[0.1] rounded-full blur-[160px] pointer-events-none" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-brand-blue/10 rounded-full blur-[160px] pointer-events-none" />
         <div className="absolute bottom-0 right-0 w-[420px] h-[420px] bg-brand-pink/[0.07] rounded-full blur-[140px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 relative">
           <motion.p {...fade(0)} className="text-brand-pink text-[11px] tracking-[0.28em] uppercase text-center mb-4">Limited Onboarding Slots Each Month</motion.p>
           <motion.h2 {...fade(0.06)} className="font-heading font-bold text-white text-center leading-tight mb-5" style={{ fontSize: 'clamp(1.8rem, 3.8vw, 3rem)' }}>
             Your Competitors Are Booking{' '}
-            <span className="bg-gradient-to-r from-brand-pink via-brand-pink-light to-brand-blue-light bg-clip-text text-transparent">Your Customers</span> Right Now
+            <span className="bg-linear-to-r from-brand-pink via-brand-pink-light to-brand-blue-light bg-clip-text text-transparent">Your Customers</span> Right Now
           </motion.h2>
           <motion.p {...fade(0.12)} className="text-white/45 text-[15px] text-center max-w-2xl mx-auto mb-12">
             Get a free, no-obligation {data.name} marketing plan — your rankings, your
             competitors, your fastest path to more booked business. Delivered within 48 hours.
           </motion.p>
 
-          <motion.div {...fade(0.16)} className="max-w-2xl mx-auto rounded-3xl border border-white/[0.08] bg-bg-dark/85 backdrop-blur-xl p-8 sm:p-11 shadow-[0_30px_80px_rgba(0,0,0,0.5)]">
+          <motion.div {...fade(0.16)} className="max-w-2xl mx-auto rounded-3xl border border-white/8 bg-bg-dark/85 backdrop-blur-xl p-8 sm:p-11 shadow-[0_30px_80px_rgba(0,0,0,0.5)]">
             {sent ? (
               <div className="text-center py-10">
                 <p className="text-emerald-400 text-lg font-semibold mb-2">✅ Thank you! Your request is in.</p>
@@ -621,7 +621,7 @@ export default function IndustryLandingPage({ data }) {
                 <button
                   type="submit"
                   onClick={() => trackCta('final', data.routeSlug)}
-                  className="mt-7 w-full rounded-full bg-gradient-to-r from-brand-pink via-brand-pink-light to-brand-blue-light px-8 py-4 text-[15px] font-semibold text-white shadow-[0_8px_32px_rgba(232,21,90,0.35)] hover:shadow-[0_12px_44px_rgba(232,21,90,0.5)] hover:-translate-y-0.5 transition-all duration-300"
+                  className="mt-7 w-full rounded-full bg-linear-to-r from-brand-pink via-brand-pink-light to-brand-blue-light px-8 py-4 text-[15px] font-semibold text-white shadow-[0_8px_32px_rgba(232,21,90,0.35)] hover:shadow-[0_12px_44px_rgba(232,21,90,0.5)] hover:-translate-y-0.5 transition-all duration-300"
                 >
                   Get My Free {data.name} Marketing Plan
                 </button>

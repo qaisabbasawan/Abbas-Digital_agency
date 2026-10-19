@@ -42,7 +42,7 @@ export default function AdminLayout() {
   const Sidebar = () => (
     <div className="flex flex-col h-full">
       {/* Logo */}
-      <div className="px-5 py-5 border-b border-white/[0.06]">
+      <div className="px-5 py-5 border-b border-white/6">
         <Link to="/" target="_blank" className="flex items-center gap-2.5 group">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg,#2E55E0,#E8155A)' }}>
             <Globe size={15} className="text-white" />
@@ -64,8 +64,8 @@ export default function AdminLayout() {
               onClick={() => setSideOpen(false)}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 ${
                 active
-                  ? 'bg-white/[0.08] text-white'
-                  : 'text-white/45 hover:text-white/80 hover:bg-white/[0.04]'
+                  ? 'bg-white/8 text-white'
+                  : 'text-white/45 hover:text-white/80 hover:bg-white/4'
               }`}
             >
               <Icon size={16} strokeWidth={active ? 2.2 : 1.8} />
@@ -77,8 +77,8 @@ export default function AdminLayout() {
       </nav>
 
       {/* User + Logout */}
-      <div className="px-3 py-4 border-t border-white/[0.06] space-y-2">
-        <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/[0.03]">
+      <div className="px-3 py-4 border-t border-white/6 space-y-2">
+        <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/3">
           <div className="w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-bold text-white shrink-0"
             style={{ background: 'linear-gradient(135deg,#2E55E0,#E8155A)' }}>
             {user?.initials}
@@ -89,7 +89,7 @@ export default function AdminLayout() {
           </div>
         </div>
         <button onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] text-white/40 hover:text-red-400 hover:bg-red-500/[0.06] transition-all duration-200">
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] text-white/40 hover:text-red-400 hover:bg-red-500/6 transition-all duration-200">
           <LogOut size={15} />
           Logout
         </button>
@@ -101,7 +101,7 @@ export default function AdminLayout() {
     <div className="flex h-screen bg-[#070C1B] overflow-hidden">
 
       {/* Desktop sidebar */}
-      <div className="hidden lg:flex flex-col w-56 shrink-0 bg-[#040810] border-r border-white/[0.06]">
+      <div className="hidden lg:flex flex-col w-56 shrink-0 bg-[#040810] border-r border-white/6">
         <Sidebar />
       </div>
 
@@ -113,7 +113,7 @@ export default function AdminLayout() {
               className="lg:hidden fixed inset-0 bg-black/60 z-40" onClick={() => setSideOpen(false)} />
             <motion.div initial={{ x: -224 }} animate={{ x: 0 }} exit={{ x: -224 }}
               transition={{ duration: 0.25, ease: 'easeInOut' }}
-              className="lg:hidden fixed left-0 top-0 bottom-0 w-56 bg-[#040810] border-r border-white/[0.06] z-50">
+              className="lg:hidden fixed left-0 top-0 bottom-0 w-56 bg-[#040810] border-r border-white/6 z-50">
               <Sidebar />
             </motion.div>
           </>
@@ -124,7 +124,7 @@ export default function AdminLayout() {
       <div className="flex-1 flex flex-col min-w-0">
 
         {/* Top bar */}
-        <header className="h-14 flex items-center gap-4 px-5 border-b border-white/[0.06] bg-[#070C1B] shrink-0">
+        <header className="h-14 flex items-center gap-4 px-5 border-b border-white/6 bg-[#070C1B] shrink-0">
           <button onClick={() => setSideOpen(true)} className="lg:hidden text-white/40 hover:text-white transition-colors">
             <Menu size={20} />
           </button>
@@ -134,17 +134,17 @@ export default function AdminLayout() {
           <div className="flex-1 hidden sm:flex items-center">
             <div className="relative ml-4 max-w-xs w-full">
               <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20" />
-              <input placeholder="Search..." className="w-full bg-white/[0.04] border border-white/[0.06] rounded-lg pl-8 pr-3 py-1.5 text-[12px] text-white/50 placeholder:text-white/20 focus:outline-none focus:border-white/15" />
+              <input placeholder="Search..." className="w-full bg-white/4 border border-white/6 rounded-lg pl-8 pr-3 py-1.5 text-[12px] text-white/50 placeholder:text-white/20 focus:outline-hidden focus:border-white/15" />
             </div>
           </div>
           <div className="ml-auto flex items-center gap-3">
-            <button className="relative w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center text-white/40 hover:text-white transition-colors">
+            <button className="relative w-8 h-8 rounded-lg bg-white/4 border border-white/6 flex items-center justify-center text-white/40 hover:text-white transition-colors">
               <Bell size={15} />
               <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-brand-pink" />
             </button>
             <div className="relative">
               <button onClick={() => setProfileOpen(v => !v)}
-                className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.07] transition-colors">
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-white/4 border border-white/6 hover:bg-white/[0.07] transition-colors">
                 <div className="w-6 h-6 rounded-md flex items-center justify-center text-[10px] font-bold text-white"
                   style={{ background: 'linear-gradient(135deg,#2E55E0,#E8155A)' }}>
                   {user?.initials}
@@ -157,20 +157,20 @@ export default function AdminLayout() {
                   <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 4 }}
                     className="absolute right-0 top-full mt-2 w-48 rounded-xl overflow-hidden z-50"
                     style={{ background: '#0D1526', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 16px 40px rgba(0,0,0,0.5)' }}>
-                    <div className="px-4 py-3 border-b border-white/[0.06]">
+                    <div className="px-4 py-3 border-b border-white/6">
                       <p className="text-white text-[13px] font-medium">{user?.name}</p>
                       <p className="text-white/35 text-[11px]">{user?.email}</p>
                     </div>
                     <Link to="/admin/settings" onClick={() => setProfileOpen(false)}
-                      className="flex items-center gap-2.5 px-4 py-2.5 text-white/50 text-[12px] hover:text-white hover:bg-white/[0.04] transition-colors">
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-white/50 text-[12px] hover:text-white hover:bg-white/4 transition-colors">
                       <Settings size={13} /> Settings
                     </Link>
                     <Link to="/" target="_blank" onClick={() => setProfileOpen(false)}
-                      className="flex items-center gap-2.5 px-4 py-2.5 text-white/50 text-[12px] hover:text-white hover:bg-white/[0.04] transition-colors">
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-white/50 text-[12px] hover:text-white hover:bg-white/4 transition-colors">
                       <Globe size={13} /> View Website
                     </Link>
                     <button onClick={handleLogout}
-                      className="w-full flex items-center gap-2.5 px-4 py-2.5 text-red-400/70 text-[12px] hover:text-red-400 hover:bg-red-500/[0.06] transition-colors border-t border-white/[0.06]">
+                      className="w-full flex items-center gap-2.5 px-4 py-2.5 text-red-400/70 text-[12px] hover:text-red-400 hover:bg-red-500/6 transition-colors border-t border-white/6">
                       <LogOut size={13} /> Logout
                     </button>
                   </motion.div>

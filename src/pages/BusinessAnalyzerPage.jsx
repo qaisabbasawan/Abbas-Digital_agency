@@ -111,7 +111,7 @@ function RadioCard({ selected, onClick, label, sub, children }) {
       className={`w-full text-left flex items-start gap-3 p-4 rounded-xl border transition-all duration-200 ${
         selected
           ? 'border-brand-pink/60 bg-brand-pink/[0.07]'
-          : 'border-white/[0.08] bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04]'
+          : 'border-white/8 bg-white/2 hover:border-white/20 hover:bg-white/4'
       }`}
     >
       <span className={`mt-0.5 w-4 h-4 rounded-full border-2 shrink-0 flex items-center justify-center transition-colors ${
@@ -137,7 +137,7 @@ function CheckCard({ selected, onClick, label, sub }) {
       className={`w-full text-left flex items-start gap-3 p-4 rounded-xl border transition-all duration-200 ${
         selected
           ? 'border-brand-pink/60 bg-brand-pink/[0.07]'
-          : 'border-white/[0.08] bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04]'
+          : 'border-white/8 bg-white/2 hover:border-white/20 hover:bg-white/4'
       }`}
     >
       <span className={`mt-0.5 w-4 h-4 rounded border-2 shrink-0 flex items-center justify-center transition-colors ${
@@ -166,8 +166,8 @@ function Step1({ a, err, set }) {
           placeholder="e.g. Acme Corporation"
           value={a.businessName}
           onChange={e => set('businessName', e.target.value)}
-          className={`w-full bg-white/[0.04] border rounded-xl px-4 py-3 text-white text-[14px] placeholder-white/20 focus:outline-none transition-colors ${
-            err.businessName ? 'border-red-500/50' : 'border-white/[0.08] focus:border-white/25'
+          className={`w-full bg-white/4 border rounded-xl px-4 py-3 text-white text-[14px] placeholder-white/20 focus:outline-hidden transition-colors ${
+            err.businessName ? 'border-red-500/50' : 'border-white/8 focus:border-white/25'
           }`}
         />
         {err.businessName && <p className="text-red-400 text-[11px] mt-1">{err.businessName}</p>}
@@ -182,8 +182,8 @@ function Step1({ a, err, set }) {
           placeholder="e.g. Real Estate, E-Commerce, Healthcare"
           value={a.industry}
           onChange={e => set('industry', e.target.value)}
-          className={`w-full bg-white/[0.04] border rounded-xl px-4 py-3 text-white text-[14px] placeholder-white/20 focus:outline-none transition-colors ${
-            err.industry ? 'border-red-500/50' : 'border-white/[0.08] focus:border-white/25'
+          className={`w-full bg-white/4 border rounded-xl px-4 py-3 text-white text-[14px] placeholder-white/20 focus:outline-hidden transition-colors ${
+            err.industry ? 'border-red-500/50' : 'border-white/8 focus:border-white/25'
           }`}
         />
         {err.industry && <p className="text-red-400 text-[11px] mt-1">{err.industry}</p>}
@@ -198,8 +198,8 @@ function Step1({ a, err, set }) {
           placeholder="e.g. you@company.com"
           value={a.email}
           onChange={e => set('email', e.target.value)}
-          className={`w-full bg-white/[0.04] border rounded-xl px-4 py-3 text-white text-[14px] placeholder-white/20 focus:outline-none transition-colors ${
-            err.email ? 'border-red-500/50' : 'border-white/[0.08] focus:border-white/25'
+          className={`w-full bg-white/4 border rounded-xl px-4 py-3 text-white text-[14px] placeholder-white/20 focus:outline-hidden transition-colors ${
+            err.email ? 'border-red-500/50' : 'border-white/8 focus:border-white/25'
           }`}
         />
         {err.email
@@ -421,7 +421,7 @@ function PillarBar({ label, value, delay }) {
   return (
     <div className="flex items-center gap-3 mb-3.5">
       <span className="text-white/55 text-[12px] w-36 shrink-0">{label}</span>
-      <div className="flex-1 bg-white/[0.06] rounded-full h-2 overflow-hidden">
+      <div className="flex-1 bg-white/6 rounded-full h-2 overflow-hidden">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${value}%` }}
@@ -511,7 +511,7 @@ function ReportScreen({ report, answers, onReset }) {
           {/* Score card */}
           <motion.div {...fade(0.1)}>
             <TiltCard max={7} glareColor="rgba(232,21,90,0.14)">
-              <div className="bg-white/[0.03] backdrop-blur-xl border border-white/[0.07] rounded-2xl p-8 h-full flex flex-col items-center justify-center text-center">
+              <div className="bg-white/3 backdrop-blur-xl border border-white/[0.07] rounded-2xl p-8 h-full flex flex-col items-center justify-center text-center">
                 <p className="text-white/30 text-[10px] uppercase tracking-[0.25em] mb-5">Overall Digital Maturity</p>
                 <div className="relative w-32 h-32 mx-auto mb-5">
                   <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
@@ -547,7 +547,7 @@ function ReportScreen({ report, answers, onReset }) {
           {/* Pillar bars */}
           <motion.div {...fade(0.15)}>
             <TiltCard max={7} glareColor="rgba(46,85,224,0.14)">
-              <div className="bg-white/[0.03] backdrop-blur-xl border border-white/[0.07] rounded-2xl p-7 h-full">
+              <div className="bg-white/3 backdrop-blur-xl border border-white/[0.07] rounded-2xl p-7 h-full">
                 <div className="flex items-center gap-2 mb-6">
                   <BarChart2 size={15} className="text-brand-pink" />
                   <p className="text-white font-semibold text-[15px]">Performance by Pillar</p>
@@ -576,7 +576,7 @@ function ReportScreen({ report, answers, onReset }) {
                 transition={{ delay: 0.35 + i * 0.1, duration: 0.55 }}
               >
                 <TiltCard max={6} glareColor="rgba(232,21,90,0.12)">
-                  <div className="bg-white/[0.03] backdrop-blur-xl border border-white/[0.07] rounded-xl p-5 h-full hover:border-brand-pink/20 transition-colors">
+                  <div className="bg-white/3 backdrop-blur-xl border border-white/[0.07] rounded-xl p-5 h-full hover:border-brand-pink/20 transition-colors">
                     <div className="w-9 h-9 rounded-lg mb-4 flex items-center justify-center" style={{ background: 'rgba(232,21,90,0.12)', border: '1px solid rgba(232,21,90,0.2)' }}>
                       <Icon size={16} className="text-brand-pink" />
                     </div>
@@ -608,7 +608,7 @@ function ReportScreen({ report, answers, onReset }) {
                 transition={{ delay: 0.4 + i * 0.1, duration: 0.55 }}
               >
                 <TiltCard max={6} glareColor="rgba(46,85,224,0.12)">
-                  <div className={`relative bg-white/[0.03] backdrop-blur-xl rounded-xl p-6 h-full border transition-colors hover:border-white/20 ${priority ? 'border-brand-pink/40' : 'border-white/[0.07]'}`}>
+                  <div className={`relative bg-white/3 backdrop-blur-xl rounded-xl p-6 h-full border transition-colors hover:border-white/20 ${priority ? 'border-brand-pink/40' : 'border-white/[0.07]'}`}>
                     {priority && (
                       <div className="absolute -top-3 left-5">
                         <span className="bg-brand-pink text-white text-[10px] font-bold px-3 py-0.5 rounded-full tracking-wide">Top Priority</span>
@@ -639,7 +639,7 @@ function ReportScreen({ report, answers, onReset }) {
           <p className="text-white/35 text-[13px] text-center mb-8">A step-by-step clear path to achieving digital maturity and dominating your market.</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 relative">
             {/* Connector line (desktop) */}
-            <div className="hidden sm:block absolute top-12 left-[calc(16.66%+16px)] right-[calc(16.66%+16px)] h-px bg-gradient-to-r from-[#2E55E0] via-[#7C3AED] to-[#E8155A] opacity-30" />
+            <div className="hidden sm:block absolute top-12 left-[calc(16.66%+16px)] right-[calc(16.66%+16px)] h-px bg-linear-to-r from-[#2E55E0] via-[#7C3AED] to-[#E8155A] opacity-30" />
             {[
               { num: 1, title: 'Build Digital Foundation', desc: 'Establish a high-converting website and strong brand identity.',         color: '#2E55E0' },
               { num: 2, title: 'Create Lead System',        desc: 'Deploy targeted landing pages and automated capture funnels.',            color: '#7C3AED' },
@@ -650,7 +650,7 @@ function ReportScreen({ report, answers, onReset }) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 + i * 0.12, duration: 0.55 }}
-                className="bg-white/[0.03] border border-white/[0.07] rounded-xl p-6 text-center relative"
+                className="bg-white/3 border border-white/[0.07] rounded-xl p-6 text-center relative"
               >
                 <div className="w-10 h-10 rounded-full mx-auto mb-4 flex items-center justify-center font-bold text-white text-sm" style={{ background: `${ph.color}25`, border: `2px solid ${ph.color}50` }}>
                   {ph.num}
@@ -928,7 +928,7 @@ export default function BusinessAnalyzerPage() {
             <span className="text-white/35 text-[11px] tracking-[0.2em] uppercase">Step {step} / 5</span>
             <span className="text-brand-pink text-[11px] font-semibold">{Math.round(progress)}% Completed</span>
           </div>
-          <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+          <div className="h-1.5 bg-white/6 rounded-full overflow-hidden">
             <motion.div
               animate={{ width: `${progress}%` }}
               transition={{ duration: 0.45, ease: 'easeOut' }}
@@ -946,7 +946,7 @@ export default function BusinessAnalyzerPage() {
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: -48, scale: 0.98 }}
             transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-            className="bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] rounded-2xl p-7 sm:p-9 mb-6"
+            className="bg-white/3 backdrop-blur-xl border border-white/8 rounded-2xl p-7 sm:p-9 mb-6"
           >
             <div className="flex items-center gap-4 mb-8">
               <div
@@ -974,7 +974,7 @@ export default function BusinessAnalyzerPage() {
           <button
             onClick={back}
             disabled={step === 1}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] text-white/40 border border-white/[0.08] hover:text-white/70 hover:border-white/20 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] text-white/40 border border-white/8 hover:text-white/70 hover:border-white/20 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
           >
             <ArrowLeft size={14} /> Back
           </button>

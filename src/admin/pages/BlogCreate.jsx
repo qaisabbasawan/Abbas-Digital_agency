@@ -144,7 +144,7 @@ export default function BlogCreate() {
   const Input = ({ label, ...props }) => (
     <div>
       {label && <label className="block text-white/40 text-[11px] tracking-widest uppercase mb-2">{label}</label>}
-      <input {...props} className={`w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-all ${props.className || ''}`} />
+      <input {...props} className={`w-full bg-white/4 border border-white/8 rounded-xl px-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-hidden focus:border-white/20 transition-all ${props.className || ''}`} />
     </div>
   )
 
@@ -156,7 +156,7 @@ export default function BlogCreate() {
 
       {/* Header */}
       <div className="flex items-center gap-4">
-        <button onClick={() => navigate(-1)} className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.07] flex items-center justify-center text-white/40 hover:text-white transition-colors">
+        <button onClick={() => navigate(-1)} className="w-8 h-8 rounded-lg bg-white/4 border border-white/[0.07] flex items-center justify-center text-white/40 hover:text-white transition-colors">
           <ArrowLeft size={15} />
         </button>
         <div>
@@ -217,7 +217,7 @@ export default function BlogCreate() {
               {preview ? (
                 /* ── Live preview ── */
                 <div
-                  className="min-h-[320px] rounded-xl px-5 py-4 border border-white/[0.08] overflow-auto"
+                  className="min-h-[320px] rounded-xl px-5 py-4 border border-white/8 overflow-auto"
                   style={{ background: 'rgba(255,255,255,0.02)' }}>
                   {form.content ? (
                     <ReactMarkdown
@@ -238,7 +238,7 @@ export default function BlogCreate() {
                   onChange={e => set('content', e.target.value)}
                   onPaste={handlePaste}
                   placeholder={`Paste content from ChatGPT or write here...\n\nFormatting (headings, bold, lists) is preserved automatically when pasting.`}
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-all resize-none leading-relaxed"
+                  className="w-full bg-white/4 border border-white/8 rounded-xl px-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-hidden focus:border-white/20 transition-all resize-none leading-relaxed"
                   style={{ fontFamily: 'inherit' }}
                 />
               )}
@@ -256,7 +256,7 @@ export default function BlogCreate() {
               <label className="block text-white/40 text-[11px] tracking-widest uppercase mb-2">Meta Description</label>
               <textarea rows={3} value={form.metaDesc} onChange={e => set('metaDesc', e.target.value)}
                 placeholder="Brief description for search engines (160 chars max)"
-                className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-all resize-none" />
+                className="w-full bg-white/4 border border-white/8 rounded-xl px-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-hidden focus:border-white/20 transition-all resize-none" />
               <p className={`text-[11px] mt-1 ${form.metaDesc.length > 160 ? 'text-red-400' : 'text-white/20'}`}>{form.metaDesc.length}/160</p>
             </div>
           </div>
@@ -271,7 +271,7 @@ export default function BlogCreate() {
             <div>
               <label className="block text-white/40 text-[11px] tracking-widest uppercase mb-2">Status</label>
               <select value={form.status} onChange={e => set('status', e.target.value)}
-                className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-[13px] focus:outline-none focus:border-white/20">
+                className="w-full bg-white/4 border border-white/8 rounded-xl px-4 py-3 text-white text-[13px] focus:outline-hidden focus:border-white/20">
                 <option value="draft">Draft</option>
                 <option value="published">Published</option>
               </select>
@@ -283,7 +283,7 @@ export default function BlogCreate() {
                 <Send size={14} /> Publish Now
               </button>
               <button onClick={() => handleSave('draft')} disabled={!form.title}
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-[13px] font-medium text-white/60 border border-white/[0.1] hover:text-white hover:border-white/20 transition-all disabled:opacity-40">
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-[13px] font-medium text-white/60 border border-white/10 hover:text-white hover:border-white/20 transition-all disabled:opacity-40">
                 <Save size={14} /> Save Draft
               </button>
             </div>
@@ -295,7 +295,7 @@ export default function BlogCreate() {
             <div>
               <label className="block text-white/40 text-[11px] tracking-widest uppercase mb-2">Category</label>
               <select value={form.category} onChange={e => set('category', e.target.value)}
-                className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-[13px] focus:outline-none focus:border-white/20">
+                className="w-full bg-white/4 border border-white/8 rounded-xl px-4 py-3 text-white text-[13px] focus:outline-hidden focus:border-white/20">
                 {categories.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
@@ -305,7 +305,7 @@ export default function BlogCreate() {
                 <Tag size={13} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/25" />
                 <input value={form.tags} onChange={e => set('tags', e.target.value)}
                   placeholder="react, seo, web dev..."
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-9 pr-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-none focus:border-white/20" />
+                  className="w-full bg-white/4 border border-white/8 rounded-xl pl-9 pr-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-hidden focus:border-white/20" />
               </div>
               <p className="text-white/20 text-[10px] mt-1">Comma-separated</p>
             </div>
@@ -329,7 +329,7 @@ export default function BlogCreate() {
               onDragOver={e => e.preventDefault()}
               onDrop={e => { e.preventDefault(); handleImageFile(e.dataTransfer.files?.[0]) }}
               disabled={uploading}
-              className="w-full flex flex-col items-center justify-center gap-1.5 py-6 rounded-xl border border-dashed border-white/[0.15] text-white/40 hover:text-white hover:border-white/30 transition-all disabled:opacity-60 disabled:cursor-wait"
+              className="w-full flex flex-col items-center justify-center gap-1.5 py-6 rounded-xl border border-dashed border-white/15 text-white/40 hover:text-white hover:border-white/30 transition-all disabled:opacity-60 disabled:cursor-wait"
             >
               {uploading
                 ? <Loader2 size={17} className="animate-spin" />
@@ -347,7 +347,7 @@ export default function BlogCreate() {
                 <Image size={13} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/25" />
                 <input value={form.image} onChange={e => set('image', e.target.value)}
                   placeholder="https://example.com/image.jpg"
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-9 pr-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-none focus:border-white/20" />
+                  className="w-full bg-white/4 border border-white/8 rounded-xl pl-9 pr-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-hidden focus:border-white/20" />
               </div>
             </div>
             {form.image && (

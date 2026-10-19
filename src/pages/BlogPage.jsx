@@ -105,7 +105,7 @@ function FeaturedCard({ blog }) {
                   </div>
                 </div>
               )}
-            <div className="absolute inset-0 bg-gradient-to-t from-bg-dark/55 via-transparent to-transparent lg:bg-gradient-to-r" />
+            <div className="absolute inset-0 bg-linear-to-t from-bg-dark/55 via-transparent to-transparent lg:bg-linear-to-r" />
             <div className="absolute top-5 left-5 flex items-center gap-2">
               <span className="flex items-center gap-1.5 text-[10px] font-bold px-3 py-1.5 rounded-full text-white"
                 style={{ background: color, boxShadow: `0 0 18px ${color}70` }}>
@@ -183,7 +183,7 @@ function ArticleCard({ blog, i }) {
                   <BookOpen size={34} style={{ color: `${color}70` }} strokeWidth={1.5} />
                 </div>
             }
-            <div className="absolute inset-0 bg-gradient-to-t from-bg-dark/45 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-bg-dark/45 to-transparent" />
             <span className="absolute top-4 left-4 text-[10px] font-semibold px-2.5 py-1 rounded-full backdrop-blur-md"
               style={{ background: `${color}28`, color: '#fff', border: `1px solid ${color}50` }}>
               {blog.category}
@@ -196,7 +196,7 @@ function ArticleCard({ blog, i }) {
               {blog.title}
             </h3>
             {blog.metaDesc && <p className="text-white/35 text-[12px] leading-relaxed mb-4 line-clamp-2">{blog.metaDesc}</p>}
-            <div className="mt-auto flex items-center justify-between pt-3 border-t border-white/[0.06]">
+            <div className="mt-auto flex items-center justify-between pt-3 border-t border-white/6">
               <div className="flex items-center gap-2 text-white/25 text-[11px]">
                 <span>{blog.date}</span>
                 <span className="w-0.5 h-0.5 rounded-full bg-white/20" />
@@ -249,8 +249,8 @@ export default function BlogPage() {
           <BlogScene />
         </div>
         {/* readability gradients */}
-        <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-bg-dark/85 via-bg-dark/35 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 h-40 pointer-events-none bg-gradient-to-t from-bg-dark to-transparent" />
+        <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-bg-dark/85 via-bg-dark/35 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-40 pointer-events-none bg-linear-to-t from-bg-dark to-transparent" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 w-full py-20">
           <motion.div
@@ -291,13 +291,13 @@ export default function BlogPage() {
             initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
             className="group/search relative max-w-md mb-10"
           >
-            <div className="absolute -inset-[1px] rounded-2xl opacity-0 group-focus-within/search:opacity-100 transition-opacity duration-500 pointer-events-none"
+            <div className="absolute -inset-px rounded-2xl opacity-0 group-focus-within/search:opacity-100 transition-opacity duration-500 pointer-events-none"
               style={{ background: 'linear-gradient(90deg, #2E55E0, #E8155A)', filter: 'blur(6px)' }} />
             <div className="relative rounded-2xl"
               style={{ background: 'rgba(8,14,42,0.7)', backdropFilter: 'blur(14px)', border: '1px solid rgba(255,255,255,0.1)' }}>
               <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 group-focus-within/search:text-brand-pink transition-colors" />
               <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search articles..."
-                className="w-full bg-transparent rounded-2xl pl-11 pr-4 py-3.5 text-white text-[14px] placeholder:text-white/25 focus:outline-none" />
+                className="w-full bg-transparent rounded-2xl pl-11 pr-4 py-3.5 text-white text-[14px] placeholder:text-white/25 focus:outline-hidden" />
             </div>
           </motion.div>
 
@@ -311,7 +311,7 @@ export default function BlogPage() {
       </section>
 
       {/* ── Category orbit bar ── */}
-      <div className="sticky top-[72px] z-30 border-y border-white/[0.06]"
+      <div className="sticky top-[72px] z-30 border-y border-white/6"
         style={{ background: 'rgba(5,9,26,0.82)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}>
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
           <div className="flex gap-1.5 overflow-x-auto py-3 scrollbar-hide">

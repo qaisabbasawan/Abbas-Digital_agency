@@ -217,7 +217,7 @@ export default function PortfolioPage() {
       />
 
       {/* Page hero */}
-      <section className="relative py-20 lg:py-28 border-b border-white/[0.06] overflow-hidden">
+      <section className="relative py-20 lg:py-28 border-b border-white/6 overflow-hidden">
         {/* dot grid + aurora */}
         <div
           className="absolute inset-0 pointer-events-none"
@@ -229,7 +229,7 @@ export default function PortfolioPage() {
           }}
         />
         <div className="absolute -top-24 right-0 w-[460px] h-[460px] bg-brand-pink/[0.07] rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-0 left-1/4 w-[380px] h-[380px] bg-brand-blue/[0.08] rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-[380px] h-[380px] bg-brand-blue/8 rounded-full blur-[120px] pointer-events-none" />
 
         {/* ghost watermark */}
         <span
@@ -248,7 +248,7 @@ export default function PortfolioPage() {
           <motion.p {...fade(0)} className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-5">
             Our Portfolio
           </motion.p>
-          <h1 className="font-bold leading-[1.0] mb-6" style={{ fontSize: 'clamp(3rem, 7vw, 6rem)' }}>
+          <h1 className="font-bold leading-none mb-6" style={{ fontSize: 'clamp(3rem, 7vw, 6rem)' }}>
             <RevealText as="span" className="text-white inline-block" stagger={0.09}>
               Selected
             </RevealText>{' '}
@@ -353,7 +353,7 @@ export default function PortfolioPage() {
                           className="absolute inset-0 mix-blend-soft-light pointer-events-none"
                           style={{ background: `linear-gradient(135deg, ${p.from}66, transparent 60%)` }}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#0A1130] via-black/15 to-black/10 pointer-events-none" />
+                        <div className="absolute inset-0 bg-linear-to-t from-[#0A1130] via-black/15 to-black/10 pointer-events-none" />
 
                         {/* Category chip */}
                         <div
@@ -433,7 +433,7 @@ export default function PortfolioPage() {
       </section>
 
       {/* CTA section */}
-      <section className="py-24 bg-bg-dark2 border-t border-white/[0.06]">
+      <section className="py-24 bg-bg-dark2 border-t border-white/6">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 text-center">
           <motion.p
             {...fade(0)}

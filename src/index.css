@@ -1,6 +1,43 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@theme {
+  --color-brand-blue: #1a3bbf;
+  --color-brand-blue-light: #2e55e0;
+  --color-brand-blue-dark: #0d1f6b;
+  --color-brand-pink: #e8155a;
+  --color-brand-pink-light: #ff2d72;
+  --color-bg-dark: #05091a;
+  --color-bg-dark2: #080e2a;
+
+  --font-sans: 'DM Sans', sans-serif;
+  --font-heading: Urbanist, sans-serif;
+  --font-syne: Urbanist, sans-serif;
+  --font-dm: 'DM Sans', sans-serif;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+
+  /* Tailwind v4 dropped the pointer cursor on buttons — keep the v3 behaviour */
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}
 
 /* ── Urbanist — headings ─────────────────────────────────────────────────── */
 @font-face {
@@ -34,39 +71,43 @@
   font-display: swap;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* Element-level base styles live in the base layer so Tailwind v4 utilities
+   (which sit in a cascade layer) still override them, as they did in v3. */
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-html {
-  scroll-behavior: smooth;
-  font-family: 'DM Sans', sans-serif;
-}
+  html {
+    scroll-behavior: smooth;
+    font-family: 'DM Sans', sans-serif;
+  }
 
-body {
-  background-color: #05091A;
-  color: #ffffff;
-  font-family: 'DM Sans', sans-serif;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  body {
+    background-color: #05091A;
+    color: #ffffff;
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-/* All elements inherit DM Sans from body */
-*, *::before, *::after {
-  font-family: inherit;
-}
+  /* All elements inherit DM Sans from body */
+  *, *::before, *::after {
+    font-family: inherit;
+  }
 
-/* Urbanist for every heading level */
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Urbanist', sans-serif;
-}
+  /* Urbanist for every heading level */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Urbanist', sans-serif;
+  }
 
-/* Browsers don't inherit font on form elements — force DM Sans */
-input, textarea, select, button {
-  font-family: 'DM Sans', sans-serif;
+  /* Browsers don't inherit font on form elements — force DM Sans */
+  input, textarea, select, button {
+    font-family: 'DM Sans', sans-serif;
+  }
 }
 
 /* Scrollbar */
@@ -388,7 +429,6 @@ input, textarea, select, button {
 /* ── Legal pages (Privacy Policy, Terms & Conditions) long-form content ─── */
 .legal-body ul {
   list-style: none;
-  margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;

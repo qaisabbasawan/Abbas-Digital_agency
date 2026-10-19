@@ -22,7 +22,7 @@ function Field({ label, children }) {
 function Input({ ...props }) {
   return (
     <input {...props}
-      className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-all" />
+      className="w-full bg-white/4 border border-white/8 rounded-xl px-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-hidden focus:border-white/20 transition-all" />
   )
 }
 
@@ -92,7 +92,7 @@ export default function Settings() {
             {tabs.map(t => (
               <button key={t.id} onClick={() => setTab(t.id)}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all ${
-                  tab === t.id ? 'bg-white/[0.08] text-white' : 'text-white/40 hover:text-white/70 hover:bg-white/[0.03]'
+                  tab === t.id ? 'bg-white/8 text-white' : 'text-white/40 hover:text-white/70 hover:bg-white/3'
                 }`}>
                 <t.icon size={15} strokeWidth={tab === t.id ? 2.2 : 1.8} />
                 {t.label}
@@ -107,7 +107,7 @@ export default function Settings() {
           {/* Profile tab */}
           {tab === 'profile' && (
             <motion.div key="profile" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.25 }} className="space-y-5">
-              <div className="flex items-center gap-4 pb-4 border-b border-white/[0.06]">
+              <div className="flex items-center gap-4 pb-4 border-b border-white/6">
                 <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-lg font-bold text-white shrink-0"
                   style={{ background: 'linear-gradient(135deg,#2E55E0,#E8155A)' }}>
                   {me.initials || profile.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2) || 'U'}
@@ -133,7 +133,7 @@ export default function Settings() {
               <Field label="Short Bio">
                 <textarea value={profile.bio} onChange={e => sp('bio', e.target.value)} rows={3}
                   placeholder="A brief description about yourself..."
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-all resize-none" />
+                  className="w-full bg-white/4 border border-white/8 rounded-xl px-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-hidden focus:border-white/20 transition-all resize-none" />
               </Field>
 
               <div className="flex items-center gap-2 pt-2">
@@ -154,7 +154,7 @@ export default function Settings() {
           {/* Password tab */}
           {tab === 'password' && (
             <motion.div key="password" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.25 }} className="space-y-4">
-              <p className="text-white/50 text-[13px] pb-2 border-b border-white/[0.06]">Choose a strong password with at least 8 characters, including a number and symbol.</p>
+              <p className="text-white/50 text-[13px] pb-2 border-b border-white/6">Choose a strong password with at least 8 characters, including a number and symbol.</p>
 
               {[
                 { label: 'Current Password', key: 'old', show: showOld, toggle: () => setShowOld(v => !v) },
@@ -166,7 +166,7 @@ export default function Settings() {
                     <input type={f.show ? 'text' : 'password'} value={pwForm[f.key]}
                       onChange={e => setPwForm(p => ({ ...p, [f.key]: e.target.value }))}
                       placeholder="••••••••"
-                      className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 pr-10 text-white text-[13px] placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-all" />
+                      className="w-full bg-white/4 border border-white/8 rounded-xl px-4 py-3 pr-10 text-white text-[13px] placeholder:text-white/20 focus:outline-hidden focus:border-white/20 transition-all" />
                     <button onClick={f.toggle} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors">
                       {f.show ? <EyeOff size={14} /> : <Eye size={14} />}
                     </button>
@@ -221,7 +221,7 @@ export default function Settings() {
                 { key: 'userAdded',     label: 'User Added/Removed',  desc: 'Alert when team members are modified' },
                 { key: 'weeklyReport',  label: 'Weekly Report',       desc: 'Summary of traffic and activity every Monday' },
               ].map(n => (
-                <div key={n.key} className="flex items-center justify-between py-3 border-b border-white/[0.05] last:border-0">
+                <div key={n.key} className="flex items-center justify-between py-3 border-b border-white/5 last:border-0">
                   <div>
                     <p className="text-white/80 text-[13px] font-medium">{n.label}</p>
                     <p className="text-white/35 text-[11px] mt-0.5">{n.desc}</p>
@@ -230,7 +230,7 @@ export default function Settings() {
                     onClick={() => setNotifs(v => ({ ...v, [n.key]: !v[n.key] }))}
                     className={`relative w-10 h-5.5 rounded-full transition-colors duration-200 ${notifs[n.key] ? 'bg-brand-pink' : 'bg-white/10'}`}
                     style={{ width: 40, height: 22 }}>
-                    <span className={`absolute top-0.5 w-4.5 h-4.5 rounded-full bg-white shadow transition-transform duration-200 ${notifs[n.key] ? 'translate-x-5' : 'translate-x-0.5'}`}
+                    <span className={`absolute top-0.5 w-4.5 h-4.5 rounded-full bg-white shadow-sm transition-transform duration-200 ${notifs[n.key] ? 'translate-x-5' : 'translate-x-0.5'}`}
                       style={{ width: 18, height: 18, top: 2, left: notifs[n.key] ? 20 : 2 }} />
                   </button>
                 </div>

@@ -590,11 +590,11 @@ export default function ServicesPage() {
         </div>
 
         <div
-          className="absolute inset-0 pointer-events-none z-[1]"
+          className="absolute inset-0 pointer-events-none z-1"
           style={{ background: 'linear-gradient(100deg, rgba(5,9,26,0.88) 35%, rgba(5,9,26,0.45) 62%, rgba(5,9,26,0.05) 100%)' }}
         />
         <div
-          className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none z-[1]"
+          className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none z-1"
           style={{ background: 'linear-gradient(to top, #05091A, transparent)' }}
         />
 
@@ -608,7 +608,7 @@ export default function ServicesPage() {
             What We Do
           </motion.p>
 
-          <h1 className="font-bold leading-[1.0] tracking-tight mb-7" style={{ fontSize: 'clamp(3rem, 7vw, 6.5rem)' }}>
+          <h1 className="font-bold leading-none tracking-tight mb-7" style={{ fontSize: 'clamp(3rem, 7vw, 6.5rem)' }}>
             <RevealText as="span" className="text-white block" stagger={0.09}>
               Seven Services.
             </RevealText>
@@ -648,7 +648,7 @@ export default function ServicesPage() {
       <section className="py-20 lg:py-28 relative overflow-hidden bg-bg-dark">
         <div className="absolute inset-0 pointer-events-none"
           style={{ background: 'rgba(255,255,255,0.013)', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)' }} />
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-brand-pink/[0.05] blur-[120px] pointer-events-none" />
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-brand-pink/5 blur-[120px] pointer-events-none" />
 
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[760px] h-[760px] pointer-events-none hidden md:block" aria-hidden>
           <div
@@ -785,7 +785,7 @@ export default function ServicesPage() {
                 className="relative rounded-[30px] p-[1.5px] overflow-hidden"
               >
                 <div
-                  className="absolute -inset-[150%] animate-spin-slower pointer-events-none"
+                  className="absolute inset-[-150%] animate-spin-slower pointer-events-none"
                   style={{
                     background: 'conic-gradient(from 0deg, transparent 8%, #2E55E0 22%, transparent 38%, transparent 55%, #E8155A 72%, transparent 88%)',
                   }}
@@ -851,7 +851,7 @@ export default function ServicesPage() {
                       <Magnetic>
                         <Link
                           to="/portfolio"
-                          className="inline-flex items-center gap-2 px-8 py-3.5 text-sm tracking-wide text-white/60 border border-white/15 rounded-sm hover:text-white hover:border-white/35 transition-all duration-250"
+                          className="inline-flex items-center gap-2 px-8 py-3.5 text-sm tracking-wide text-white/60 border border-white/15 rounded-xs hover:text-white hover:border-white/35 transition-all duration-250"
                         >
                           View Our Work
                         </Link>

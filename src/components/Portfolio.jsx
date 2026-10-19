@@ -150,7 +150,7 @@ function StackCard({ p, i, total, progress }) {
               alt={`${p.title} website homepage`}
               loading="lazy"
               onError={e => { e.target.style.display = 'none' }}
-              className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-[1200ms] ease-out group-hover:scale-[1.07]"
+              className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-1200 ease-out group-hover:scale-[1.07]"
             />
             {/* blend into the card */}
             <div
@@ -239,7 +239,7 @@ export default function Portfolio() {
             <Link
               to="/portfolio"
               data-hc-target="portfolio"
-              className="group inline-flex items-center gap-3 px-7 py-3.5 rounded-full text-white/60 text-sm border border-white/15 hover:text-white hover:border-white/40 hover:bg-white/[0.04] transition-all duration-300"
+              className="group inline-flex items-center gap-3 px-7 py-3.5 rounded-full text-white/60 text-sm border border-white/15 hover:text-white hover:border-white/40 hover:bg-white/4 transition-all duration-300"
             >
               See All Projects
               <span className="flex items-center justify-center w-7 h-7 rounded-full border border-white/15 group-hover:border-white/40 group-hover:rotate-45 transition-all duration-300">

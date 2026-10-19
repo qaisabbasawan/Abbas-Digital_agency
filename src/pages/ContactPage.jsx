@@ -57,12 +57,12 @@ function Field({ label, error, textarea = false, ...props }) {
   return (
     <div>
       <div className="group/field relative">
-        <div className="absolute -inset-[1px] rounded-xl opacity-0 group-focus-within/field:opacity-70 transition-opacity duration-400 pointer-events-none"
+        <div className="absolute -inset-px rounded-xl opacity-0 group-focus-within/field:opacity-70 transition-opacity duration-400 pointer-events-none"
           style={{ background: 'linear-gradient(90deg, #2E55E0, #E8155A)', filter: 'blur(5px)' }} />
         <Tag
           {...props}
           placeholder=" "
-          className={`peer relative w-full rounded-xl px-4 ${textarea ? 'pt-6 pb-3 resize-none' : 'pt-5 pb-2'} text-[15px] text-white focus:outline-none transition-colors duration-300`}
+          className={`peer relative w-full rounded-xl px-4 ${textarea ? 'pt-6 pb-3 resize-none' : 'pt-5 pb-2'} text-[15px] text-white focus:outline-hidden transition-colors duration-300`}
           style={{
             background: 'rgba(255,255,255,0.04)',
             border: `1px solid ${error ? 'rgba(248,113,113,0.55)' : 'rgba(255,255,255,0.1)'}`,
@@ -71,7 +71,7 @@ function Field({ label, error, textarea = false, ...props }) {
         <label className={`absolute left-4 text-white/30 pointer-events-none transition-all duration-200
           ${textarea ? 'top-5' : 'top-1/2 -translate-y-1/2'}
           peer-focus:top-2 peer-focus:translate-y-0 peer-focus:text-[10px] peer-focus:text-brand-pink-light peer-focus:tracking-[0.14em] peer-focus:uppercase
-          peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:tracking-[0.14em] peer-[:not(:placeholder-shown)]:uppercase
+          peer-not-placeholder-shown:top-2 peer-not-placeholder-shown:translate-y-0 peer-not-placeholder-shown:text-[10px] peer-not-placeholder-shown:tracking-[0.14em] peer-not-placeholder-shown:uppercase
           text-[14px]`}>
           {label}
         </label>
@@ -86,19 +86,19 @@ function SelectField({ label, error, value, options, ...props }) {
   return (
     <div>
       <div className="group/field relative">
-        <div className="absolute -inset-[1px] rounded-xl opacity-0 group-focus-within/field:opacity-70 transition-opacity duration-400 pointer-events-none"
+        <div className="absolute -inset-px rounded-xl opacity-0 group-focus-within/field:opacity-70 transition-opacity duration-400 pointer-events-none"
           style={{ background: 'linear-gradient(90deg, #2E55E0, #E8155A)', filter: 'blur(5px)' }} />
         <select
           {...props}
           value={value}
-          className={`relative w-full appearance-none rounded-xl px-4 py-3.5 text-[14px] focus:outline-none transition-colors duration-300 ${value ? 'text-white' : 'text-white/30'}`}
+          className={`relative w-full appearance-none rounded-xl px-4 py-3.5 text-[14px] focus:outline-hidden transition-colors duration-300 ${value ? 'text-white' : 'text-white/30'}`}
           style={{
             background: 'rgba(255,255,255,0.04)',
             border: `1px solid ${error ? 'rgba(248,113,113,0.55)' : 'rgba(255,255,255,0.1)'}`,
           }}
         >
-          <option value="" className="bg-[#080E2A] text-white/50">{label}</option>
-          {options.map(o => <option key={o} value={o} className="bg-[#080E2A] text-white">{o}</option>)}
+          <option value="" className="bg-bg-dark2 text-white/50">{label}</option>
+          {options.map(o => <option key={o} value={o} className="bg-bg-dark2 text-white">{o}</option>)}
         </select>
         <ChevronDown size={15} className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none" />
       </div>
@@ -157,8 +157,8 @@ export default function ContactPage() {
         <div className="absolute inset-0">
           <ContactScene />
         </div>
-        <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-bg-dark/85 via-bg-dark/35 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 h-40 pointer-events-none bg-gradient-to-t from-bg-dark to-transparent" />
+        <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-bg-dark/85 via-bg-dark/35 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-40 pointer-events-none bg-linear-to-t from-bg-dark to-transparent" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 w-full py-20">
           <motion.div

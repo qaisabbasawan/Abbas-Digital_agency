@@ -68,7 +68,7 @@ export default function WhatsAppButton() {
         transition={{ type: 'spring', stiffness: 260, damping: 18, delay: 0.4 }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.92 }}
-        className="relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] shadow-lg shadow-[#25D366]/40 outline-none focus-visible:ring-4 focus-visible:ring-[#25D366]/40"
+        className="relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] shadow-lg shadow-[#25D366]/40 outline-hidden focus-visible:ring-4 focus-visible:ring-[#25D366]/40"
       >
         <motion.span
           className="absolute inset-0 rounded-full bg-[#25D366]"
