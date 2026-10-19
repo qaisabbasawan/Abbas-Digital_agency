@@ -9,7 +9,108 @@ import RevealText from '../components/anim/RevealText'
 import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
 
-const projects = [
+// Live homepage snapshot of a client site, rendered by WordPress.com's mShots service
+const snap = domain =>
+  `https://s.wordpress.com/mshots/v1/${encodeURIComponent(`https://${domain}/`)}?w=1200&h=750`
+
+const clientSites = [
+  {
+    id: 13,
+    title: 'Chai Karak',
+    domain: 'mychaikarak.com',
+    cat: 'E-Commerce',
+    metric: '8 Flavours',
+    desc: 'Online store for a Birmingham brand of instant 3-in-1 chai premixes — Karak, Masala, Kashmiri Pink and more, sweetened or unsweetened, delivered across the UK.',
+    tags: ['E-Commerce', 'Food & Beverage', 'UK Delivery'],
+    from: '#7C2D12',
+    to: '#D97706',
+  },
+  {
+    id: 14,
+    title: 'JinWheels',
+    domain: 'jinwheels.com',
+    cat: 'Web',
+    metric: '200+ Point Checks',
+    desc: 'Car services website for an Islamabad team offering rentals with or without driver, airport transfers, car buying and selling, and inspections across Pakistan.',
+    tags: ['Car Rental', 'Automotive', 'Pakistan'],
+    from: '#9F1239',
+    to: '#E8155A',
+  },
+  {
+    id: 15,
+    title: 'Swiss Elite Transfers',
+    domain: 'swisselitetransfers.com',
+    cat: 'Web',
+    metric: '24/7 Chauffeur',
+    desc: 'Luxury chauffeur website for a Geneva company — fixed-price airport transfers from GVA, ZRH and BSL, ski resort transfers and executive travel across Switzerland, France and Italy.',
+    tags: ['Chauffeur', 'Airport Transfers', 'Switzerland'],
+    from: '#7F1D1D',
+    to: '#DC2626',
+  },
+  {
+    id: 16,
+    title: 'Granny Flats Ireland',
+    domain: 'grannyflats.ie',
+    cat: 'Web',
+    metric: 'Turnkey Builds',
+    desc: 'Website for a Dublin builder of fully finished granny flats and garden apartments — from design and ICF construction to fitted kitchens, bathrooms and final finishes.',
+    tags: ['Construction', 'Lead Generation', 'Dublin'],
+    from: '#065F46',
+    to: '#059669',
+  },
+  {
+    id: 17,
+    title: 'Home Bridge',
+    domain: 'homebridge.id',
+    cat: 'Web',
+    metric: 'Verified Staff',
+    desc: 'Recruitment website connecting Bali employers with verified Indonesian staff — covering sourcing, verification, placement and ongoing support.',
+    tags: ['Recruitment', 'Staffing', 'Bali'],
+    from: '#1A3BBF',
+    to: '#2E55E0',
+  },
+  {
+    id: 18,
+    title: 'KEYANA Botanicals',
+    domain: 'keyanabotanicals.com',
+    cat: 'E-Commerce',
+    metric: 'Cold-Pressed',
+    desc: 'Brand store for a premium cold-pressed candlenut hair oil made with Indonesian botanicals to strengthen, restore and nourish hair from root to tip.',
+    tags: ['Hair Care', 'Beauty', 'Product Brand'],
+    from: '#3F6212',
+    to: '#84CC16',
+  },
+  {
+    id: 19,
+    title: 'Skybridge Communication',
+    domain: 'skybridgecommunication.com',
+    cat: 'Web',
+    metric: 'BPO Services',
+    desc: 'Corporate website for a business process outsourcing company providing lead generation, sales and customer support for auto insurance, medical billing, home security and more.',
+    tags: ['BPO', 'Lead Generation', 'Customer Support'],
+    from: '#0C4A6E',
+    to: '#0891B2',
+  },
+  {
+    id: 20,
+    title: 'Ride Growth',
+    domain: 'ridegrowth.com',
+    cat: 'Web',
+    metric: 'Worldwide',
+    desc: 'SaaS website for booking software, websites, apps and marketing built only for transfer and taxi businesses — in any country and any currency.',
+    tags: ['SaaS', 'Taxi & Transfers', 'Booking Software'],
+    from: '#4C1D95',
+    to: '#A855F7',
+  },
+].map(site => ({
+  ...site,
+  client: site.domain,
+  yr: 'Live',
+  url: `https://${site.domain}/`,
+  img: snap(site.domain),
+}))
+
+const caseStudies = [
   {
     id: 1,
     title: 'TechCorp Solutions',
@@ -168,6 +269,8 @@ const projects = [
   },
 ]
 
+const projects = [...clientSites, ...caseStudies]
+
 const tabs = ['All', 'Web', 'E-Commerce', 'Mobile', 'AI', 'Marketing', 'Branding']
 
 const catColors = {
@@ -177,6 +280,16 @@ const catColors = {
   AI: '#0891B2',
   Marketing: '#F97316',
   Branding: '#D97706',
+}
+
+/* Live client sites open in a new tab; case studies render as plain cards */
+function CardShell({ url, title, children, ...rest }) {
+  if (!url) return <div {...rest}>{children}</div>
+  return (
+    <a href={url} target="_blank" rel="noopener noreferrer" aria-label={`Visit ${title} website`} {...rest}>
+      {children}
+    </a>
+  )
 }
 
 const fade = (delay = 0) => ({
@@ -244,7 +357,7 @@ export default function PortfolioPage() {
             </RevealText>
           </h1>
           <motion.p {...fade(0.3)} className="text-white/50 text-[15px] max-w-md leading-relaxed">
-            12 featured projects spanning web, mobile, AI, marketing and branding — a slice of 500+ delivered.
+            {projects.length} featured projects, including live client websites, spanning web, mobile, AI, marketing and branding — a slice of 500+ delivered.
           </motion.p>
         </div>
       </section>
@@ -308,7 +421,9 @@ export default function PortfolioPage() {
                   className="h-full"
                 >
                   <TiltCard max={8} glareColor={`${p.from}29`}>
-                    <div
+                    <CardShell
+                      url={p.url}
+                      title={p.title}
                       className="group relative flex flex-col h-full rounded-3xl overflow-hidden cursor-pointer"
                       style={{
                         background: `linear-gradient(165deg, ${p.from}1C, transparent 50%), linear-gradient(#0A1130, #0A1130)`,
@@ -328,8 +443,8 @@ export default function PortfolioPage() {
                       >
                         <img
                           src={p.img}
-                          alt={p.title}
-                          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                          alt={p.url ? `${p.title} website homepage` : p.title}
+                          className={`w-full h-full object-cover ${p.url ? 'object-top' : ''} transition-transform duration-700 ease-out group-hover:scale-110`}
                           loading="lazy"
                           onError={e => { e.target.style.display = 'none' }}
                         />
@@ -408,7 +523,7 @@ export default function PortfolioPage() {
                           ))}
                         </div>
                       </div>
-                    </div>
+                    </CardShell>
                   </TiltCard>
                 </motion.div>
               ))}
