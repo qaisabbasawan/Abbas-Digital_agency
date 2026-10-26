@@ -75,8 +75,9 @@ function StepRow({ step, i }) {
     >
       <TiltCard max={7} glareColor={`${color}26`}>
         <div
-          className="group relative p-7 rounded-3xl overflow-hidden"
+          className="glass-card group relative p-7 rounded-3xl overflow-hidden"
           style={{
+            '--glass-tint': color,
             background: `linear-gradient(${left ? '150deg' : '210deg'}, ${color}14, rgba(8,14,42,0.6) 48%)`,
             border: `1px solid ${color}2E`,
             backdropFilter: 'blur(10px)',

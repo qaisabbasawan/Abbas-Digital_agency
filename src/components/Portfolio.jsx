@@ -31,8 +31,9 @@ function StackCard({ p, i, total, progress }) {
     >
       <motion.div style={{ scale, transformOrigin: 'center top' }}>
         <div
-          className="group relative grid grid-cols-1 lg:grid-cols-[11fr_13fr] overflow-hidden rounded-[28px] border border-white/10 lg:h-[62vh] lg:max-h-[560px] lg:min-h-[440px]"
+          className="glass-card glass-card--solid group relative grid grid-cols-1 lg:grid-cols-[11fr_13fr] overflow-hidden rounded-[28px] border border-white/10 lg:h-[62vh] lg:max-h-[560px] lg:min-h-[440px]"
           style={{
+            '--glass-tint': p.from,
             // opaque base layer underneath the colour tint — cards behind must not bleed through
             background: `linear-gradient(125deg, ${p.from}33 0%, transparent 52%, ${p.to}1C 100%), linear-gradient(#0A1130, #0A1130)`,
             boxShadow: '0 30px 90px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.08)',

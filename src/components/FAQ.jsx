@@ -36,7 +36,8 @@ export default function FAQ({ faqs = HOMEPAGE_FAQS, eyebrow = 'Questions & Answe
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-40px' }}
                 transition={{ delay: (i % 6) * 0.05, duration: 0.5 }}
-                className="rounded-2xl overflow-hidden"
+                data-open={isOpen}
+                className="glass-card glass-card--sm rounded-2xl overflow-hidden"
                 style={{ background: 'rgba(8,14,42,0.5)', border: `1px solid ${isOpen ? 'rgba(46,85,224,0.4)' : 'rgba(255,255,255,0.08)'}` }}
               >
                 <button

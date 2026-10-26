@@ -1,0 +1,144 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   Glass UI — trial theme for the homepage.
+
+   Everything here is scoped under `.glass-ui`, which LandingPage adds only
+   while GLASS_UI is on. Components carry a harmless `glass-card` class that
+   has no effect anywhere else. Many cards set their colours inline, so the
+   panel rules below use !important to win over those inline styles.
+───────────────────────────────────────────────────────────────────────── */
+
+/* ── Ambient backdrop: soft colour fields the glass panels blur ── */
+.glass-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background: #05091a;
+}
+.glass-backdrop span {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(110px);
+  opacity: 0.5;
+  will-change: transform;
+}
+.glass-backdrop span:nth-child(1) {
+  width: 46vw; height: 46vw; top: -8vw; left: -10vw;
+  background: #2e55e0;
+  animation: glass-drift-a 28s ease-in-out infinite alternate;
+}
+.glass-backdrop span:nth-child(2) {
+  width: 40vw; height: 40vw; top: 30vh; right: -12vw;
+  background: #e8155a;
+  opacity: 0.38;
+  animation: glass-drift-b 34s ease-in-out infinite alternate;
+}
+.glass-backdrop span:nth-child(3) {
+  width: 36vw; height: 36vw; bottom: -12vw; left: 22vw;
+  background: #7c3aed;
+  opacity: 0.42;
+  animation: glass-drift-c 31s ease-in-out infinite alternate;
+}
+.glass-backdrop span:nth-child(4) {
+  width: 24vw; height: 24vw; top: 18vh; left: 38vw;
+  background: #0891b2;
+  opacity: 0.28;
+  animation: glass-drift-b 38s ease-in-out infinite alternate-reverse;
+}
+/* faint grain keeps large blurred fields from banding */
+.glass-backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+@keyframes glass-drift-a { to { transform: translate(14vw, 18vh) scale(1.12); } }
+@keyframes glass-drift-b { to { transform: translate(-16vw, 22vh) scale(0.9); } }
+@keyframes glass-drift-c { to { transform: translate(12vw, -20vh) scale(1.08); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-backdrop span { animation: none; }
+}
+
+/* ── Let the backdrop show through the page ── */
+.glass-ui .glass-page,
+.glass-ui .glass-page > section,
+.glass-ui .glass-page section.bg-bg-dark,
+.glass-ui .glass-page section.bg-bg-dark2 {
+  background: transparent !important;
+}
+
+/* ── Frosted panels ── */
+/* Tinted cards set --glass-tint inline to their accent colour */
+.glass-ui .glass-card {
+  background:
+    linear-gradient(155deg,
+      color-mix(in srgb, var(--glass-tint, #ffffff) 16%, transparent) 0%,
+      rgba(255, 255, 255, 0.05) 45%,
+      rgba(255, 255, 255, 0.02) 100%) !important;
+  backdrop-filter: blur(22px) saturate(170%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(170%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-top-color: rgba(255, 255, 255, 0.26) !important;
+  box-shadow:
+    0 24px 60px rgba(2, 6, 23, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 0 32px rgba(255, 255, 255, 0.03) !important;
+}
+/* Opaque glass for stacked cards and the contact form: frosted edges, nothing showing through */
+.glass-ui .glass-card--solid {
+  background:
+    linear-gradient(155deg,
+      color-mix(in srgb, var(--glass-tint, #ffffff) 20%, transparent) 0%,
+      rgba(255, 255, 255, 0.04) 50%),
+    rgb(12, 18, 48) !important;
+  backdrop-filter: blur(36px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(36px) saturate(160%) !important;
+}
+
+/* Small inline chips and rows get a lighter shadow */
+.glass-ui .glass-card--sm {
+  box-shadow:
+    0 8px 24px rgba(2, 6, 23, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+}
+
+/* Open FAQ item keeps its blue highlight */
+.glass-ui .glass-card[data-open='true'] {
+  border-color: rgba(46, 85, 224, 0.55) !important;
+  border-top-color: rgba(120, 150, 255, 0.6) !important;
+}
+
+/* ── Form fields inside glass ── */
+.glass-ui .glass-page input,
+.glass-ui .glass-page textarea,
+.glass-ui .glass-page select {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(8px);
+}
+
+/* ── Navbar: frosted bar once the page scrolls ── */
+.glass-ui .site-nav[data-solid='true'] {
+  background: rgba(8, 12, 34, 0.38);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 40px rgba(2, 6, 23, 0.25), inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* ── Marquee strip and footer as glass bands ── */
+.glass-ui .glass-page .marquee-wrapper {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+.glass-ui .glass-page footer {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border-top-color: rgba(255, 255, 255, 0.14);
+}

@@ -70,8 +70,9 @@ function ServiceCard({ Icon, title, desc, color, i }) {
       <TiltCard max={8} glareColor={`${color}29`}>
         <Link
           to="/services"
-          className="group relative flex flex-col h-[480px] p-9 rounded-3xl overflow-hidden"
+          className="glass-card group relative flex flex-col h-[480px] p-9 rounded-3xl overflow-hidden"
           style={{
+            '--glass-tint': color,
             background: `linear-gradient(165deg, ${color}16 0%, rgba(255,255,255,0.015) 42%), rgba(8,14,42,0.55)`,
             border: `1px solid ${color}30`,
             backdropFilter: 'blur(8px)',

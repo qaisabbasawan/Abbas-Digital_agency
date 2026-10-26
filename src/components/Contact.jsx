@@ -126,8 +126,8 @@ export default function Contact() {
                   viewport={{ once: true, margin: '-50px' }}
                   transition={{ delay: 0.15 + i * 0.12, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
                   whileHover={{ x: 6 }}
-                  className="group flex items-center gap-4 p-4 rounded-2xl cursor-default"
-                  style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.07)' }}
+                  className="glass-card glass-card--sm group flex items-center gap-4 p-4 rounded-2xl cursor-default"
+                  style={{ '--glass-tint': color, background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.07)' }}
                 >
                   <div
                     className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110"
@@ -161,7 +161,7 @@ export default function Contact() {
             />
 
             <div
-              className="relative rounded-3xl p-8 sm:p-10"
+              className="glass-card glass-card--solid relative rounded-3xl p-8 sm:p-10"
               style={{
                 background: 'linear-gradient(165deg, #0B1232, #080E2A 60%)',
                 boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)',

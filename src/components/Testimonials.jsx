@@ -185,7 +185,7 @@ export default function Testimonials() {
           >
             <TiltCard max={5} glareColor="rgba(255,255,255,0.06)">
               <div
-                className="relative rounded-3xl p-8 sm:p-11 overflow-hidden min-h-[340px] flex flex-col"
+                className="glass-card relative rounded-3xl p-8 sm:p-11 overflow-hidden min-h-[340px] flex flex-col"
                 style={{
                   background: 'linear-gradient(160deg, rgba(46,85,224,0.09), rgba(8,14,42,0.7) 55%, rgba(232,21,90,0.06))',
                   border: '1px solid rgba(255,255,255,0.09)',

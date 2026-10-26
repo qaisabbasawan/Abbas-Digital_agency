@@ -157,8 +157,9 @@ function FeaturePill({ Icon, label, color, i }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: 0.3 + i * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl"
+      className="glass-card glass-card--sm flex items-center gap-2.5 px-4 py-2.5 rounded-2xl"
       style={{
+        '--glass-tint': color,
         background: 'rgba(8,14,42,0.5)',
         border: `1px solid ${color}30`,
         boxShadow: `0 4px 20px rgba(0,0,0,0.2), 0 0 18px ${color}0F`,
@@ -291,7 +292,7 @@ export default function AIAnalyzerSection() {
           <div ref={ref}>
             <TiltCard max={5} glareColor="rgba(46,85,224,0.12)" glareSize={500}>
               <div
-                className="relative rounded-3xl overflow-hidden"
+                className="glass-card relative rounded-3xl overflow-hidden"
                 style={{
                   background: 'rgba(8,14,42,0.55)',
                   backdropFilter: 'blur(20px)',

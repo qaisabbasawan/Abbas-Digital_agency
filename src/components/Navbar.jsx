@@ -58,10 +58,11 @@ export default function Navbar() {
 
   return (
     <motion.nav
+      data-solid={scrolled || menuOpen}
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 ${
+      className={`site-nav fixed top-0 left-0 right-0 z-50 transition-all duration-400 ${
         scrolled || menuOpen ? 'bg-bg-dark/95 backdrop-blur-xl border-b border-white/6' : 'bg-transparent'
       }`}
     >
