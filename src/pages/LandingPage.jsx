@@ -1,10 +1,9 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, lazy, Suspense } from 'react'
 import SEO from '../components/SEO'
-import { organizationSchema, localBusinessPK, localBusinessUSA, homepageFaqSchema } from '../lib/schema'
+import { organizationSchema, localBusinessPK, localBusinessUSA, homepageFaqSchema, speakablePageSchema } from '../lib/schema'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import HeroScene    from '../components/HeroScene'
 import Hero         from '../components/Hero'
 import Marquee      from '../components/Marquee'
 import Services     from '../components/Services'
@@ -17,6 +16,9 @@ import FAQ          from '../components/FAQ'
 import Contact      from '../components/Contact'
 import Footer       from '../components/Footer'
 import '../styles/glass.css'
+
+/* three.js scene loads after the page is interactive — keeps ~900 KB out of the critical path */
+const HeroScene = lazy(() => import('../components/HeroScene'))
 
 /* Glass UI trial — set to false to restore the original homepage look */
 const GLASS_UI = true
@@ -78,11 +80,11 @@ export default function LandingPage() {
   return (
     <>
       <SEO
-        title="Digital Marketing Agency Islamabad & Montana USA | Abbas Digital Agency"
+        title="Digital Marketing Agency Islamabad & USA | Abbas Digital Agency"
         description="Abbas Digital Agency — digital marketing agency in Islamabad, Pakistan & Montana, USA. SEO, web design, mobile apps & branding. US-registered LLC. Free quote."
         keywords="digital marketing agency Islamabad, digital marketing agency Montana, SEO services Pakistan, seo agency montana usa, web design company Pakistan, web design montana, mobile app development Pakistan, branding agency Pakistan, best SEO company Pakistan"
         path="/"
-        schema={[organizationSchema(), localBusinessPK(), localBusinessUSA(), homepageFaqSchema()]}
+        schema={[organizationSchema(), localBusinessPK(), localBusinessUSA(), homepageFaqSchema(), speakablePageSchema('/', 'Abbas Digital Agency — Digital Marketing Agency in Islamabad & Montana USA')]}
       />
       {/* Glass UI: colour fields behind the frosted panels */}
       {GLASS_UI && (
@@ -96,7 +98,7 @@ export default function LandingPage() {
         ref={canvasRef}
         style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }}
       >
-        <HeroScene />
+        <Suspense fallback={null}><HeroScene /></Suspense>
       </div>
 
       <div className={GLASS_UI ? 'glass-ui' : undefined} style={{ position: 'relative', zIndex: 10 }}>

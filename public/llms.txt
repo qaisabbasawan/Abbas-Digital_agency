@@ -1,0 +1,28 @@
+# Abbas Digital Agency
+
+> Full-service digital agency founded in 2012 by Muhammad Qais Abbas. Delivery team in Islamabad, Pakistan; registered as Abbas Digital Agency LLC in Kalispell, Montana, USA. We build websites, online stores, mobile apps, AI chatbots and ERP systems, and run SEO, Google Ads, Meta ads and social media for clients in Pakistan, the USA, the UK, Europe and the Middle East. Every project starts with a free consultation and a fixed written quote; we bill in USD.
+
+## Services
+
+- [All services](https://abbasdigitalagency.com/services): overview with timelines and pricing models for each service
+- [Web Development](https://abbasdigitalagency.com/services/web-development): custom WordPress, WooCommerce and React/Next.js websites; business sites from around $500, typically 2–4 weeks
+- [E-Commerce](https://abbasdigitalagency.com/services/ecommerce): Shopify, WooCommerce, Amazon and eBay stores, payment gateways and conversion optimisation
+- [Mobile Apps](https://abbasdigitalagency.com/services/mobile-apps): native iOS, Android and React Native apps, typically 6–12 weeks
+- [AI & Chatbots](https://abbasdigitalagency.com/services/ai-chatbots): WhatsApp and Messenger chatbots, custom GPT assistants, workflow automation and CRM integration
+- [Digital Marketing](https://abbasdigitalagency.com/services/digital-marketing): SEO, Google Ads, Meta ads, social media and email marketing on monthly retainers
+- [Branding & Design](https://abbasdigitalagency.com/services/branding-design): logo, brand identity, UI/UX and brand guidelines, typically 1–3 weeks
+- [ERP Solutions](https://abbasdigitalagency.com/services/erp-solutions): modular cloud ERP with AI demand forecasting and fraud detection, priced per module
+
+## Company
+
+- [About](https://abbasdigitalagency.com/about): founder, team and company story
+- [Portfolio](https://abbasdigitalagency.com/portfolio): live client websites with links
+- [SaaS Products](https://abbasdigitalagency.com/saas-products): software products we have built and shipped
+- [US clients](https://abbasdigitalagency.com/usa-clients): how we work with US businesses as a Montana LLC
+- [Islamabad](https://abbasdigitalagency.com/islamabad): our home market in Pakistan
+- [Contact](https://abbasdigitalagency.com/contact): info@abbasdigitalagency.com · +92 300 5935125 (Pakistan) · +1 667 766 2781 (USA)
+
+## Optional
+
+- [Blog](https://abbasdigitalagency.com/blog): articles on web development, SEO, AI search and digital marketing
+- [AI Business Analyzer](https://abbasdigitalagency.com/analyzer): free tool that scores a business's digital maturity

@@ -1,15 +1,17 @@
-import { useState } from 'react'
+import { useState, lazy, Suspense } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { Search, Clock, ArrowRight, ArrowUpRight, BookOpen, Sparkles, PenTool, Layers } from 'lucide-react'
 import Footer from '../components/Footer'
-import BlogScene from '../components/BlogScene'
 import RevealText from '../components/anim/RevealText'
 import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
 import { useAuth } from '../admin/context/AuthContext'
 import SEO from '../components/SEO'
 import { breadcrumbSchema } from '../lib/schema'
+
+/* three.js scene loads after the page is interactive — keeps ~900 KB out of the critical path */
+const BlogScene = lazy(() => import('../components/BlogScene'))
 
 const catColors = {
   'Web Development':   '#2E55E0',
@@ -237,6 +239,7 @@ export default function BlogPage() {
         description="Expert articles on web development, SEO, digital marketing, AI chatbots, and e-commerce growth strategies. Insights from Abbas Digital Agency Islamabad."
         keywords="digital marketing blog Pakistan, SEO tips Pakistan, web development blog, digital agency blog Islamabad"
         path="/blog"
+        image="/og/blog.jpg"
         schema={breadcrumbSchema([
           { name: 'Home', path: '/' },
           { name: 'Blog', path: '/blog' },
@@ -246,7 +249,7 @@ export default function BlogPage() {
       {/* ── 3D Hero ── */}
       <section className="relative min-h-[82vh] flex items-center overflow-hidden pt-[72px]">
         <div className="absolute inset-0">
-          <BlogScene />
+          <Suspense fallback={null}><BlogScene /></Suspense>
         </div>
         {/* readability gradients */}
         <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-bg-dark/85 via-bg-dark/35 to-transparent" />

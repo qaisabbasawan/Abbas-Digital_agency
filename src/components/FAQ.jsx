@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { Plus } from 'lucide-react'
 import RevealText from './anim/RevealText'
 import { HOMEPAGE_FAQS } from '../data/faqs'
@@ -55,19 +55,16 @@ export default function FAQ({ faqs = HOMEPAGE_FAQS, eyebrow = 'Questions & Answe
                     <Plus size={15} className="text-brand-blue-light" />
                   </motion.span>
                 </button>
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                      className="overflow-hidden"
-                    >
-                      <p className="px-5 sm:px-6 pb-5 text-white/55 text-[14px] leading-relaxed">{f.a}</p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                {/* Answers stay in the HTML when collapsed so search and AI crawlers read every one */}
+                <motion.div
+                  initial={false}
+                  animate={{ height: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
+                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                  className="overflow-hidden"
+                  aria-hidden={!isOpen}
+                >
+                  <p className="px-5 sm:px-6 pb-5 text-white/55 text-[14px] leading-relaxed">{f.a}</p>
+                </motion.div>
               </motion.div>
             )
           })}

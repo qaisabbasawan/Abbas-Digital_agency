@@ -233,16 +233,19 @@ export default function Hero() {
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 w-full pt-28 pb-10">
 
           {/* Headline — cinematic per-character 3D reveal.
-              One <h1> for SEO; an sr-only phrase carries the primary keyword
-              while the animated lines stay as the visible headline. */}
+              One <h1> for SEO, holding only the keyword phrase; the animated
+              letter-by-letter lines sit outside it (hidden from screen readers),
+              so the heading text is never duplicated. */}
           {/* minHeight reserves exact space for the 3 animated lines so a web-font
               swap can't change the block height and shift the centered hero (CLS). */}
-          <h1 className="mb-6 space-y-0" style={{ minHeight: 'calc(3 * 0.92 * clamp(3rem, 7.5vw, 7.2rem))' }}>
-            <span className="sr-only">Digital Marketing Agency in Islamabad &amp; Montana USA — We Build Digital Excellence</span>
-            <HeadlineLine text="We Build"    lineIdx={0} />
-            <HeadlineLine text="Digital"     lineIdx={1} gradient />
-            <HeadlineLine text="Excellence." lineIdx={2} />
-          </h1>
+          <div className="mb-6 space-y-0" style={{ minHeight: 'calc(3 * 0.92 * clamp(3rem, 7.5vw, 7.2rem))' }}>
+            <h1 className="sr-only">Digital Marketing Agency in Islamabad &amp; Montana USA — We Build Digital Excellence</h1>
+            <div aria-hidden="true">
+              <HeadlineLine text="We Build"    lineIdx={0} />
+              <HeadlineLine text="Digital"     lineIdx={1} gradient />
+              <HeadlineLine text="Excellence." lineIdx={2} />
+            </div>
+          </div>
 
           {/* Typewriter */}
           <motion.p

@@ -37,6 +37,7 @@ export default function IslamabadPage() {
         description="Abbas Digital Agency — Islamabad's leading digital marketing, SEO, web design and mobile app development agency. Serving businesses across Pakistan since 2012."
         keywords="digital marketing agency Islamabad, SEO services Islamabad, web design Islamabad, web development company Islamabad, digital agency Pakistan, online marketing Islamabad"
         path="/islamabad"
+        image="/og/islamabad.jpg"
         schema={[
           localBusinessPK(),
           faqSchema(faqs),

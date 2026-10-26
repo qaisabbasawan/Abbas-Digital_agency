@@ -208,7 +208,7 @@ export default function TermsConditionsPage() {
     <>
       <SEO
         title="Terms & Conditions — Abbas Digital Agency"
-        description="Read the Terms and Conditions for using Abbas Digital Agency's website and digital services, including payments, intellectual property, liability and your responsibilities."
+        description="The terms for using Abbas Digital Agency’s website and services, covering payments, intellectual property, liability and your responsibilities."
         keywords="Abbas Digital Agency terms and conditions, terms of service, service agreement, website terms"
         path="/terms-and-conditions"
         schema={[

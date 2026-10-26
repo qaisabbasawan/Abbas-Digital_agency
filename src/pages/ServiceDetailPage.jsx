@@ -19,6 +19,7 @@ import { SignatureVisual } from '../components/ServiceSignature'
 import RevealText from '../components/anim/RevealText'
 import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
+import { clientSites } from '../data/clientSites'
 
 const fade = (delay = 0) => ({
   initial: { opacity: 0, y: 24 },
@@ -27,6 +28,20 @@ const fade = (delay = 0) => ({
   transition: { delay, duration: 0.62, ease: [0.22, 1, 0.36, 1] },
 })
 
+/* Featured project for a service page, built from a real, live client site */
+function siteCase(domain, tags) {
+  const site = clientSites.find(c => c.domain === domain)
+  return {
+    title: site.title,
+    metric: site.metric,
+    desc: site.desc,
+    img: site.img,
+    tags,
+    url: site.url,
+    from: site.from, to: site.to,
+  }
+}
+
 /* ──────────────────────────────────────────
    All 6 service data objects
 ────────────────────────────────────────── */
@@ -34,6 +49,8 @@ const services = {
   'web-development': {
     title: 'Web Development',
     tagline: ['Websites That', 'Work Hard for You.'],
+    metaDesc: 'Custom WordPress, WooCommerce and React/Next.js websites that load fast, rank on Google and convert visitors. Fixed quotes and a free consultation.',
+    whatIs: { q: 'What is web development?', a: 'Web development is the design and build of a website or web application: its structure, code, content management system and integrations. For a business, a well-built site loads fast, works on every device, is easy for your team to update and is set up so Google can find and rank it.' },
     color: '#2E55E0',
     glow: 'rgba(46,85,224,0.22)',
     Icon: Globe,
@@ -60,19 +77,14 @@ const services = {
       { n: '05', title: 'Launch',      desc: 'Thorough QA, performance optimisation, then a smooth handover and go-live.' },
     ],
     tech: ['WordPress', 'React', 'Next.js', 'Node.js', 'Tailwind CSS', 'PHP', 'MySQL', 'Figma', 'Vercel', 'AWS'],
-    caseStudy: {
-      title: 'TechCorp Solutions',
-      metric: '+40% Conversions',
-      desc: 'Corporate rebrand with a custom CMS, multilingual support and a performance-first Next.js architecture delivering 40% more conversions.',
-      img: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=900&h=460&fit=crop&q=80',
-      tags: ['React', 'Next.js', 'Tailwind'],
-      from: '#1A3BBF', to: '#2E55E0',
-    },
+    caseStudy: siteCase('swisselitetransfers.com', ['Web Design', 'Booking Enquiries', 'SEO']),
   },
 
   'ecommerce': {
     title: 'E-Commerce',
     tagline: ['Turn Browsers', 'Into Buyers.'],
+    metaDesc: 'Shopify, WooCommerce, Amazon and eBay stores built to sell, with payment gateways, conversion optimisation and loyalty flows. Free consultation.',
+    whatIs: { q: 'What is e-commerce development?', a: 'E-commerce development is building an online store where customers can browse products, pay securely and receive their orders. It covers the platform (Shopify, WooCommerce or marketplaces like Amazon), product pages, payment gateways and shipping rules, plus the conversion work that turns visitors into repeat buyers.' },
     color: '#E8155A',
     glow: 'rgba(232,21,90,0.22)',
     Icon: ShoppingCart,
@@ -99,19 +111,14 @@ const services = {
       { n: '05', title: 'Launch',      desc: 'Soft launch, traffic monitoring, rapid iteration and 30-day post-launch support.' },
     ],
     tech: ['Shopify', 'WooCommerce', 'PHP', 'Liquid', 'Stripe', 'Klarna', 'Amazon Seller API', 'Google Shopping', 'Klaviyo'],
-    caseStudy: {
-      title: 'LuxeWear Fashion',
-      metric: '$2M Revenue',
-      desc: 'Shopify flagship store with virtual try-on technology, a loyalty programme and an AR product viewer — driving $2M in its first year.',
-      img: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=900&h=460&fit=crop&q=80',
-      tags: ['Shopify', 'Liquid', 'AR'],
-      from: '#7C1D6F', to: '#E8155A',
-    },
+    caseStudy: siteCase('mychaikarak.com', ['E-Commerce', 'Food & Beverage', 'UK Delivery']),
   },
 
   'mobile-apps': {
     title: 'Mobile Apps',
     tagline: ['Apps Users Love', '& Keep Using.'],
+    metaDesc: 'Native iOS, Android and React Native apps from concept to App Store launch, with UI/UX design, QA testing and post-launch support. Fixed quotes.',
+    whatIs: { q: 'What is mobile app development?', a: 'Mobile app development is designing, building and publishing apps for iPhone (iOS) and Android. It includes UI/UX design, the app code, any backend or API the app talks to, testing on real devices, App Store and Google Play submission, and updates after launch.' },
     color: '#7C3AED',
     glow: 'rgba(124,58,237,0.22)',
     Icon: Smartphone,
@@ -138,19 +145,14 @@ const services = {
       { n: '05', title: 'Launch',     desc: 'App Store submission, ASO optimisation and launch-day monitoring.' },
     ],
     tech: ['React Native', 'Flutter', 'Swift', 'Kotlin', 'Firebase', 'AWS', 'Figma', 'TestFlight', 'Play Console'],
-    caseStudy: {
-      title: 'FitPulse Fitness',
-      metric: '50K Users',
-      desc: 'iOS & Android fitness app with AI-generated workout plans and a social accountability feed — reaching 50K users in 6 months.',
-      img: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=900&h=460&fit=crop&q=80',
-      tags: ['React Native', 'Firebase', 'AI'],
-      from: '#7C3AED', to: '#A855F7',
-    },
+    caseStudy: null,
   },
 
   'ai-chatbots': {
     title: 'AI & Chatbots',
     tagline: ['Automate Today.', 'Scale Tomorrow.'],
+    metaDesc: 'WhatsApp and Messenger chatbots, custom GPT assistants and workflow automation that capture leads and answer customers 24/7. Free consultation.',
+    whatIs: { q: 'What is an AI chatbot?', a: 'An AI chatbot is software that answers customers in natural language on channels like WhatsApp, Messenger or your website. Paired with workflow automation, it can take orders, qualify leads, answer FAQs and sync data into your CRM around the clock, so your team only handles the conversations that need a person.' },
     color: '#0891B2',
     glow: 'rgba(8,145,178,0.22)',
     Icon: Bot,
@@ -177,19 +179,14 @@ const services = {
       { n: '05', title: 'Monitor',   desc: 'Live dashboard, weekly insight reports and continuous performance tuning.' },
     ],
     tech: ['GPT-4', 'LangChain', 'Python', 'Node.js', 'WhatsApp API', 'Twilio', 'n8n', 'Pinecone', 'OpenAI', 'FastAPI'],
-    caseStudy: {
-      title: 'ShopBot AI',
-      metric: '80% Automated',
-      desc: 'WhatsApp + Messenger AI chatbot handling product orders, returns and customer queries 24/7 — automating 80% of all support volume.',
-      img: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=900&h=460&fit=crop&q=80',
-      tags: ['GPT-4', 'Node.js', 'WhatsApp API'],
-      from: '#0C4A6E', to: '#2E55E0',
-    },
+    caseStudy: null,
   },
 
   'digital-marketing': {
     title: 'Digital Marketing',
     tagline: ['More Traffic.', 'More Revenue.'],
+    metaDesc: 'SEO, Google Ads, Meta ads, social media and email marketing focused on qualified leads and real ROI, with clear monthly reporting. Free strategy call.',
+    whatIs: { q: 'What is digital marketing?', a: 'Digital marketing is promoting a business through online channels: search engines (SEO and Google Ads), social media (Facebook, Instagram, LinkedIn), email and content. Done well, it puts you in front of people already searching for what you sell and traces every lead and sale back to its source.' },
     color: '#059669',
     glow: 'rgba(5,150,105,0.22)',
     Icon: TrendingUp,
@@ -216,19 +213,14 @@ const services = {
       { n: '05', title: 'Report',   desc: 'Monthly deep-dive with insights, wins and the plan for the next 30 days.' },
     ],
     tech: ['Google Analytics 4', 'Google Ads', 'Meta Ads', 'Ahrefs', 'SEMrush', 'Klaviyo', 'Mailchimp', 'Hotjar', 'Looker Studio'],
-    caseStudy: {
-      title: 'RealEstate360 SEO',
-      metric: '3× Organic Traffic',
-      desc: 'Technical SEO audit plus a 6-month content strategy that tripled organic search traffic and cut cost-per-lead by 40%.',
-      img: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=900&h=460&fit=crop&q=80',
-      tags: ['SEO', 'Ahrefs', 'Analytics'],
-      from: '#7C2D12', to: '#E8155A',
-    },
+    caseStudy: null,
   },
 
   'branding-design': {
     title: 'Branding & Design',
     tagline: ['Design That', 'Builds Empires.'],
+    metaDesc: 'Logo design, brand identity, UI/UX design and brand guidelines that make your business recognisable everywhere it appears. Free consultation.',
+    whatIs: { q: 'What is branding and design?', a: 'Branding and design is creating the visual and verbal identity people recognise your business by: logo, colour palette, typography, imagery style and tone of voice. Brand guidelines then keep every website, social post, ad and printed piece consistent, which builds trust and recall over time.' },
     color: '#D97706',
     glow: 'rgba(217,119,6,0.22)',
     Icon: Palette,
@@ -255,19 +247,14 @@ const services = {
       { n: '05', title: 'Deliver',   desc: 'Full asset pack — all formats, sizes, colour variants and the complete brand guidelines.' },
     ],
     tech: ['Figma', 'Adobe Illustrator', 'Photoshop', 'After Effects', 'InDesign', 'Framer', 'Canva Pro', 'Midjourney'],
-    caseStudy: {
-      title: 'NovaLabs Rebrand',
-      metric: 'Full Brand System',
-      desc: 'Complete brand identity including custom logo, typography scale, colour system and 60-page brand guidelines — delivered in 3 weeks.',
-      img: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=900&h=460&fit=crop&q=80',
-      tags: ['Brand Identity', 'Figma', 'Guidelines'],
-      from: '#4C1D95', to: '#D97706',
-    },
+    caseStudy: null,
   },
 
   'erp-solutions': {
     title: 'ERP Solutions',
     tagline: ['Enterprise Intelligence.', 'Any Scale. Any Market.'],
+    metaDesc: 'Modular cloud ERP with HR, inventory, sales and finance modules, AI demand forecasting and fraud detection. Pay only for the modules you need.',
+    whatIs: { q: 'What is an ERP system?', a: 'An ERP (enterprise resource planning) system is one platform that runs a company\'s core operations, such as HR, inventory, sales, finance, procurement and reporting, on shared real-time data. Instead of separate spreadsheets and tools, every department works from the same numbers.' },
     color: '#4F46E5',
     glow: 'rgba(79,70,229,0.24)',
     Icon: Boxes,
@@ -294,14 +281,7 @@ const services = {
       { n: '05', title: 'Launch & Scale', desc: 'Team onboarding, go-live support, then add modules and locations as you grow.' },
     ],
     tech: ['Next.js', 'Supabase', 'PostgreSQL', 'Facebook Prophet', 'Isolation Forest', 'Google Gemini', 'Python', 'FastAPI', 'Tailwind CSS', 'Vercel'],
-    caseStudy: {
-      title: 'Meridian Distribution',
-      metric: '30% Fewer Stockouts',
-      desc: 'A growing distributor replaced spreadsheets with a 6-module ERP. AI forecasting cut stockouts by 30%, while real-time fraud detection flagged duplicate invoices in their first month live.',
-      img: 'https://images.unsplash.com/photo-1553413077-190dd305871c?w=900&h=460&fit=crop&q=80',
-      tags: ['Next.js', 'Supabase', 'AI Forecasting'],
-      from: '#312E81', to: '#4F46E5',
-    },
+    caseStudy: null,
   },
 }
 
@@ -366,7 +346,7 @@ export default function ServiceDetailPage() {
 
   if (!svc) return <Navigate to="/services" replace />
 
-  const { title, tagline, color, glow, stats, desc, features, steps, tech, caseStudy, scene, faqs: svcFaqsOverride } = svc
+  const { title, tagline, metaDesc, whatIs, color, glow, stats, desc, features, steps, tech, caseStudy, scene, faqs: svcFaqsOverride } = svc
   const lower = title.toLowerCase()
 
   // Per-service FAQ — pricing / timeline / deliverables (the exact gaps the
@@ -382,11 +362,12 @@ export default function ServiceDetailPage() {
     <div className="min-h-screen bg-bg-dark overflow-hidden">
       <SEO
         title={`${title} in Pakistan | Abbas Digital Agency`}
-        description={`${tagline} — Abbas Digital Agency delivers professional ${title.toLowerCase()} services for businesses in Pakistan & USA. US-registered. Free consultation.`}
+        description={metaDesc}
         keywords={`${title.toLowerCase()} Pakistan, ${title.toLowerCase()} Islamabad, Abbas Digital Agency, digital marketing Pakistan`}
         path={`/services/${slug}`}
+        image={`/og/${slug}.jpg`}
         schema={[
-          serviceSchema(title, `${tagline} — professional ${title.toLowerCase()} services for businesses in Pakistan and the USA.`, `/services/${slug}`),
+          serviceSchema(title, metaDesc, `/services/${slug}`),
           breadcrumbSchema([
             { name: 'Home', path: '/' },
             { name: 'Services', path: '/services' },
@@ -421,10 +402,10 @@ export default function ServiceDetailPage() {
               <span className="text-[11px] tracking-[0.2em] uppercase" style={{ color }}>{title}</span>
             </motion.div>
 
-            {/* tagline — one <h1> for SEO; an sr-only phrase carries the full
-                keyword line while the animated lines stay the visible headline. */}
-            <h1 className="mb-7" style={{ perspective: 900 }}>
-              <span className="sr-only">{`${title} — ${tagline.join(' ')}`}</span>
+            {/* tagline — one <h1> for SEO holding the full keyword line; the
+                animated lines sit outside it (hidden from screen readers). */}
+            <div className="mb-7" style={{ perspective: 900 }}>
+              <h1 className="sr-only">{`${title} — ${tagline.join(' ')}`}</h1>
               {tagline.map((line, i) => (
                 <span key={line} aria-hidden className="block overflow-hidden pb-[0.08em] mb-[-0.08em]">
                   <motion.span
@@ -447,7 +428,7 @@ export default function ServiceDetailPage() {
                   </motion.span>
                 </span>
               ))}
-            </h1>
+            </div>
 
             <motion.p
               initial={{ opacity: 0, y: 16 }}
@@ -491,6 +472,22 @@ export default function ServiceDetailPage() {
             className="flex justify-center lg:justify-end"
           >
             <SignatureVisual variant={scene} color={color} />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ══════════════ DEFINITION — a direct answer for search & AI engines ══════════════ */}
+      <section className="relative pt-16 lg:pt-20">
+        <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+          <motion.div
+            {...fade(0)}
+            className="grid lg:grid-cols-[1fr_1.6fr] gap-6 lg:gap-14 items-start p-7 sm:p-10 rounded-3xl"
+            style={{ background: `linear-gradient(150deg, ${color}14, rgba(255,255,255,0.02) 55%)`, border: `1px solid ${color}2E` }}
+          >
+            <h2 className="font-bold text-white leading-tight" style={{ fontSize: 'clamp(1.6rem, 3vw, 2.3rem)' }}>
+              {whatIs.q}
+            </h2>
+            <p className="text-white/65 text-[16px] leading-relaxed">{whatIs.a}</p>
           </motion.div>
         </div>
       </section>
@@ -637,7 +634,8 @@ export default function ServiceDetailPage() {
         </div>
       </section>
 
-      {/* ══════════════ CASE STUDY ══════════════ */}
+      {/* ══════════════ CASE STUDY — real client sites only ══════════════ */}
+      {caseStudy && (
       <section className="relative py-20 lg:py-28 overflow-hidden border-t border-white/6">
         <div className="relative max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
           <motion.p {...fade(0)} className="text-[11px] tracking-[0.28em] uppercase mb-3" style={{ color }}>
@@ -662,9 +660,9 @@ export default function ServiceDetailPage() {
                   {/* Image */}
                   <div className="lg:w-1/2 relative overflow-hidden" style={{ minHeight: 320, background: `linear-gradient(135deg, ${caseStudy.from}, ${caseStudy.to})` }}>
                     <img
-                      src={caseStudy.img} alt={caseStudy.title}
+                      src={caseStudy.img} alt={`${caseStudy.title} website homepage`}
                       loading="lazy" decoding="async"
-                      className="w-full h-full object-cover absolute inset-0 group-hover:scale-[1.05] transition-transform duration-700 ease-out"
+                      className="w-full h-full object-cover object-top absolute inset-0 group-hover:scale-[1.05] transition-transform duration-700 ease-out"
                       onError={e => { e.target.style.display = 'none' }}
                     />
                     <div className="absolute inset-0 bg-linear-to-r from-transparent to-bg-dark/60" />
@@ -689,16 +687,23 @@ export default function ServiceDetailPage() {
                       ))}
                     </div>
 
-                    <Link
-                      to="/portfolio"
-                      className="inline-flex items-center gap-2 text-sm font-semibold group/link relative w-fit"
-                      style={{ color }}
-                    >
-                      <span>View Full Portfolio</span>
-                      <span className="group-hover/link:translate-x-1.5 transition-transform duration-300">
-                        <ArrowRight size={15} strokeWidth={2} />
-                      </span>
-                    </Link>
+                    <div className="flex flex-wrap items-center gap-x-7 gap-y-3 relative">
+                      <a
+                        href={caseStudy.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-sm font-semibold group/link w-fit"
+                        style={{ color }}
+                      >
+                        <span>Visit Live Site</span>
+                        <span className="group-hover/link:translate-x-1.5 transition-transform duration-300">
+                          <ArrowRight size={15} strokeWidth={2} />
+                        </span>
+                      </a>
+                      <Link to="/portfolio" className="text-sm text-white/55 hover:text-white transition-colors">
+                        View Full Portfolio
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -706,6 +711,7 @@ export default function ServiceDetailPage() {
           </motion.div>
         </div>
       </section>
+      )}
 
       {/* ══════════════ CTA ══════════════ */}
       <section className="relative py-20 lg:py-24 overflow-hidden">

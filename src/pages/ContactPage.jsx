@@ -1,16 +1,18 @@
-import { useState } from 'react'
+import { useState, lazy, Suspense } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { Mail, MapPin, Clock, Send, ArrowRight, Check, ChevronDown, MessageCircle } from 'lucide-react'
 import Footer from '../components/Footer'
 import { EmailText } from '../components/EmailLink'
-import ContactScene from '../components/ContactScene'
 import RevealText from '../components/anim/RevealText'
 import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
 import { useAuth } from '../admin/context/AuthContext'
 import SEO from '../components/SEO'
 import { localBusinessPK, localBusinessUSA, breadcrumbSchema } from '../lib/schema'
+
+/* three.js scene loads after the page is interactive — keeps ~900 KB out of the critical path */
+const ContactScene = lazy(() => import('../components/ContactScene'))
 
 const svcList = [
   'Web Development', 'E-Commerce', 'Mobile Apps',
@@ -142,6 +144,7 @@ export default function ContactPage() {
         description="Get in touch with Abbas Digital Agency. Contact our offices in Islamabad, Pakistan or Montana, USA. Free consultation for SEO, web design & digital marketing."
         keywords="contact Abbas Digital Agency, digital marketing agency Islamabad contact, SEO agency Pakistan contact"
         path="/contact"
+        image="/og/contact.jpg"
         schema={[
           localBusinessPK(),
           localBusinessUSA(),
@@ -155,7 +158,7 @@ export default function ContactPage() {
       {/* ── 3D Hero ── */}
       <section className="relative min-h-[74vh] flex items-center overflow-hidden pt-[72px]">
         <div className="absolute inset-0">
-          <ContactScene />
+          <Suspense fallback={null}><ContactScene /></Suspense>
         </div>
         <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-bg-dark/85 via-bg-dark/35 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 h-40 pointer-events-none bg-linear-to-t from-bg-dark to-transparent" />
@@ -170,21 +173,23 @@ export default function ContactPage() {
             <span className="text-brand-pink text-[11px] tracking-[0.28em] uppercase">Get In Touch</span>
           </motion.div>
 
-          {/* One <h1> for SEO; an sr-only phrase carries the primary keyword
-              while the animated lines stay as the visible headline. */}
-          <h1 className="mb-6">
-            <span className="sr-only">Contact Abbas Digital Agency — Islamabad &amp; Montana USA</span>
-            <RevealText as="span" delay={0.15} stagger={0.08}
-              className="block font-bold text-white leading-[1.04] mb-3"
-              style={{ fontSize: 'clamp(3rem,7vw,6rem)' }}>
-              Your signal,
-            </RevealText>
-            <RevealText as="span" delay={0.35} stagger={0.08} gradient
-              className="block font-bold leading-[1.04]"
-              style={{ fontSize: 'clamp(3rem,7vw,6rem)' }}>
-              our mission
-            </RevealText>
-          </h1>
+          {/* One <h1> for SEO, holding only the keyword phrase; the animated
+              lines sit outside it (hidden from screen readers). */}
+          <div className="mb-6">
+            <h1 className="sr-only">Contact Abbas Digital Agency — Islamabad &amp; Montana USA</h1>
+            <div aria-hidden="true">
+              <RevealText as="span" delay={0.15} stagger={0.08}
+                className="block font-bold text-white leading-[1.04] mb-3"
+                style={{ fontSize: 'clamp(3rem,7vw,6rem)' }}>
+                Your signal,
+              </RevealText>
+              <RevealText as="span" delay={0.35} stagger={0.08} gradient
+                className="block font-bold leading-[1.04]"
+                style={{ fontSize: 'clamp(3rem,7vw,6rem)' }}>
+                our mission
+              </RevealText>
+            </div>
+          </div>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.6 }}

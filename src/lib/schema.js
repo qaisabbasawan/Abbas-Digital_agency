@@ -11,6 +11,34 @@ const SAME_AS = [
   'https://www.instagram.com/abbasdigitalagency',
 ]
 
+/* Founder — shared by the Organization entity and the About page */
+const FOUNDER = {
+  '@type': 'Person',
+  '@id': `${SITE}/about#founder`,
+  name: 'Muhammad Qais Abbas',
+  jobTitle: 'Founder & CEO',
+  image: `${SITE}/team/qais-abbas.png`,
+  sameAs: ['https://www.linkedin.com/in/qaisabbas/'],
+}
+
+/* Person entities for the founder and team (About page), linked to the
+   Organization so AI engines can attribute the agency's expertise to people */
+export function teamSchema(members) {
+  const worksFor = { '@id': `${SITE}/#organization` }
+  return [
+    { '@context': 'https://schema.org', ...FOUNDER, worksFor, address: { '@type': 'PostalAddress', addressLocality: 'Islamabad', addressCountry: 'PK' } },
+    ...members.map(m => ({
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: m.name,
+      jobTitle: m.role,
+      image: `${SITE}${m.img}`,
+      ...(m.linkedin ? { sameAs: [m.linkedin] } : {}),
+      worksFor,
+    })),
+  ]
+}
+
 export function organizationSchema() {
   return {
     '@context': 'https://schema.org',
@@ -20,6 +48,8 @@ export function organizationSchema() {
     legalName: 'Abbas Digital Agency LLC',
     url: SITE,
     logo: LOGO,
+    foundingDate: '2012',
+    founder: FOUNDER,
     image: `${SITE}/og-image.jpg`,
     description:
       'Full-service digital marketing agency based in Islamabad, Pakistan and registered as an LLC in Montana, USA. SEO, web design, mobile apps, social media, PPC and branding.',
@@ -122,6 +152,15 @@ export function localBusinessUSA() {
   }
 }
 
+/* A named person when the post has one (the founder links to his entity);
+   the agency itself for posts credited to "Abbas Digital Agency" or "Admin" */
+function articleAuthor(name) {
+  const org = { '@type': 'Organization', name: 'Abbas Digital Agency', url: SITE }
+  if (!name || /^(abbas digital agency|admin)$/i.test(name.trim())) return org
+  if (name.trim() === FOUNDER.name) return FOUNDER
+  return { '@type': 'Person', name: name.trim(), worksFor: { '@id': `${SITE}/#organization` } }
+}
+
 export function articleSchema(blog) {
   const url = `${SITE}/blog/${blog.slug}`
   const published = blog.date ? new Date(blog.date).toISOString() : undefined
@@ -135,13 +174,28 @@ export function articleSchema(blog) {
     image: blog.image ? [blog.image] : [`${SITE}/og-image.jpg`],
     datePublished: published,
     dateModified: modified,
-    author: { '@type': 'Organization', name: 'Abbas Digital Agency', url: SITE },
+    author: articleAuthor(blog.author),
     publisher: {
       '@type': 'Organization',
       name: 'Abbas Digital Agency',
       logo: { '@type': 'ImageObject', url: LOGO },
     },
     articleSection: blog.category || undefined,
+  }
+}
+
+/* WebPage with speakable sections — tells voice assistants which parts
+   (the H1 and the FAQ questions & answers) to read aloud */
+export function speakablePageSchema(path, name) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': `${SITE}${path}#webpage`,
+    url: `${SITE}${path}`,
+    name,
+    isPartOf: { '@id': `${SITE}/#website` },
+    about: { '@id': `${SITE}/#organization` },
+    speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '#faq h3', '#faq p'] },
   }
 }
 

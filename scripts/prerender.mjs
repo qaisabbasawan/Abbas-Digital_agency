@@ -60,6 +60,12 @@ async function fetchBlogs() {
     if (error) throw error
     return (data || []).map(blogFromDb)
   } catch (e) {
+    // On Netlify, a blog-less build would replace the live site with an empty
+    // blog and a sitemap missing every post — fail instead so the previous
+    // deploy stays live. Set ALLOW_EMPTY_BLOG=1 to deploy without posts anyway.
+    if (process.env.NETLIFY && !process.env.ALLOW_EMPTY_BLOG) {
+      throw new Error(`Could not fetch blogs from Supabase (${e.message}). Failing the deploy so the live blog is not wiped; set ALLOW_EMPTY_BLOG=1 to override.`)
+    }
     console.warn('⚠️  Could not fetch blogs from Supabase — prerendering without blog data:', e.message)
     return []
   }

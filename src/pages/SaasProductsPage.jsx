@@ -64,6 +64,7 @@ export default function SaasProductsPage() {
         description="Explore SaaS products built by Abbas Digital Agency — CV Maker Free, DownloadMyVideo and AI Plant Doctor. Try each product live."
         keywords="Abbas Digital Agency SaaS products, CV Maker Free, DownloadMyVideo, AI Plant Doctor"
         path="/saas-products"
+        image="/og/saas-products.jpg"
         schema={[
           breadcrumbSchema([
             { name: 'Home', path: '/' },
