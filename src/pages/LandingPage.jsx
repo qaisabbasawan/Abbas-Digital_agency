@@ -16,6 +16,10 @@ import AIAnalyzerSection  from '../components/AIAnalyzerSection'
 import FAQ          from '../components/FAQ'
 import Contact      from '../components/Contact'
 import Footer       from '../components/Footer'
+import '../styles/glass.css'
+
+/* Glass UI trial — set to false to restore the original homepage look */
+const GLASS_UI = true
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -49,6 +53,13 @@ function ScrollSection({ children }) {
 export default function LandingPage() {
   const canvasRef = useRef(null)
 
+  /* Flag the document so the navbar (rendered outside this page) picks up the glass styles */
+  useEffect(() => {
+    if (!GLASS_UI) return
+    document.documentElement.classList.add('glass-ui')
+    return () => document.documentElement.classList.remove('glass-ui')
+  }, [])
+
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.to(canvasRef.current, {
@@ -73,6 +84,13 @@ export default function LandingPage() {
         path="/"
         schema={[organizationSchema(), localBusinessPK(), localBusinessUSA(), homepageFaqSchema()]}
       />
+      {/* Glass UI: colour fields behind the frosted panels */}
+      {GLASS_UI && (
+        <div className="glass-backdrop" aria-hidden>
+          <span /><span /><span /><span />
+        </div>
+      )}
+
       {/* Fixed 3-D background */}
       <div
         ref={canvasRef}
@@ -81,7 +99,7 @@ export default function LandingPage() {
         <HeroScene />
       </div>
 
-      <div style={{ position: 'relative', zIndex: 10 }}>
+      <div className={GLASS_UI ? 'glass-ui' : undefined} style={{ position: 'relative', zIndex: 10 }}>
 
         {/* Hero — sticky pin zone (hero stays on screen for 80 vh while zooming back) */}
         <div style={{ height: '180vh', position: 'relative' }}>
@@ -91,7 +109,7 @@ export default function LandingPage() {
         </div>
 
         {/* Every section below gets the same push-into-background scroll animation */}
-        <div style={{ background: '#05091A', position: 'relative', zIndex: 2 }}>
+        <div className="glass-page" style={{ background: '#05091A', position: 'relative', zIndex: 2 }}>
           <Marquee />
           {/* Services pins itself for the horizontal showcase — must NOT be
               inside a transformed wrapper or the pin breaks */}

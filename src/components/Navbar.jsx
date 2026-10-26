@@ -58,11 +58,12 @@ export default function Navbar() {
 
   return (
     <motion.nav
+      data-solid={scrolled || menuOpen}
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 ${
-        scrolled || menuOpen ? 'bg-bg-dark/95 backdrop-blur-xl border-b border-white/[0.06]' : 'bg-transparent'
+      className={`site-nav fixed top-0 left-0 right-0 z-50 transition-all duration-400 ${
+        scrolled || menuOpen ? 'bg-bg-dark/95 backdrop-blur-xl border-b border-white/6' : 'bg-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
@@ -179,7 +180,7 @@ export default function Navbar() {
                     <div className="relative grid grid-cols-[210px_1fr]">
                       {/* ── Featured panel ── */}
                       <div
-                        className="relative p-5 flex flex-col border-r border-white/[0.06] overflow-hidden"
+                        className="relative p-5 flex flex-col border-r border-white/6 overflow-hidden"
                         style={{ background: 'linear-gradient(180deg, rgba(46,85,224,0.14), rgba(232,21,90,0.09))' }}
                       >
                         <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-brand-pink/20 blur-3xl pointer-events-none" />
@@ -234,7 +235,7 @@ export default function Navbar() {
                             <Link
                               to={path}
                               onClick={() => setDropOpen(false)}
-                              className="group relative flex items-start gap-3 p-3 rounded-xl transition-all duration-250 hover:bg-white/[0.05]"
+                              className="group relative flex items-start gap-3 p-3 rounded-xl transition-all duration-250 hover:bg-white/5"
                             >
                               {/* hover accent bar */}
                               <span
@@ -270,7 +271,7 @@ export default function Navbar() {
                     </div>
 
                     {/* Footer strip */}
-                    <div className="relative px-5 py-3 border-t border-white/[0.06] flex items-center justify-between">
+                    <div className="relative px-5 py-3 border-t border-white/6 flex items-center justify-between">
                       <span className="text-white/30 text-[11px] inline-flex items-center gap-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
                         All 7 services · available now
@@ -314,7 +315,7 @@ export default function Navbar() {
             <Link
               to="/analyzer"
               data-hc-link="analyzer"
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[11px] tracking-[0.1em] font-medium text-brand-pink transition-all duration-200 hover:bg-brand-pink/10"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[11px] tracking-widest font-medium text-brand-pink transition-all duration-200 hover:bg-brand-pink/10"
               style={{ border: '1px solid rgba(232,21,90,0.4)' }}
             >
               <BarChart2 size={12} strokeWidth={2} />
@@ -349,7 +350,7 @@ export default function Navbar() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.28, ease: 'easeInOut' }}
-            className="lg:hidden overflow-hidden bg-bg-dark/98 border-b border-white/[0.06]"
+            className="lg:hidden overflow-hidden bg-bg-dark/98 border-b border-white/6"
           >
             <nav className="px-6 py-5 flex flex-col">
               {/* Home */}
@@ -357,7 +358,7 @@ export default function Navbar() {
                 <motion.div key={l.label} initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.06 }}>
                   <Link
                     to={l.path}
-                    className={`flex items-center justify-between py-3.5 border-b border-white/[0.06] text-sm tracking-widest uppercase ${
+                    className={`flex items-center justify-between py-3.5 border-b border-white/6 text-sm tracking-widest uppercase ${
                       location.pathname === l.path ? 'text-white' : 'text-white/50'
                     }`}
                   >
@@ -371,7 +372,7 @@ export default function Navbar() {
               <motion.div initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.12 }}>
                 <button
                   onClick={() => setMobileServOpen(v => !v)}
-                  className="w-full flex items-center justify-between py-3.5 border-b border-white/[0.06] text-sm tracking-widest uppercase text-white/50"
+                  className="w-full flex items-center justify-between py-3.5 border-b border-white/6 text-sm tracking-widest uppercase text-white/50"
                 >
                   Services
                   <motion.span animate={{ rotate: mobileServOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
@@ -392,7 +393,7 @@ export default function Navbar() {
                           <Link
                             key={label}
                             to={path}
-                            className="flex items-center gap-3 py-2.5 px-2 rounded-xl hover:bg-white/[0.04] transition-colors"
+                            className="flex items-center gap-3 py-2.5 px-2 rounded-xl hover:bg-white/4 transition-colors"
                           >
                             <div
                               className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
@@ -419,7 +420,7 @@ export default function Navbar() {
                 <motion.div key={l.label} initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: (i + 3) * 0.06 }}>
                   <Link
                     to={l.path}
-                    className={`flex items-center justify-between py-3.5 border-b border-white/[0.06] text-sm tracking-widest uppercase ${
+                    className={`flex items-center justify-between py-3.5 border-b border-white/6 text-sm tracking-widest uppercase ${
                       location.pathname === l.path ? 'text-white' : 'text-white/50'
                     }`}
                   >

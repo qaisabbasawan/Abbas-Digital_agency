@@ -4,111 +4,9 @@ import { Link } from 'react-router-dom'
 import { ArrowUpRight } from 'lucide-react'
 import RevealText from './anim/RevealText'
 import Magnetic from './anim/Magnetic'
+import { clientSites } from '../data/clientSites'
 
-const featured = [
-  {
-    id: 1,
-    title: 'TechCorp Solutions',
-    client: 'TechCorp Inc.',
-    cat: 'Web',
-    yr: '2024',
-    metric: '+40%',
-    metricLabel: 'Conversion Rate',
-    desc: 'Corporate rebrand with custom CMS, multilingual support & Next.js.',
-    problem: 'A dated, slow corporate site was losing leads and ranked poorly on mobile.',
-    solution: 'We rebuilt it on Next.js with a custom CMS, multilingual support and a performance-first architecture.',
-    result: 'Conversions rose 40% and mobile page-load dropped below 1.5s within two months.',
-    tags: ['React', 'Next.js', 'Tailwind'],
-    from: '#1A3BBF',
-    to: '#2E55E0',
-    img: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=900&h=600&fit=crop&q=80',
-  },
-  {
-    id: 3,
-    title: 'LuxeWear Fashion',
-    client: 'LuxeWear Ltd.',
-    cat: 'E-Commerce',
-    yr: '2024',
-    metric: '$2M',
-    metricLabel: 'Revenue Generated',
-    desc: 'Shopify store with virtual try-on, loyalty programme & AR viewer.',
-    problem: 'High return rates and cart abandonment were eating into a new fashion brand’s margins.',
-    solution: 'We launched a Shopify flagship with AR try-on, a loyalty programme and a streamlined checkout.',
-    result: 'The store generated $2M in revenue in year one while cutting returns by a third.',
-    tags: ['Shopify', 'Liquid', 'AR'],
-    from: '#7C1D6F',
-    to: '#E8155A',
-    img: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=900&h=600&fit=crop&q=80',
-  },
-  {
-    id: 5,
-    title: 'FitPulse Fitness',
-    client: 'FitPulse Co.',
-    cat: 'Mobile',
-    yr: '2024',
-    metric: '50K',
-    metricLabel: 'Active Users',
-    desc: 'iOS & Android fitness app with AI workout plans and social feed.',
-    problem: 'A fitness startup needed to launch on iOS and Android fast, on a lean budget.',
-    solution: 'We shipped a React Native app with AI-generated workout plans and a social accountability feed.',
-    result: 'The app reached 50K active users within six months of launch.',
-    tags: ['React Native', 'Firebase', 'AI'],
-    from: '#7C3AED',
-    to: '#A855F7',
-    img: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=900&h=600&fit=crop&q=80',
-  },
-  {
-    id: 7,
-    title: 'ShopBot AI',
-    client: 'ShopBot Technologies',
-    cat: 'AI',
-    yr: '2024',
-    metric: '80%',
-    metricLabel: 'Queries Automated',
-    desc: 'WhatsApp + Messenger AI chatbot handling orders & returns 24/7.',
-    problem: 'A growing retailer’s support team was overwhelmed by repetitive order and return queries.',
-    solution: 'We built a GPT-4 chatbot on WhatsApp and Messenger to handle orders and returns 24/7.',
-    result: 'It now automates 80% of all support volume, freeing the team for complex cases.',
-    tags: ['GPT-4', 'Node.js', 'WhatsApp API'],
-    from: '#0C4A6E',
-    to: '#2E55E0',
-    img: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=900&h=600&fit=crop&q=80',
-  },
-  {
-    id: 9,
-    title: 'RealEstate360 SEO',
-    client: 'RealEstate360',
-    cat: 'Marketing',
-    yr: '2024',
-    metric: '3×',
-    metricLabel: 'Organic Traffic',
-    desc: 'Technical SEO + content strategy delivering results over 6 months.',
-    problem: 'A property portal had strong listings but almost no organic search visibility.',
-    solution: 'We ran a technical SEO overhaul plus a six-month content strategy targeting buyer intent.',
-    result: 'Organic traffic tripled and cost-per-lead fell by 40%.',
-    tags: ['SEO', 'Ahrefs', 'Analytics'],
-    from: '#7C2D12',
-    to: '#E8155A',
-    img: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=900&h=600&fit=crop&q=80',
-  },
-  {
-    id: 11,
-    title: 'NovaLabs Rebrand',
-    client: 'NovaLabs',
-    cat: 'Branding',
-    yr: '2024',
-    metric: 'Full',
-    metricLabel: 'Brand System',
-    desc: 'Logo, typography, colour system and comprehensive brand guidelines.',
-    problem: 'A tech startup’s inconsistent visuals undermined trust with enterprise buyers.',
-    solution: 'We delivered a full brand system — logo, typography, colour and 60-page guidelines.',
-    result: 'A cohesive identity rolled out across product, web and sales in three weeks.',
-    tags: ['Brand Identity', 'Figma', 'Guidelines'],
-    from: '#4C1D95',
-    to: '#D97706',
-    img: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=900&h=600&fit=crop&q=80',
-  },
-]
+const featured = clientSites.map(p => ({ ...p, metric: p.stat, metricLabel: p.statLabel }))
 
 const catColors = {
   Web: '#2E55E0',
@@ -133,8 +31,9 @@ function StackCard({ p, i, total, progress }) {
     >
       <motion.div style={{ scale, transformOrigin: 'center top' }}>
         <div
-          className="group relative grid grid-cols-1 lg:grid-cols-[11fr_13fr] overflow-hidden rounded-[28px] border border-white/10 lg:h-[62vh] lg:max-h-[560px] lg:min-h-[440px]"
+          className="glass-card glass-card--solid group relative grid grid-cols-1 lg:grid-cols-[11fr_13fr] overflow-hidden rounded-[28px] border border-white/10 lg:h-[62vh] lg:max-h-[560px] lg:min-h-[440px]"
           style={{
+            '--glass-tint': p.from,
             // opaque base layer underneath the colour tint — cards behind must not bleed through
             background: `linear-gradient(125deg, ${p.from}33 0%, transparent 52%, ${p.to}1C 100%), linear-gradient(#0A1130, #0A1130)`,
             boxShadow: '0 30px 90px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.08)',
@@ -225,19 +124,22 @@ function StackCard({ p, i, total, progress }) {
                     {tag}
                   </span>
                 ))}
-                <Link
-                  to="/portfolio"
+                <a
+                  href={p.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Visit ${p.title} website`}
                   className="ml-auto inline-flex items-center gap-2 text-[11px] tracking-[0.18em] uppercase font-semibold transition-all duration-300 hover:gap-3.5"
                   style={{ color: p.to }}
                 >
-                  View Case
+                  Visit Site
                   <span
                     className="flex items-center justify-center w-8 h-8 rounded-full transition-transform duration-300 group-hover:rotate-45"
                     style={{ border: `1px solid ${p.to}55`, background: `${p.to}14` }}
                   >
                     <ArrowUpRight size={14} strokeWidth={2} />
                   </span>
-                </Link>
+                </a>
               </div>
             </div>
           </div>
@@ -246,10 +148,10 @@ function StackCard({ p, i, total, progress }) {
           <div className="relative h-60 sm:h-72 lg:h-auto overflow-hidden">
             <img
               src={p.img}
-              alt={p.title}
+              alt={`${p.title} website homepage`}
               loading="lazy"
               onError={e => { e.target.style.display = 'none' }}
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.07]"
+              className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-1200 ease-out group-hover:scale-[1.07]"
             />
             {/* blend into the card */}
             <div
@@ -315,7 +217,7 @@ export default function Portfolio() {
             transition={{ delay: 0.4, duration: 0.6 }}
             className="text-white/35 text-[13px] max-w-[230px] leading-relaxed sm:text-right"
           >
-            Six featured projects. Scroll through the deck — every card is a real result.
+            Eight live client websites. Scroll through the deck — every card is a real site you can visit.
           </motion.p>
         </div>
 
@@ -338,7 +240,7 @@ export default function Portfolio() {
             <Link
               to="/portfolio"
               data-hc-target="portfolio"
-              className="group inline-flex items-center gap-3 px-7 py-3.5 rounded-full text-white/60 text-sm border border-white/15 hover:text-white hover:border-white/40 hover:bg-white/[0.04] transition-all duration-300"
+              className="group inline-flex items-center gap-3 px-7 py-3.5 rounded-full text-white/60 text-sm border border-white/15 hover:text-white hover:border-white/40 hover:bg-white/4 transition-all duration-300"
             >
               See All Projects
               <span className="flex items-center justify-center w-7 h-7 rounded-full border border-white/15 group-hover:border-white/40 group-hover:rotate-45 transition-all duration-300">

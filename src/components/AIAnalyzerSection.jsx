@@ -120,7 +120,7 @@ function Typewriter({ text, active, delay = 0 }) {
         <motion.span
           animate={{ opacity: [1, 0] }}
           transition={{ duration: 0.6, repeat: Infinity }}
-          className="inline-block w-[2px] h-[14px] bg-brand-pink align-middle ml-[1px]"
+          className="inline-block w-[2px] h-[14px] bg-brand-pink align-middle ml-px"
         />
       )}
     </span>
@@ -157,8 +157,9 @@ function FeaturePill({ Icon, label, color, i }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: 0.3 + i * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl"
+      className="glass-card glass-card--sm flex items-center gap-2.5 px-4 py-2.5 rounded-2xl"
       style={{
+        '--glass-tint': color,
         background: 'rgba(8,14,42,0.5)',
         border: `1px solid ${color}30`,
         boxShadow: `0 4px 20px rgba(0,0,0,0.2), 0 0 18px ${color}0F`,
@@ -276,7 +277,7 @@ export default function AIAnalyzerSection() {
                   target="_blank"
                   rel="noopener noreferrer"
                   data-hc-target="analyzer"
-                  className="group inline-flex items-center gap-2.5 shimmer-btn px-8 py-4 rounded-full text-sm tracking-[0.1em] uppercase text-white font-medium hover:opacity-90 active:scale-[0.98] transition-all duration-200"
+                  className="group inline-flex items-center gap-2.5 shimmer-btn px-8 py-4 rounded-full text-sm tracking-widest uppercase text-white font-medium hover:opacity-90 active:scale-[0.98] transition-all duration-200"
                 >
                   <Sparkles size={15} />
                   Analyse My Business Free
@@ -291,7 +292,7 @@ export default function AIAnalyzerSection() {
           <div ref={ref}>
             <TiltCard max={5} glareColor="rgba(46,85,224,0.12)" glareSize={500}>
               <div
-                className="relative rounded-3xl overflow-hidden"
+                className="glass-card relative rounded-3xl overflow-hidden"
                 style={{
                   background: 'rgba(8,14,42,0.55)',
                   backdropFilter: 'blur(20px)',
@@ -305,7 +306,7 @@ export default function AIAnalyzerSection() {
 
                 {/* Terminal title bar */}
                 <div
-                  className="flex items-center gap-2 px-5 py-3.5 border-b border-white/[0.06]"
+                  className="flex items-center gap-2 px-5 py-3.5 border-b border-white/6"
                   style={{ background: 'rgba(8,14,42,0.4)' }}
                 >
                   <span className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
@@ -360,7 +361,7 @@ export default function AIAnalyzerSection() {
                   </div>
 
                   {/* Divider */}
-                  <div className="h-px bg-white/[0.06]" />
+                  <div className="h-px bg-white/6" />
 
                   {/* Overall score bar */}
                   <div>

@@ -166,7 +166,7 @@ export default function IndustryHeroVisual({ variant, icon, satellites = [], pro
           className={`absolute ${c.cls} flex items-center gap-3 rounded-2xl border border-white/10 bg-bg-dark2/85 px-4 py-3 backdrop-blur-md shadow-[0_18px_50px_rgba(0,0,0,0.45)]`}
           style={{ animation: 'il-float 6s ease-in-out infinite', animationDelay: c.delay }}
         >
-          <span className="grid h-9 w-9 flex-none place-items-center rounded-xl bg-white/[0.06]">{c.icon}</span>
+          <span className="grid h-9 w-9 flex-none place-items-center rounded-xl bg-white/6">{c.icon}</span>
           <span>
             <b className="block text-[14px] text-white leading-tight">{c.big}</b>
             <span className="text-[11px] text-white/40">{c.small}</span>

@@ -56,8 +56,8 @@ function StatCell({ value, suffix, label, color, Icon, i }) {
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: '-40px' }}
       transition={{ delay: 0.15 + i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative p-6 rounded-2xl overflow-hidden"
-      style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)' }}
+      className="glass-card glass-card--sm group relative p-6 rounded-2xl overflow-hidden"
+      style={{ '--glass-tint': color, background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)' }}
     >
       {/* corner glow on hover */}
       <div
@@ -105,11 +105,11 @@ export default function About() {
       {/* Aurora glows with parallax */}
       <motion.div
         style={{ y: yGlow }}
-        className="absolute top-1/3 -left-24 w-[420px] h-[420px] bg-brand-blue/[0.10] rounded-full blur-[130px] pointer-events-none"
+        className="absolute top-1/3 -left-24 w-[420px] h-[420px] bg-brand-blue/10 rounded-full blur-[130px] pointer-events-none"
       />
       <motion.div
         style={{ y: yPanel }}
-        className="absolute bottom-0 -right-20 w-[380px] h-[380px] bg-brand-pink/[0.08] rounded-full blur-[120px] pointer-events-none"
+        className="absolute bottom-0 -right-20 w-[380px] h-[380px] bg-brand-pink/8 rounded-full blur-[120px] pointer-events-none"
       />
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 relative">
@@ -216,7 +216,7 @@ export default function About() {
 
             <TiltCard max={6} glareColor="rgba(255,255,255,0.07)">
               <div
-                className="relative p-7 sm:p-8 rounded-3xl overflow-hidden"
+                className="glass-card relative p-7 sm:p-8 rounded-3xl overflow-hidden"
                 style={{
                   background: 'linear-gradient(165deg, rgba(46,85,224,0.10), rgba(8,14,42,0.65) 50%, rgba(232,21,90,0.07))',
                   border: '1px solid rgba(255,255,255,0.09)',

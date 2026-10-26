@@ -230,7 +230,7 @@ export default function AboutPage() {
       />
 
       {/* ── Page hero ── */}
-      <section className="relative py-20 lg:py-28 border-b border-white/[0.06] overflow-hidden">
+      <section className="relative py-20 lg:py-28 border-b border-white/6 overflow-hidden">
         {/* dot grid + aurora */}
         <div
           className="absolute inset-0 pointer-events-none"
@@ -241,8 +241,8 @@ export default function AboutPage() {
             WebkitMaskImage: 'radial-gradient(ellipse 70% 80% at 35% 50%, #000 25%, transparent 75%)',
           }}
         />
-        <div className="absolute -top-20 right-0 w-[440px] h-[440px] bg-brand-blue/[0.09] rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-0 left-1/4 w-[360px] h-[360px] bg-brand-pink/[0.06] rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute -top-20 right-0 w-[440px] h-[440px] bg-brand-blue/9 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-[360px] h-[360px] bg-brand-pink/6 rounded-full blur-[120px] pointer-events-none" />
 
         {/* ghost watermark */}
         <span
@@ -261,7 +261,7 @@ export default function AboutPage() {
           <motion.p {...fade(0)} className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-5">
             Who We Are
           </motion.p>
-          <h1 className="font-bold leading-[1.0] mb-6" style={{ fontSize: 'clamp(3rem, 7vw, 6rem)' }}>
+          <h1 className="font-bold leading-none mb-6" style={{ fontSize: 'clamp(3rem, 7vw, 6rem)' }}>
             <RevealText as="span" className="text-white inline-block" stagger={0.09}>
               About
             </RevealText>{' '}
@@ -276,8 +276,8 @@ export default function AboutPage() {
       </section>
 
       {/* ── Story ── */}
-      <section className="py-20 lg:py-28 border-b border-white/[0.06] bg-bg-dark2 relative overflow-hidden">
-        <div className="absolute top-1/2 -right-24 w-[380px] h-[380px] -translate-y-1/2 bg-brand-pink/[0.06] rounded-full blur-[130px] pointer-events-none" />
+      <section className="py-20 lg:py-28 border-b border-white/6 bg-bg-dark2 relative overflow-hidden">
+        <div className="absolute top-1/2 -right-24 w-[380px] h-[380px] -translate-y-1/2 bg-brand-pink/6 rounded-full blur-[130px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center relative">
           <div>
@@ -382,7 +382,7 @@ export default function AboutPage() {
       </section>
 
       {/* ── Stats ── */}
-      <section className="py-16 border-b border-white/[0.06]">
+      <section className="py-16 border-b border-white/6">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {stats.map((s, i) => <Stat key={s.label} s={s} i={i} />)}
@@ -391,11 +391,11 @@ export default function AboutPage() {
       </section>
 
       {/* ── Our Professional Team ── */}
-      <section className="py-20 lg:py-28 border-b border-white/[0.06] relative overflow-hidden">
-        <div className="absolute top-0 left-1/3 w-[420px] h-[420px] bg-brand-blue/[0.06] rounded-full blur-[140px] pointer-events-none" />
+      <section className="py-20 lg:py-28 border-b border-white/6 relative overflow-hidden">
+        <div className="absolute top-0 left-1/3 w-[420px] h-[420px] bg-brand-blue/6 rounded-full blur-[140px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 relative">
-          <div className="text-center mb-14 lg:mb-18">
+          <div className="text-center mb-14">
             <motion.p {...fade(0)} className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-4">
               The People
             </motion.p>
@@ -420,8 +420,8 @@ export default function AboutPage() {
       </section>
 
       {/* ── Values ── */}
-      <section className="py-20 lg:py-28 bg-bg-dark2 border-b border-white/[0.06] relative overflow-hidden">
-        <div className="absolute bottom-0 right-1/4 w-[380px] h-[380px] bg-brand-pink/[0.05] rounded-full blur-[120px] pointer-events-none" />
+      <section className="py-20 lg:py-28 bg-bg-dark2 border-b border-white/6 relative overflow-hidden">
+        <div className="absolute bottom-0 right-1/4 w-[380px] h-[380px] bg-brand-pink/5 rounded-full blur-[120px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 relative">
           <motion.p {...fade(0)} className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-4">Our Values</motion.p>

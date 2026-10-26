@@ -19,7 +19,7 @@ export default function LegalLayout({ eyebrow, title, intro, updated, sections }
   return (
     <div className="min-h-screen bg-bg-dark pt-[72px]">
       {/* ── Hero ── */}
-      <section className="relative py-20 lg:py-24 border-b border-white/[0.06] overflow-hidden">
+      <section className="relative py-20 lg:py-24 border-b border-white/6 overflow-hidden">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -29,8 +29,8 @@ export default function LegalLayout({ eyebrow, title, intro, updated, sections }
             WebkitMaskImage: 'radial-gradient(ellipse 70% 80% at 35% 50%, #000 25%, transparent 75%)',
           }}
         />
-        <div className="absolute -top-20 right-0 w-[440px] h-[440px] bg-brand-blue/[0.09] rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-0 left-1/4 w-[360px] h-[360px] bg-brand-pink/[0.06] rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute -top-20 right-0 w-[440px] h-[440px] bg-brand-blue/9 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-[360px] h-[360px] bg-brand-pink/6 rounded-full blur-[120px] pointer-events-none" />
 
         <div className="max-w-4xl mx-auto px-5 sm:px-8 lg:px-12 relative">
           <motion.p {...fade(0)} className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-5">
@@ -45,7 +45,7 @@ export default function LegalLayout({ eyebrow, title, intro, updated, sections }
             {intro}
           </motion.p>
           {updated && (
-            <motion.p {...fade(0.35)} className="inline-flex items-center gap-2 mt-7 text-white/40 text-[12px] px-3.5 py-2 rounded-lg bg-white/[0.03] border border-white/[0.07]">
+            <motion.p {...fade(0.35)} className="inline-flex items-center gap-2 mt-7 text-white/40 text-[12px] px-3.5 py-2 rounded-lg bg-white/3 border border-white/[0.07]">
               <ShieldCheck size={13} className="text-brand-pink" />
               Last updated: {updated}
             </motion.p>
@@ -55,7 +55,7 @@ export default function LegalLayout({ eyebrow, title, intro, updated, sections }
 
       {/* ── Content ── */}
       <section className="py-16 lg:py-24 relative overflow-hidden">
-        <div className="absolute top-1/3 -right-24 w-[380px] h-[380px] bg-brand-pink/[0.05] rounded-full blur-[130px] pointer-events-none" />
+        <div className="absolute top-1/3 -right-24 w-[380px] h-[380px] bg-brand-pink/5 rounded-full blur-[130px] pointer-events-none" />
 
         <div className="max-w-4xl mx-auto px-5 sm:px-8 lg:px-12 relative grid lg:grid-cols-[200px_1fr] gap-10 lg:gap-14">
           {/* Table of contents */}

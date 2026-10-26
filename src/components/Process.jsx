@@ -75,8 +75,9 @@ function StepRow({ step, i }) {
     >
       <TiltCard max={7} glareColor={`${color}26`}>
         <div
-          className="group relative p-7 rounded-3xl overflow-hidden"
+          className="glass-card group relative p-7 rounded-3xl overflow-hidden"
           style={{
+            '--glass-tint': color,
             background: `linear-gradient(${left ? '150deg' : '210deg'}, ${color}14, rgba(8,14,42,0.6) 48%)`,
             border: `1px solid ${color}2E`,
             backdropFilter: 'blur(10px)',
@@ -193,8 +194,8 @@ export default function Process() {
     <section id="process" className="py-28 lg:py-36 bg-bg-dark relative overflow-hidden">
 
       {/* Ambient background blobs */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-brand-blue/[0.06] rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-brand-pink/[0.05] rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-brand-blue/6 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-brand-pink/5 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="max-w-6xl mx-auto px-5 sm:px-8 lg:px-12 relative">
 
@@ -235,7 +236,7 @@ export default function Process() {
         <div ref={timelineRef} className="relative">
 
           {/* beam track */}
-          <div className="absolute left-[22px] lg:left-1/2 top-0 bottom-0 w-px -translate-x-1/2 bg-white/[0.06]" />
+          <div className="absolute left-[22px] lg:left-1/2 top-0 bottom-0 w-px -translate-x-1/2 bg-white/6" />
           {/* energy beam */}
           <motion.div
             className="absolute left-[22px] lg:left-1/2 top-0 bottom-0 w-[2px] -translate-x-1/2 origin-top rounded-full"

@@ -44,7 +44,7 @@ export default function AdminLogin() {
     <div className="min-h-screen bg-[#070C1B] flex">
 
       {/* Left panel */}
-      <div className="hidden lg:flex flex-col justify-between w-[45%] bg-[#040810] p-12 border-r border-white/[0.06] relative overflow-hidden">
+      <div className="hidden lg:flex flex-col justify-between w-[45%] bg-[#040810] p-12 border-r border-white/6 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-[500px] h-[500px] rounded-full blur-[160px] pointer-events-none"
           style={{ background: 'rgba(46,85,224,0.12)' }} />
         <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full blur-[130px] pointer-events-none"
@@ -138,7 +138,7 @@ export default function AdminLogin() {
                     style={{ background: selectedColor }} />
                 )}
                 <select value={role} onChange={e => setRole(e.target.value)}
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl py-3 text-white text-[13px] focus:outline-none focus:border-white/20 focus:bg-white/[0.06] transition-all appearance-none"
+                  className="w-full bg-white/4 border border-white/8 rounded-xl py-3 text-white text-[13px] focus:outline-hidden focus:border-white/20 focus:bg-white/6 transition-all appearance-none"
                   style={{ paddingLeft: selectedColor ? '2.5rem' : '1rem', paddingRight: '2.5rem' }}>
                   <option value="">Select your role (optional)</option>
                   {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
@@ -155,7 +155,7 @@ export default function AdminLogin() {
                 <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/25" />
                 <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
                   placeholder="admin@example.com"
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-10 pr-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-none focus:border-white/20 focus:bg-white/[0.06] transition-all" />
+                  className="w-full bg-white/4 border border-white/8 rounded-xl pl-10 pr-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-hidden focus:border-white/20 focus:bg-white/6 transition-all" />
               </div>
             </div>
 
@@ -166,7 +166,7 @@ export default function AdminLogin() {
                 <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/25" />
                 <input type={showPw ? 'text' : 'password'} required value={password} onChange={e => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-10 pr-10 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-none focus:border-white/20 focus:bg-white/[0.06] transition-all" />
+                  className="w-full bg-white/4 border border-white/8 rounded-xl pl-10 pr-10 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-hidden focus:border-white/20 focus:bg-white/6 transition-all" />
                 <button type="button" onClick={() => setShowPw(v => !v)}
                   className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors">
                   {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
@@ -178,7 +178,7 @@ export default function AdminLogin() {
             <div className="flex items-center justify-between">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" checked={remember} onChange={e => setRemember(e.target.checked)}
-                  className="w-3.5 h-3.5 rounded accent-brand-pink" />
+                  className="w-3.5 h-3.5 rounded-sm accent-brand-pink" />
                 <span className="text-white/40 text-[12px]">Remember me</span>
               </label>
               <button type="button" className="text-white/40 text-[12px] hover:text-white/70 transition-colors">Forgot password?</button>

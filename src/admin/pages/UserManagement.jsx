@@ -107,21 +107,21 @@ export default function UserManagement() {
       <div className="relative max-w-sm">
         <Search size={13} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/25" />
         <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search users..."
-          className="w-full bg-white/[0.04] border border-white/[0.07] rounded-xl pl-9 pr-4 py-2.5 text-white text-[13px] placeholder:text-white/20 focus:outline-none focus:border-white/15" />
+          className="w-full bg-white/4 border border-white/[0.07] rounded-xl pl-9 pr-4 py-2.5 text-white text-[13px] placeholder:text-white/20 focus:outline-hidden focus:border-white/15" />
       </div>
 
       {/* Table */}
       <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
-        <div className="hidden sm:grid grid-cols-5 gap-4 px-5 py-3 border-b border-white/[0.06] text-white/30 text-[10px] uppercase tracking-widest">
+        <div className="hidden sm:grid grid-cols-5 gap-4 px-5 py-3 border-b border-white/6 text-white/30 text-[10px] uppercase tracking-widest">
           <span className="col-span-2">User</span>
           <span>Role</span>
           <span>Status</span>
           <span>Last Login</span>
         </div>
-        <div className="divide-y divide-white/[0.04]">
+        <div className="divide-y divide-white/4">
           {filtered.map((u, i) => (
             <motion.div key={u.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.04 }}
-              className="grid grid-cols-1 sm:grid-cols-5 gap-3 sm:gap-4 px-5 py-4 hover:bg-white/[0.02] transition-colors items-center">
+              className="grid grid-cols-1 sm:grid-cols-5 gap-3 sm:gap-4 px-5 py-4 hover:bg-white/2 transition-colors items-center">
               <div className="flex items-center gap-3 sm:col-span-2">
                 <div className="w-9 h-9 rounded-xl flex items-center justify-center text-[11px] font-bold text-white shrink-0"
                   style={{ background: u.id === 1 ? 'linear-gradient(135deg,#2E55E0,#E8155A)' : 'rgba(255,255,255,0.07)' }}>
@@ -158,12 +158,12 @@ export default function UserManagement() {
                 <span className="text-white/30 text-[12px]">{u.lastLogin}</span>
                 <div className="flex gap-1.5">
                   <button onClick={() => openEdit(u)}
-                    className="w-7 h-7 rounded-lg bg-white/[0.04] flex items-center justify-center text-white/30 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+                    className="w-7 h-7 rounded-lg bg-white/4 flex items-center justify-center text-white/30 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
                     <PenSquare size={12} />
                   </button>
                   {u.email !== me?.email && (
                     <button onClick={() => setDeleteId(u.id)}
-                      className="w-7 h-7 rounded-lg bg-white/[0.04] flex items-center justify-center text-white/30 hover:text-red-400 hover:bg-red-500/10 transition-colors">
+                      className="w-7 h-7 rounded-lg bg-white/4 flex items-center justify-center text-white/30 hover:text-red-400 hover:bg-red-500/10 transition-colors">
                       <Trash2 size={12} />
                     </button>
                   )}
@@ -197,7 +197,7 @@ export default function UserManagement() {
                 <div key={f.key}>
                   <label className="block text-white/40 text-[11px] tracking-widest uppercase mb-2">{f.label}</label>
                   <input type={f.type} value={form[f.key]} onChange={e => set(f.key, e.target.value)} placeholder={f.placeholder}
-                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-none focus:border-white/20" />
+                    className="w-full bg-white/4 border border-white/8 rounded-xl px-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-hidden focus:border-white/20" />
                 </div>
               ))}
 
@@ -212,7 +212,7 @@ export default function UserManagement() {
                     value={form.password}
                     onChange={e => set('password', e.target.value)}
                     placeholder={editUser ? '••••••••' : 'Set login password'}
-                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 pr-10 text-white text-[13px] placeholder:text-white/20 focus:outline-none focus:border-white/20"
+                    className="w-full bg-white/4 border border-white/8 rounded-xl px-4 py-3 pr-10 text-white text-[13px] placeholder:text-white/20 focus:outline-hidden focus:border-white/20"
                   />
                   <button type="button" onClick={() => setShowPw(v => !v)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors">
@@ -229,14 +229,14 @@ export default function UserManagement() {
                 <div>
                   <label className="block text-white/40 text-[11px] tracking-widest uppercase mb-2">Role</label>
                   <select value={form.role} onChange={e => set('role', e.target.value)}
-                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-[13px] focus:outline-none focus:border-white/20">
+                    className="w-full bg-white/4 border border-white/8 rounded-xl px-4 py-3 text-white text-[13px] focus:outline-hidden focus:border-white/20">
                     {roles.map(r => <option key={r} value={r}>{r}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="block text-white/40 text-[11px] tracking-widest uppercase mb-2">Status</label>
                   <select value={form.status} onChange={e => set('status', e.target.value)}
-                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-[13px] focus:outline-none focus:border-white/20">
+                    className="w-full bg-white/4 border border-white/8 rounded-xl px-4 py-3 text-white text-[13px] focus:outline-hidden focus:border-white/20">
                     <option>Active</option>
                     <option>Inactive</option>
                   </select>
@@ -245,7 +245,7 @@ export default function UserManagement() {
             </div>
 
             <div className="flex gap-3 mt-6">
-              <button onClick={() => setModal(false)} className="flex-1 py-3 rounded-xl text-[13px] text-white/50 border border-white/[0.1] hover:border-white/25 hover:text-white transition-all">Cancel</button>
+              <button onClick={() => setModal(false)} className="flex-1 py-3 rounded-xl text-[13px] text-white/50 border border-white/10 hover:border-white/25 hover:text-white transition-all">Cancel</button>
               <button onClick={handleSave} disabled={!canSave}
                 className="flex-1 py-3 rounded-xl text-[13px] font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
                 style={{ background: 'linear-gradient(135deg,#2E55E0,#E8155A)' }}>
@@ -265,7 +265,7 @@ export default function UserManagement() {
             <h3 className="text-white font-bold text-lg mb-2">Remove User?</h3>
             <p className="text-white/45 text-[13px] mb-6">This user will lose all access to the admin panel.</p>
             <div className="flex gap-3">
-              <button onClick={() => setDeleteId(null)} className="flex-1 py-2.5 rounded-xl text-[13px] text-white/50 border border-white/[0.1] hover:border-white/25 hover:text-white transition-all">Cancel</button>
+              <button onClick={() => setDeleteId(null)} className="flex-1 py-2.5 rounded-xl text-[13px] text-white/50 border border-white/10 hover:border-white/25 hover:text-white transition-all">Cancel</button>
               <button onClick={() => confirmDelete(deleteId)} className="flex-1 py-2.5 rounded-xl text-[13px] font-semibold text-white bg-red-500/80 hover:bg-red-500 transition-colors">Remove</button>
             </div>
           </motion.div>

@@ -47,7 +47,7 @@ export default function Contact() {
   }
 
   const inputCls = f =>
-    `w-full rounded-xl bg-white/[0.03] border ${errors[f] ? 'border-red-500/60' : 'border-white/10'} px-4 py-3.5 text-[14.5px] text-white placeholder-white/30 focus:outline-none focus:border-brand-pink/60 focus:bg-white/[0.05] focus:shadow-[0_0_28px_rgba(232,21,90,0.14)] transition-all duration-300`
+    `w-full rounded-xl bg-white/3 border ${errors[f] ? 'border-red-500/60' : 'border-white/10'} px-4 py-3.5 text-[14.5px] text-white placeholder-white/30 focus:outline-hidden focus:border-brand-pink/60 focus:bg-white/5 focus:shadow-[0_0_28px_rgba(232,21,90,0.14)] transition-all duration-300`
 
   return (
     <section id="contact" className="py-28 lg:py-36 bg-bg-dark2 relative overflow-hidden">
@@ -63,7 +63,7 @@ export default function Contact() {
         }}
       />
       <div className="absolute top-0 right-0 w-[460px] h-[460px] bg-brand-pink/[0.07] rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-0 -left-24 w-[400px] h-[400px] bg-brand-blue/[0.08] rounded-full blur-[130px] pointer-events-none" />
+      <div className="absolute bottom-0 -left-24 w-[400px] h-[400px] bg-brand-blue/8 rounded-full blur-[130px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 relative">
         <div className="grid grid-cols-1 lg:grid-cols-[5fr_7fr] gap-14 lg:gap-20 items-start">
@@ -126,8 +126,8 @@ export default function Contact() {
                   viewport={{ once: true, margin: '-50px' }}
                   transition={{ delay: 0.15 + i * 0.12, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
                   whileHover={{ x: 6 }}
-                  className="group flex items-center gap-4 p-4 rounded-2xl cursor-default"
-                  style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.07)' }}
+                  className="glass-card glass-card--sm group flex items-center gap-4 p-4 rounded-2xl cursor-default"
+                  style={{ '--glass-tint': color, background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.07)' }}
                 >
                   <div
                     className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110"
@@ -154,14 +154,14 @@ export default function Contact() {
           >
             {/* animated conic border */}
             <div
-              className="absolute -inset-[150%] animate-spin-slower pointer-events-none"
+              className="absolute inset-[-150%] animate-spin-slower pointer-events-none"
               style={{
                 background: 'conic-gradient(from 0deg, transparent 8%, #2E55E0 22%, transparent 38%, transparent 55%, #E8155A 72%, transparent 88%)',
               }}
             />
 
             <div
-              className="relative rounded-3xl p-8 sm:p-10"
+              className="glass-card glass-card--solid relative rounded-3xl p-8 sm:p-10"
               style={{
                 background: 'linear-gradient(165deg, #0B1232, #080E2A 60%)',
                 boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)',
@@ -186,8 +186,8 @@ export default function Contact() {
                     name="service" value={form.service} onChange={onChange}
                     className={`${inputCls('service')} ${!form.service ? 'text-white/30' : ''} appearance-none cursor-pointer`}
                   >
-                    <option value="" className="bg-[#080E2A] text-white/50">Select a Service *</option>
-                    {svcList.map(s => <option key={s} value={s} className="bg-[#080E2A] text-white">{s}</option>)}
+                    <option value="" className="bg-bg-dark2 text-white/50">Select a Service *</option>
+                    {svcList.map(s => <option key={s} value={s} className="bg-bg-dark2 text-white">{s}</option>)}
                   </select>
                   {errors.service && <p className="text-red-400 text-xs mt-1.5 ml-1">{errors.service}</p>}
                 </div>
@@ -214,7 +214,7 @@ export default function Contact() {
                       initial={{ opacity: 0, y: 10, scale: 0.97 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0 }}
-                      className="flex items-center gap-3 p-4 rounded-xl bg-green-500/[0.08] border border-green-500/25"
+                      className="flex items-center gap-3 p-4 rounded-xl bg-green-500/8 border border-green-500/25"
                     >
                       <motion.span
                         initial={{ scale: 0, rotate: -90 }}

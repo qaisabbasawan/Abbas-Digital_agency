@@ -55,7 +55,7 @@ export default function UsaClientsPage() {
       />
 
       {/* Hero */}
-      <section className="py-20 lg:py-28 border-b border-white/[0.06]">
+      <section className="py-20 lg:py-28 border-b border-white/6">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
           <motion.div {...fade(0)} className="flex items-center gap-2 mb-4">
             <Globe size={14} className="text-brand-pink" />
@@ -83,7 +83,7 @@ export default function UsaClientsPage() {
       </section>
 
       {/* Services */}
-      <section className="py-20 lg:py-28 border-b border-white/[0.06] bg-bg-dark2">
+      <section className="py-20 lg:py-28 border-b border-white/6 bg-bg-dark2">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
           <motion.p {...fade(0)} className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-3">Our Services</motion.p>
           <motion.h2 {...fade(0.08)} className="font-bold text-white leading-tight mb-12" style={{ fontSize: 'clamp(2rem,4vw,3.2rem)' }}>
@@ -92,7 +92,7 @@ export default function UsaClientsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {services.map((s, i) => (
               <motion.div key={s.title} {...fade(i * 0.08)}
-                className="p-7 bg-white/[0.03] border border-white/[0.07] rounded-xl hover:border-brand-pink/20 transition-colors duration-300">
+                className="p-7 bg-white/3 border border-white/[0.07] rounded-xl hover:border-brand-pink/20 transition-colors duration-300">
                 <h3 className="font-bold text-white text-[17px] mb-3">{s.title}</h3>
                 <p className="text-white/50 text-[14px] leading-relaxed">{s.desc}</p>
               </motion.div>
@@ -102,7 +102,7 @@ export default function UsaClientsPage() {
       </section>
 
       {/* Advantages */}
-      <section className="py-20 lg:py-28 border-b border-white/[0.06]">
+      <section className="py-20 lg:py-28 border-b border-white/6">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
           <div>
             <motion.p {...fade(0)} className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-3">Why Work With Us</motion.p>
@@ -123,7 +123,7 @@ export default function UsaClientsPage() {
           </div>
 
           {/* US office card */}
-          <motion.div {...fade(0.2)} className="bg-white/[0.02] border border-white/[0.07] rounded-2xl p-8">
+          <motion.div {...fade(0.2)} className="bg-white/2 border border-white/[0.07] rounded-2xl p-8">
             <p className="text-white/30 text-[11px] uppercase tracking-[0.18em] mb-5">US Mailing Address</p>
             <div className="space-y-4">
               {[
@@ -148,7 +148,7 @@ export default function UsaClientsPage() {
       </section>
 
       {/* FAQ */}
-      <section className="py-20 lg:py-28 bg-bg-dark2 border-b border-white/[0.06]">
+      <section className="py-20 lg:py-28 bg-bg-dark2 border-b border-white/6">
         <div className="max-w-3xl mx-auto px-5 sm:px-8 lg:px-12">
           <motion.p {...fade(0)} className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-3">FAQ</motion.p>
           <motion.h2 {...fade(0.08)} className="font-bold text-white leading-tight mb-12" style={{ fontSize: 'clamp(2rem,4vw,3.2rem)' }}>
@@ -156,7 +156,7 @@ export default function UsaClientsPage() {
           </motion.h2>
           <div className="space-y-5">
             {faqs.map((faq, i) => (
-              <motion.div key={i} {...fade(i * 0.1)} className="p-6 bg-white/[0.03] border border-white/[0.07] rounded-xl">
+              <motion.div key={i} {...fade(i * 0.1)} className="p-6 bg-white/3 border border-white/[0.07] rounded-xl">
                 <h3 className="text-white font-semibold text-[15px] mb-2">{faq.q}</h3>
                 <p className="text-white/50 text-[14px] leading-relaxed">{faq.a}</p>
               </motion.div>

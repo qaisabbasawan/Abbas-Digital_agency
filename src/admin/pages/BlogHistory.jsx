@@ -72,7 +72,7 @@ export default function BlogHistory() {
         <div className="relative flex-1">
           <Search size={13} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/25" />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search blogs..."
-            className="w-full bg-white/[0.04] border border-white/[0.07] rounded-xl pl-9 pr-4 py-2.5 text-white text-[13px] placeholder:text-white/20 focus:outline-none focus:border-white/15" />
+            className="w-full bg-white/4 border border-white/[0.07] rounded-xl pl-9 pr-4 py-2.5 text-white text-[13px] placeholder:text-white/20 focus:outline-hidden focus:border-white/15" />
         </div>
         <div className="flex gap-2">
           {['all', 'published', 'draft'].map(f => (
@@ -107,7 +107,7 @@ export default function BlogHistory() {
               <motion.div key={blog.id}
                 initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05, duration: 0.4 }}
-                className="flex items-start gap-4 p-4 rounded-2xl group hover:bg-white/[0.02] transition-colors"
+                className="flex items-start gap-4 p-4 rounded-2xl group hover:bg-white/2 transition-colors"
                 style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
 
                 {/* Image */}
@@ -133,15 +133,15 @@ export default function BlogHistory() {
                 <div className="flex items-center gap-1.5 shrink-0">
                   <button onClick={() => toggleStatus(blog.id)} title={blog.status === 'published' ? 'Unpublish' : 'Publish'}
                     className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
-                      blog.status === 'published' ? 'text-green-400 bg-green-500/10 hover:bg-green-500/20' : 'text-white/30 bg-white/[0.04] hover:bg-white/[0.08]'}`}>
+                      blog.status === 'published' ? 'text-green-400 bg-green-500/10 hover:bg-green-500/20' : 'text-white/30 bg-white/4 hover:bg-white/8'}`}>
                     {blog.status === 'published' ? <Eye size={14} /> : <EyeOff size={14} />}
                   </button>
                   <Link to={`/admin/blogs/create?edit=${blog.id}`}
-                    className="w-8 h-8 rounded-lg bg-white/[0.04] flex items-center justify-center text-white/30 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+                    className="w-8 h-8 rounded-lg bg-white/4 flex items-center justify-center text-white/30 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
                     <PenSquare size={14} />
                   </Link>
                   <button onClick={() => setDeleteId(blog.id)}
-                    className="w-8 h-8 rounded-lg bg-white/[0.04] flex items-center justify-center text-white/30 hover:text-red-400 hover:bg-red-500/10 transition-colors">
+                    className="w-8 h-8 rounded-lg bg-white/4 flex items-center justify-center text-white/30 hover:text-red-400 hover:bg-red-500/10 transition-colors">
                     <Trash2 size={14} />
                   </button>
                 </div>
@@ -160,7 +160,7 @@ export default function BlogHistory() {
             <h3 className="text-white font-bold text-lg mb-2">Delete Blog Post?</h3>
             <p className="text-white/45 text-[13px] mb-6">This action cannot be undone. The post will be permanently deleted.</p>
             <div className="flex gap-3">
-              <button onClick={() => setDeleteId(null)} className="flex-1 py-2.5 rounded-xl text-[13px] text-white/50 border border-white/[0.1] hover:border-white/25 hover:text-white transition-all">Cancel</button>
+              <button onClick={() => setDeleteId(null)} className="flex-1 py-2.5 rounded-xl text-[13px] text-white/50 border border-white/10 hover:border-white/25 hover:text-white transition-all">Cancel</button>
               <button onClick={() => confirmDelete(deleteId)} className="flex-1 py-2.5 rounded-xl text-[13px] font-semibold text-white bg-red-500/80 hover:bg-red-500 transition-colors">Delete</button>
             </div>
           </motion.div>

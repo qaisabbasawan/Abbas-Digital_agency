@@ -17,8 +17,8 @@ export default function NotFound() {
           crawlers not to index this page. */}
 
       <main className="flex-1 flex flex-col items-center justify-center text-center px-5 py-32 relative overflow-hidden">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[560px] h-[560px] rounded-full bg-brand-blue/[0.08] blur-[150px] pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-brand-pink/[0.06] blur-[140px] pointer-events-none" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[560px] h-[560px] rounded-full bg-brand-blue/8 blur-[150px] pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-brand-pink/6 blur-[140px] pointer-events-none" />
 
         <p
           className="relative font-bold leading-none mb-2 bg-clip-text text-transparent"

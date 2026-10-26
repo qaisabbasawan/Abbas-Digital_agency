@@ -70,8 +70,9 @@ function ServiceCard({ Icon, title, desc, color, i }) {
       <TiltCard max={8} glareColor={`${color}29`}>
         <Link
           to="/services"
-          className="group relative flex flex-col h-[480px] p-9 rounded-3xl overflow-hidden"
+          className="glass-card group relative flex flex-col h-[480px] p-9 rounded-3xl overflow-hidden"
           style={{
+            '--glass-tint': color,
             background: `linear-gradient(165deg, ${color}16 0%, rgba(255,255,255,0.015) 42%), rgba(8,14,42,0.55)`,
             border: `1px solid ${color}30`,
             backdropFilter: 'blur(8px)',
@@ -193,7 +194,7 @@ export default function Services() {
     <section id="services" ref={sectionRef} className="relative bg-bg-dark overflow-hidden">
       {/* Ambient glows */}
       <div className="absolute top-1/4 left-0 w-[480px] h-[480px] bg-brand-blue/[0.07] rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-[420px] h-[420px] bg-brand-pink/[0.05] rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[420px] h-[420px] bg-brand-pink/5 rounded-full blur-[120px] pointer-events-none" />
 
       <div
         ref={trackRef}
@@ -273,10 +274,10 @@ export default function Services() {
 
       {/* Horizontal progress line (desktop) */}
       <div className="hidden lg:block absolute bottom-9 left-1/2 -translate-x-1/2 w-[220px]">
-        <div className="h-px bg-white/[0.08]" />
+        <div className="h-px bg-white/8" />
         <div
           ref={progressRef}
-          className="h-[2px] -mt-[1.5px] origin-left rounded-full"
+          className="h-[2px] mt-[-1.5px] origin-left rounded-full"
           style={{ background: 'linear-gradient(90deg, #2E55E0, #E8155A)', transform: 'scaleX(0)' }}
         />
       </div>

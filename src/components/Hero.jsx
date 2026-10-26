@@ -94,7 +94,7 @@ function OrbitServices({ inView }) {
 
   return (
     <div
-      className="absolute hidden lg:block pointer-events-none z-[15]"
+      className="absolute hidden lg:block pointer-events-none z-15"
       style={{ left: '71%', top: '44%', transform: `rotate(${ORBIT.tilt}deg)` }}
     >
       {/* Pulsing energy glow at the orbit centre (sits over the 3D core) */}
@@ -114,7 +114,7 @@ function OrbitServices({ inView }) {
 
       {/* Faint orbit guide rings */}
       <div
-        className="absolute rounded-[50%] border border-white/[0.06]"
+        className="absolute rounded-[50%] border border-white/6"
         style={{
           width: ORBIT.rx * 2 + 70, height: ORBIT.ry * 2 + 70,
           left: 0, top: 0, transform: 'translate(-50%, -50%)',
@@ -341,7 +341,7 @@ export default function Hero() {
         className="absolute bottom-8 right-8 z-20 hidden lg:flex flex-col items-center gap-2 animate-bounce-slow"
       >
         <span className="text-white/25 text-[10px] uppercase tracking-[0.25em]">Scroll</span>
-        <div className="w-px h-8 bg-gradient-to-b from-white/20 to-transparent" />
+        <div className="w-px h-8 bg-linear-to-b from-white/20 to-transparent" />
       </motion.div>
     </motion.section>
   )
