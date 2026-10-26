@@ -1,64 +1,72 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState } from 'react'
 import SEO from '../components/SEO'
-import { serviceSchema, breadcrumbSchema } from '../lib/schema'
-import {
-  motion, useInView, useScroll, useTransform,
-  useMotionValueEvent,
-} from 'framer-motion'
+import { serviceSchema, breadcrumbSchema, faqSchema } from '../lib/schema'
+import { motion, useInView } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import {
   Globe, ShoppingCart, Smartphone, Bot, TrendingUp, Palette, Boxes,
-  ArrowRight, ArrowUpRight, Zap, Users, Award, Clock,
+  ArrowRight, ArrowUpRight, ArrowDown, Zap, Users, Award, Clock, Check,
+  Search, PenTool, Rocket, LineChart,
 } from 'lucide-react'
 import Footer from '../components/Footer'
+import FAQ from '../components/FAQ'
 import ServicesScene from '../components/ServicesScene'
-import NeuralSpine from '../components/NeuralSpine'
 import RevealText from '../components/anim/RevealText'
 import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
 import useCountUp from '../hooks/useCountUp'
+import { HOMEPAGE_FAQS } from '../data/faqs'
 
-/* ── Service data ── */
+/* ── Service data ──
+   `includes` mirrors the feature list on each /services/:slug page;
+   `wide` cards span two columns in the desktop bento grid and show
+   each included item as a tile with its one-line `notes` entry. */
 const services = [
   {
     n: '01', Icon: Globe, title: 'Web Development', sub: 'WordPress, React & Next.js',
-    color: '#2E55E0', slug: 'web-development', ambient: 'rain',
+    color: '#2E55E0', slug: 'web-development', wide: true,
+    includes: ['Custom Design', 'WordPress & WooCommerce', 'React & Next.js', 'SEO-First Structure'],
+    notes: ['Designs crafted around your brand', 'Custom themes and an easy admin', 'Fast apps with SSR and live APIs', 'Core Web Vitals and schema built in'],
     desc: 'Custom WordPress, WooCommerce and React/Next.js websites built for performance, SEO and conversions.',
   },
   {
     n: '02', Icon: ShoppingCart, title: 'E-Commerce', sub: 'Shopify, WooCommerce & Amazon',
-    color: '#E8155A', slug: 'ecommerce', ambient: 'gold',
+    color: '#E8155A', slug: 'ecommerce',
+    includes: ['Shopify Development', 'WooCommerce Stores', 'Amazon & eBay Setup', 'CRO & A/B Testing'],
     desc: 'End-to-end online stores on Shopify, WooCommerce, Amazon and eBay — from setup to conversion optimisation.',
   },
   {
     n: '03', Icon: Smartphone, title: 'Mobile Apps', sub: 'Native iOS & Android',
-    color: '#7C3AED', slug: 'mobile-apps', ambient: 'phone',
+    color: '#7C3AED', slug: 'mobile-apps',
+    includes: ['iOS Development', 'Android Development', 'React Native', 'Post-Launch Support'],
     desc: 'Native iOS and Android apps from concept to App Store with clean code and ongoing post-launch support.',
   },
   {
     n: '04', Icon: Bot, title: 'AI & Chatbots', sub: 'WhatsApp Bots & GPT Integrations',
-    color: '#0891B2', slug: 'ai-chatbots', ambient: 'neural',
+    color: '#0891B2', slug: 'ai-chatbots',
+    includes: ['WhatsApp Chatbots', 'ChatGPT / GPT-4', 'Workflow Automation', 'CRM Integration'],
     desc: 'WhatsApp and Facebook chatbots, ChatGPT integrations and workflow automations saving hours every day.',
   },
   {
     n: '05', Icon: TrendingUp, title: 'Digital Marketing', sub: 'SEO, Google Ads & Social Media',
-    color: '#059669', slug: 'digital-marketing', ambient: 'bars',
+    color: '#059669', slug: 'digital-marketing',
+    includes: ['SEO', 'Google Ads', 'Meta & Social Ads', 'Email Marketing'],
     desc: 'SEO, Google Ads, social media and email campaigns designed to drive qualified traffic and real ROI.',
   },
   {
     n: '06', Icon: Palette, title: 'Branding & Design', sub: 'Logo, Identity & UI/UX',
-    color: '#D97706', slug: 'branding-design', ambient: 'blobs',
+    color: '#D97706', slug: 'branding-design',
+    includes: ['Logo Design', 'Brand Identity', 'UI/UX Design', 'Brand Guidelines'],
     desc: 'Logo design, full brand identity, UI/UX and marketing materials that make your business unforgettable.',
   },
   {
     n: '07', Icon: Boxes, title: 'ERP Solutions', sub: 'Modular, AI-Powered ERP',
-    color: '#4F46E5', slug: 'erp-solutions', ambient: 'grid',
+    color: '#4F46E5', slug: 'erp-solutions', wide: true,
+    includes: ['6 Core Modules', 'AI Demand Forecasting', 'Fraud & Error Detection', 'Multilingual AI Chatbot'],
+    notes: ['HR, inventory, sales, finance and more', 'Predictions from 3 months of data', 'Real-time anomaly detection', 'Ask your ERP in any language'],
     desc: 'Cloud-native, modular ERP with AI demand forecasting, real-time fraud detection and a multilingual chatbot — built on Next.js + Supabase.',
   },
 ]
-
-const COLORS = services.map(s => s.color)
-const LAST = services.length - 1        // index of the final spine card
 
 /* ── Spinning energy ring icon orb ── */
 function IconOrb({ Icon, color, size = 60, iconSize = 22 }) {
@@ -151,406 +159,220 @@ function BurstButton({ children }) {
   )
 }
 
-/* ── Glitch / scramble text reveal ── */
-const SCRAMBLE_CHARS = '!<>-_\\/[]{}—=+*^?#ABCDEFGHIK0123456789'
-
-function ScrambleText({ text, active, className, style }) {
-  const [display, setDisplay] = useState(text)
-
-  useEffect(() => {
-    if (!active) return
-    let frame = 0
-    const total = 20
-    const id = setInterval(() => {
-      frame++
-      const reveal = Math.floor((frame / total) * text.length)
-      let out = ''
-      for (let i = 0; i < text.length; i++) {
-        if (text[i] === ' ') { out += ' '; continue }
-        out += i < reveal
-          ? text[i]
-          : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
-      }
-      if (frame >= total) { setDisplay(text); clearInterval(id) }
-      else setDisplay(out)
-    }, 34)
-    return () => clearInterval(id)
-  }, [active, text])
-
-  return <span className={className} style={style}>{display}</span>
-}
-
-/* ── Per-service ambient animation inside the card ── */
-function CardAmbient({ type, color }) {
-  if (type === 'rain') {
-    return (
-      <div
-        className="ambient-rain absolute inset-0 opacity-[0.16] pointer-events-none"
-        style={{
-          backgroundImage: `repeating-linear-gradient(180deg, transparent 0 14px, ${color}66 14px 17px, transparent 17px 38px), repeating-linear-gradient(90deg, transparent 0 26px, rgba(5,9,26,0.9) 26px 30px)`,
-        }}
-      />
-    )
-  }
-  if (type === 'gold') {
-    return (
-      <div className="ambient-rise absolute inset-0 opacity-70 pointer-events-none">
-        {Array.from({ length: 9 }).map((_, i) => (
-          <span
-            key={i}
-            style={{
-              left: `${8 + (i * 11) % 86}%`,
-              width: i % 3 === 0 ? 4 : 3,
-              height: i % 3 === 0 ? 4 : 3,
-              background: '#F59E0B',
-              boxShadow: '0 0 8px #F59E0B',
-              animationDelay: `${i * 0.4}s`,
-              animationDuration: `${2.8 + (i % 4) * 0.5}s`,
-            }}
-          />
-        ))}
-      </div>
-    )
-  }
-  if (type === 'phone') {
-    return (
-      <div className="absolute right-6 top-1/2 -translate-y-1/2 w-[88px] h-[160px] opacity-25 pointer-events-none">
-        <div className="absolute inset-0 rounded-[18px] border-2" style={{ borderColor: color }} />
-        <div className="absolute top-2 left-1/2 -translate-x-1/2 w-7 h-1 rounded-full" style={{ background: color }} />
-        <div className="absolute inset-0 animate-spin-slow" style={{ animationDuration: '11s' }}>
-          <span className="absolute -left-3 top-1/2 w-2 h-2 rounded-full" style={{ background: color, boxShadow: `0 0 8px ${color}` }} />
-        </div>
-        <div className="absolute -inset-4 animate-spin-slower" style={{ animationDirection: 'reverse' }}>
-          <span className="absolute -right-1 top-1/3 w-1.5 h-1.5 rounded-full" style={{ background: '#fff', boxShadow: `0 0 6px ${color}` }} />
-        </div>
-      </div>
-    )
-  }
-  if (type === 'neural') {
-    const nodes = [[15, 25], [38, 12], [62, 28], [85, 18], [25, 62], [50, 50], [75, 60], [88, 80], [12, 82], [45, 85]]
-    return (
-      <svg className="absolute inset-0 w-full h-full opacity-25 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 100 100">
-        {nodes.slice(0, -1).map((n, i) => (
-          <line key={i} x1={n[0]} y1={n[1]} x2={nodes[i + 1][0]} y2={nodes[i + 1][1]} stroke={color} strokeWidth="0.35" opacity="0.5" />
-        ))}
-        {nodes.map((n, i) => (
-          <circle key={i} cx={n[0]} cy={n[1]} r="1.6" fill={color} className="ambient-node" style={{ animationDelay: `${i * 0.3}s` }} />
-        ))}
-      </svg>
-    )
-  }
-  if (type === 'bars') {
-    return (
-      <div className="absolute inset-x-8 bottom-6 h-[42%] flex items-end gap-2.5 opacity-25 pointer-events-none">
-        {Array.from({ length: 12 }).map((_, i) => (
-          <div
-            key={i}
-            className="ambient-bar flex-1 rounded-t"
-            style={{
-              height: `${30 + (i * 17) % 70}%`,
-              background: `linear-gradient(180deg, ${color}, transparent)`,
-              animationDelay: `${i * 0.22}s`,
-            }}
-          />
-        ))}
-      </div>
-    )
-  }
-  if (type === 'grid') {
-    /* modular ERP — connected module nodes on a faint mesh */
-    const cells = [[18, 22], [50, 16], [82, 24], [30, 54], [68, 52], [50, 84]]
-    return (
-      <svg className="absolute inset-0 w-full h-full opacity-25 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 100 100">
-        <g stroke={color} strokeWidth="0.3" opacity="0.5">
-          {cells.map((c, i) => <line key={i} x1="50" y1="50" x2={c[0]} y2={c[1]} />)}
-        </g>
-        {cells.map((c, i) => (
-          <rect key={i} x={c[0] - 3} y={c[1] - 2.4} width="6" height="4.8" rx="1.2"
-            fill={color} className="ambient-node" style={{ animationDelay: `${i * 0.3}s` }} />
-        ))}
-        <circle cx="50" cy="50" r="3" fill={color} className="ambient-node" />
-      </svg>
-    )
-  }
-  /* blobs — branding */
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-50">
-      <div className="nebula-blob absolute -top-10 -right-10 w-48 h-48 rounded-full" style={{ background: `radial-gradient(circle, ${color}55, transparent 65%)` }} />
-      <div className="nebula-blob absolute -bottom-12 -left-8 w-52 h-52 rounded-full" style={{ background: 'radial-gradient(circle, #E8155A40, transparent 65%)', animationDelay: '-7s', animationDirection: 'reverse' }} />
-    </div>
-  )
-}
-
-/* ── Card panel content (shared by carousel + mobile stack) ── */
-function CardPanel({ svc, active }) {
-  return (
-    <div
-      className="group relative w-full h-full rounded-[26px] overflow-hidden flex flex-col p-8 sm:p-9"
-      style={{
-        /* Near-opaque panel: ancestor `filter` (depth blur) disables
-           backdrop-filter in Chrome, so the glass can't rely on it — the
-           bright spine scene behind would wash out the text. */
-        background: 'linear-gradient(160deg, rgba(13,20,52,0.97), rgba(7,12,36,0.95))',
-        backdropFilter: 'blur(18px)',
-        WebkitBackdropFilter: 'blur(18px)',
-        border: `1px solid ${svc.color}55`,
-        boxShadow: `0 30px 90px rgba(0,0,0,0.55), 0 0 50px ${svc.color}22, inset 0 1px 0 rgba(255,255,255,0.09)`,
-      }}
-    >
-      <CardAmbient type={svc.ambient} color={svc.color} />
-      <div className="holo-sweep" />
-
-      {/* top row */}
-      <div className="relative flex items-start justify-between mb-7">
-        <IconOrb Icon={svc.Icon} color={svc.color} size={58} iconSize={22} />
-        <span
-          className="font-bold leading-none select-none"
-          style={{ fontSize: 64, color: 'transparent', WebkitTextStroke: `1.4px ${svc.color}55` }}
-        >
-          {svc.n}
-        </span>
-      </div>
-
-      {/* glitch title */}
-      <h3 className="relative text-white font-bold leading-tight mb-1.5" style={{ fontSize: 'clamp(1.5rem, 2vw, 1.9rem)' }}>
-        <ScrambleText text={svc.title} active={active} />
-      </h3>
-      <p className="relative text-[12px] font-semibold tracking-[0.16em] uppercase mb-5" style={{ color: svc.color }}>
-        {svc.sub}
-      </p>
-
-      <p className="relative text-white/75 text-[14px] leading-relaxed max-w-sm">{svc.desc}</p>
-
-      {/* CTA */}
-      <Link
-        to={`/services/${svc.slug}`}
-        className="relative mt-auto inline-flex items-center gap-2.5 text-[11.5px] tracking-[0.22em] uppercase font-bold transition-all duration-300 hover:gap-4 w-fit"
-        style={{ color: svc.color }}
-      >
-        Explore
-        <span
-          className="flex items-center justify-center w-8 h-8 rounded-full transition-transform duration-300 group-hover:rotate-45"
-          style={{ border: `1px solid ${svc.color}66`, background: `${svc.color}18` }}
-        >
-          <ArrowUpRight size={14} strokeWidth={2.2} />
-        </span>
-      </Link>
-    </div>
-  )
-}
-
-/* ── One spine card — orbits around the spine as it takes the stage ──
-   u = p*5 - i is the card's local progress: it swings in from behind one
-   side, rolls around the FRONT of the spine at full size at u=0, then
-   rolls away behind the other side as the next card arrives. */
-const CARD_W = 470
-const CARD_H = 360
-const ORBIT_R = 440          // orbit radius in px
-
-function SpineCard({ svc, i, p, active }) {
-  const u = useTransform(p, v => v * LAST - i)
-  const theta = useTransform(u, v => v * Math.PI * 1.1)
-
-  const x = useTransform(theta, t => Math.sin(t) * ORBIT_R)
-  const depth = useTransform(theta, t => Math.cos(t))            // 1 = front, -1 = behind
-  const y = useTransform(u, v => -v * 150)                       // slight helix climb
-
-  const scale = useTransform(depth, d => 0.62 + ((d + 1) / 2) * 0.43)
-  const opacity = useTransform([u, depth], ([v, d]) => {
-    const edge = Math.max(0, 1 - Math.max(0, Math.abs(v) - 0.72) / 0.2)
-    return edge * (0.28 + ((d + 1) / 2) * 0.72)
-  })
-  const blurPx = useTransform([u, depth], ([v, d]) =>
-    (1 - (d + 1) / 2) * 5 + Math.max(0, Math.abs(v) - 0.72) * 10
-  )
-  const filter = useTransform(blurPx, v => `blur(${v}px)`)
-  const rotateY = useTransform(theta, t => -Math.sin(t) * 24)    // card faces the spine
-  const zIndex = useTransform(depth, d => Math.round(60 + d * 40))
-
-  /* neural threads — reach from the card's inner edge back to the spine,
-     switching sides as the card orbits */
-  const threadRightW = useTransform(x, v => Math.max(-v - CARD_W / 2 - 12, 0))
-  const threadLeftW  = useTransform(x, v => Math.max(v - CARD_W / 2 - 12, 0))
-
+/* ── One service card in the bento grid ── */
+function ServiceCard({ svc, i }) {
+  const { Icon, color, wide } = svc
   return (
     <motion.div
-      style={{
-        x, y, opacity, scale, rotateY, filter, zIndex,
-        left: '50%',
-        marginLeft: -CARD_W / 2,
-        width: CARD_W,
-        height: CARD_H,
-        marginTop: -CARD_H / 2,
-      }}
-      className="absolute top-1/2"
+      id={svc.slug}
+      initial={{ opacity: 0, y: 36 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ delay: (i % 3) * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className={`scroll-mt-28 h-full ${wide ? 'lg:col-span-2' : ''}`}
     >
-      {/* thread to the right of the card (card is left of the spine) */}
-      <motion.div
-        className="absolute top-1/2 -translate-y-1/2 h-px pointer-events-none"
+      <Link
+        to={`/services/${svc.slug}`}
+        className="group relative flex flex-col h-full p-7 sm:p-8 rounded-3xl overflow-hidden transition-all duration-500 hover:-translate-y-1.5 focus-visible:outline-2 focus-visible:outline-offset-4"
         style={{
-          left: '100%',
-          width: threadRightW,
-          background: `linear-gradient(90deg, ${svc.color}AA, transparent)`,
+          background: `linear-gradient(155deg, ${color}1F 0%, rgba(255,255,255,0.02) 46%), rgba(10,16,44,0.72)`,
+          border: `1px solid ${color}33`,
+          boxShadow: '0 20px 60px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06)',
+          outlineColor: color,
         }}
       >
-        <span
-          className="thread-dot absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full"
-          style={{ background: svc.color, boxShadow: `0 0 10px ${svc.color}`, animationDirection: 'reverse' }}
+        {/* hover glow + accent line */}
+        <div
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+          style={{ background: `radial-gradient(120% 70% at 20% 0%, ${color}2E, transparent 62%)` }}
         />
-      </motion.div>
-      {/* thread to the left of the card (card is right of the spine) */}
-      <motion.div
-        className="absolute top-1/2 -translate-y-1/2 h-px pointer-events-none"
-        style={{
-          right: '100%',
-          width: threadLeftW,
-          background: `linear-gradient(270deg, ${svc.color}AA, transparent)`,
-        }}
-      >
-        <span
-          className="thread-dot absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full"
-          style={{ background: svc.color, boxShadow: `0 0 10px ${svc.color}` }}
+        <div
+          className="absolute top-0 left-8 right-8 h-px opacity-40 group-hover:opacity-100 transition-opacity duration-500"
+          style={{ background: `linear-gradient(90deg, transparent, ${color}, transparent)` }}
         />
-      </motion.div>
 
-      <motion.div whileHover={{ scale: 1.035 }} transition={{ duration: 0.3 }} className="w-full h-full">
-        <CardPanel svc={svc} active={active} />
-      </motion.div>
+        <div className={`relative flex flex-col h-full ${wide ? 'lg:grid lg:grid-cols-[1fr_1.15fr] lg:gap-10' : ''}`}>
+          <div className="flex flex-col">
+            <div className="flex items-start justify-between mb-6">
+              <IconOrb Icon={Icon} color={color} size={56} iconSize={21} />
+              <span
+                className="font-bold leading-none select-none"
+                style={{ fontSize: 46, color: 'transparent', WebkitTextStroke: `1.2px ${color}66` }}
+              >
+                {svc.n}
+              </span>
+            </div>
+            <h3 className="text-white font-bold leading-tight text-[22px] sm:text-[24px] mb-1.5">{svc.title}</h3>
+            <p className="text-[11.5px] font-semibold tracking-[0.16em] uppercase mb-4" style={{ color }}>{svc.sub}</p>
+            <p className="text-white/60 text-[14.5px] leading-relaxed">{svc.desc}</p>
+          </div>
+
+          <div className={`flex flex-col ${wide ? 'lg:justify-center' : ''}`}>
+            {svc.notes ? (
+              <ul className="grid sm:grid-cols-2 gap-3 mt-6 mb-7 lg:mt-0">
+                {svc.includes.map((item, k) => (
+                  <li
+                    key={item}
+                    className="p-4 rounded-2xl"
+                    style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${color}26` }}
+                  >
+                    <span className="flex items-center gap-2 text-white text-[13.5px] font-semibold mb-1">
+                      <Check size={13} strokeWidth={3} style={{ color }} />
+                      {item}
+                    </span>
+                    <span className="block text-white/50 text-[12.5px] leading-snug">{svc.notes[k]}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <ul className="grid sm:grid-cols-2 gap-2.5 mt-6 mb-7">
+                {svc.includes.map(item => (
+                  <li key={item} className="flex items-start gap-2.5 text-white/75 text-[13.5px] leading-snug">
+                    <span
+                      className="mt-0.5 flex items-center justify-center w-4.5 h-4.5 rounded-full shrink-0"
+                      style={{ background: `${color}22`, border: `1px solid ${color}55` }}
+                    >
+                      <Check size={10} strokeWidth={3} style={{ color }} />
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <span
+              className="mt-auto inline-flex items-center gap-2.5 text-[11.5px] tracking-[0.2em] uppercase font-bold w-fit transition-all duration-300 group-hover:gap-4"
+              style={{ color }}
+            >
+              Explore {svc.title}
+              <span
+                className="flex items-center justify-center w-8 h-8 rounded-full transition-transform duration-300 group-hover:rotate-45"
+                style={{ border: `1px solid ${color}66`, background: `${color}18` }}
+              >
+                <ArrowUpRight size={14} strokeWidth={2.2} />
+              </span>
+            </span>
+          </div>
+        </div>
+      </Link>
     </motion.div>
   )
 }
 
-/* ── The pinned neural spine experience ── */
-function NeuralServices() {
-  const ref = useRef(null)
-  const storeRef = useRef({ p: 0 })
-  const [active, setActive] = useState(0)
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start start', 'end end'],
-  })
-  const p = useTransform(scrollYProgress, [0.02, 0.97], [0, 1], { clamp: true })
-
-  useMotionValueEvent(p, 'change', v => {
-    storeRef.current.p = v
-    const idx = Math.min(LAST, Math.max(0, Math.round(v * LAST)))
-    setActive(prev => (prev === idx ? prev : idx))
-  })
-
-  const jumpTo = (i) => {
-    const el = ref.current
-    if (!el) return
-    const top = el.getBoundingClientRect().top + window.scrollY
-    const travel = el.offsetHeight - window.innerHeight
-    const target = top + (0.02 + (i / LAST) * 0.95) * travel
-    if (window.__lenis) window.__lenis.scrollTo(target, { duration: 1.4 })
-    else window.scrollTo({ top: target, behavior: 'smooth' })
-  }
-
+/* ── All services at a glance ── */
+function ServicesGrid() {
   return (
-    <section ref={ref} className="relative hidden lg:block bg-bg-dark" style={{ height: `${120 + LAST * 116}vh` }}>
-      <div className="sticky top-0 h-screen overflow-hidden" style={{ perspective: 1500 }}>
+    <section id="services" className="scroll-mt-20 py-20 lg:py-28 bg-bg-dark relative overflow-hidden">
+      <div
+        className="absolute inset-0 pointer-events-none opacity-60"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)',
+          backgroundSize: '72px 72px',
+          maskImage: 'radial-gradient(ellipse 70% 60% at 50% 30%, #000 20%, transparent 75%)',
+          WebkitMaskImage: 'radial-gradient(ellipse 70% 60% at 50% 30%, #000 20%, transparent 75%)',
+        }}
+      />
+      <div className="absolute -top-20 left-1/4 w-[480px] h-[480px] rounded-full bg-brand-blue/8 blur-[130px] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[420px] h-[420px] rounded-full bg-brand-pink/6 blur-[130px] pointer-events-none" />
 
-        {/* faint sci-fi grid */}
-        <div
-          className="absolute inset-0 pointer-events-none opacity-50"
-          style={{
-            backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
-            backgroundSize: '72px 72px',
-            maskImage: 'radial-gradient(ellipse 75% 70% at 50% 50%, #000 20%, transparent 78%)',
-            WebkitMaskImage: 'radial-gradient(ellipse 75% 70% at 50% 50%, #000 20%, transparent 78%)',
-          }}
-        />
-
-        {/* the neural spine */}
-        <div className="absolute inset-0 z-0 pointer-events-none">
-          <NeuralSpine store={storeRef.current} />
-        </div>
-
-        {/* heading */}
-        <div className="absolute top-10 left-1/2 -translate-x-1/2 text-center z-30 w-full px-6 pointer-events-none">
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 relative">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12 lg:mb-16">
+          <div>
+            <motion.p
+              initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-4"
+            >
+              What We Do
+            </motion.p>
+            <h2 className="font-bold leading-[1.05]" style={{ fontSize: 'clamp(2.1rem, 4.4vw, 3.5rem)' }}>
+              <RevealText as="span" className="text-white inline-block" stagger={0.07}>
+                Seven Services.
+              </RevealText>{' '}
+              <RevealText as="span" className="inline-block" gradient delay={0.22} stagger={0.09}>
+                One Team.
+              </RevealText>
+            </h2>
+          </div>
           <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-2.5"
+            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="text-white/50 text-[15px] leading-relaxed max-w-md"
           >
-            What We Do
+            Pick one service or combine several — strategy, design, build and growth all
+            happen under one roof, so nothing gets lost between agencies.
           </motion.p>
-          <h2 className="font-bold leading-[1.04]" style={{ fontSize: 'clamp(1.7rem, 2.8vw, 2.4rem)' }}>
-            <RevealText as="span" className="text-white inline-block" stagger={0.07}>
-              One Brain.
-            </RevealText>{' '}
-            <RevealText as="span" className="inline-block" gradient delay={0.22} stagger={0.09}>
-              Seven Services.
-            </RevealText>
-          </h2>
         </div>
 
-        {/* the six cards riding the spine */}
-        {services.map((svc, i) => (
-          <SpineCard key={svc.n} svc={svc} i={i} p={p} active={active === i} />
-        ))}
-
-        {/* side progress dots */}
-        <div className="absolute right-8 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-3">
-          {services.map((s, i) => (
-            <button
-              key={s.n}
-              onClick={() => jumpTo(i)}
-              aria-label={`Go to ${s.title}`}
-              className="relative rounded-full transition-all duration-400"
-              style={{
-                width: 8,
-                height: active === i ? 30 : 8,
-                background: active === i ? s.color : 'rgba(255,255,255,0.18)',
-                boxShadow: active === i ? `0 0 14px ${s.color}` : 'none',
-              }}
-            />
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {services.map((svc, i) => <ServiceCard key={svc.slug} svc={svc} i={i} />)}
         </div>
-
-        {/* counter */}
-        <span className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 text-white/30 text-[10px] tracking-[0.3em] uppercase">
-          {String(active + 1).padStart(2, '0')} / {String(services.length).padStart(2, '0')} — {services[active].title}
-        </span>
       </div>
     </section>
   )
 }
 
+/* ── How an engagement runs ── */
+const STEPS = [
+  { Icon: Search,    color: '#2E55E0', title: 'Discover',       desc: 'A free consultation to understand your goals, audience and competitors.' },
+  { Icon: PenTool,   color: '#7C3AED', title: 'Plan & Design',  desc: 'A fixed written quote, clear timeline and designs you approve before we build.' },
+  { Icon: Rocket,    color: '#E8155A', title: 'Build & Launch', desc: 'Clean, tested work delivered in milestones, with progress you can see.' },
+  { Icon: LineChart, color: '#059669', title: 'Grow & Support', desc: 'Ongoing optimisation, maintenance and reporting long after go-live.' },
+]
 
-/* ── Mobile: stacked glass panels ── */
-function MobileServices() {
+function ProcessStrip() {
   return (
-    <section className="lg:hidden py-16 bg-bg-dark relative overflow-hidden">
-      <div className="max-w-xl mx-auto px-5 sm:px-8">
-        <div className="text-center mb-10">
-          <p className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-3">What We Do</p>
-          <h2 className="font-bold leading-[1.05]" style={{ fontSize: 'clamp(2rem, 8vw, 2.6rem)' }}>
+    <section className="py-20 lg:py-28 bg-bg-dark relative overflow-hidden border-t border-white/6">
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 relative">
+        <div className="text-center mb-14">
+          <motion.p
+            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+            className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-4"
+          >
+            How We Work
+          </motion.p>
+          <h2 className="font-bold leading-[1.05]" style={{ fontSize: 'clamp(2.1rem, 4.2vw, 3.3rem)' }}>
             <RevealText as="span" className="text-white inline-block" stagger={0.07}>
-              Seven Services.
+              From First Call
             </RevealText>{' '}
-            <RevealText as="span" className="inline-block" gradient delay={0.22} stagger={0.09}>
-              One Vision.
+            <RevealText as="span" className="inline-block" gradient delay={0.25} stagger={0.09}>
+              to Launch.
             </RevealText>
           </h2>
         </div>
-        <div className="space-y-5">
-          {services.map((svc, i) => (
-            <motion.div
-              key={svc.n}
-              initial={{ opacity: 0, y: 40 }}
+
+        <ol className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {/* connector line behind the step badges (desktop) */}
+          <div
+            aria-hidden
+            className="hidden lg:block absolute top-[34px] left-[12%] right-[12%] h-px"
+            style={{ background: 'linear-gradient(90deg, #2E55E0, #7C3AED, #E8155A, #059669)', opacity: 0.45 }}
+          />
+          {STEPS.map(({ Icon, color, title, desc }, i) => (
+            <motion.li
+              key={title}
+              initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="h-[400px]"
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ delay: i * 0.1, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+              className="relative text-center lg:px-2"
             >
-              <CardPanel svc={svc} active />
-            </motion.div>
+              <div className="relative mx-auto mb-5 w-[68px] h-[68px] rounded-2xl flex items-center justify-center bg-bg-dark"
+                style={{ border: `1px solid ${color}55`, boxShadow: `0 0 28px ${color}26, inset 0 0 20px ${color}14` }}
+              >
+                <Icon size={24} style={{ color }} strokeWidth={1.8} />
+                <span
+                  className="absolute -top-2.5 -right-2.5 w-6 h-6 rounded-full text-[10.5px] font-bold text-white flex items-center justify-center"
+                  style={{ background: color }}
+                >
+                  {i + 1}
+                </span>
+              </div>
+              <h3 className="text-white font-bold text-[18px] mb-2">{title}</h3>
+              <p className="text-white/50 text-[14px] leading-relaxed max-w-[260px] mx-auto">{desc}</p>
+            </motion.li>
           ))}
-        </div>
+        </ol>
       </div>
     </section>
   )
@@ -577,6 +399,7 @@ export default function ServicesPage() {
             { name: 'Home', path: '/' },
             { name: 'Services', path: '/services' },
           ]),
+          faqSchema(HOMEPAGE_FAQS),
         ]}
       />
 
@@ -621,11 +444,57 @@ export default function ServicesPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={heroInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.55, duration: 0.6 }}
-            className="text-white/45 text-[16px] leading-relaxed max-w-lg mb-12"
+            className="text-white/55 text-[16px] leading-relaxed max-w-lg mb-9"
           >
             From your first pixel to your thousandth customer — we build, grow and scale
             digital experiences that deliver real business results.
           </motion.p>
+
+          {/* primary actions */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={heroInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.7, duration: 0.6 }}
+            className="flex flex-wrap items-center gap-3 sm:gap-4 mb-8"
+          >
+            <Magnetic>
+              <Link
+                to="/contact"
+                className="shimmer-btn inline-flex items-center gap-2.5 px-7 py-3.5 text-sm tracking-wide text-white font-medium hover:opacity-90 transition-opacity"
+              >
+                Get a Free Quote
+                <ArrowRight size={15} strokeWidth={2} />
+              </Link>
+            </Magnetic>
+            <a
+              href="#services"
+              className="inline-flex items-center gap-2 px-7 py-3.5 text-sm tracking-wide text-white/70 border border-white/15 hover:text-white hover:border-white/35 transition-all duration-250"
+            >
+              Explore Services
+              <ArrowDown size={15} strokeWidth={2} />
+            </a>
+          </motion.div>
+
+          {/* quick jump to a service */}
+          <motion.nav
+            aria-label="Jump to a service"
+            initial={{ opacity: 0 }}
+            animate={heroInView ? { opacity: 1 } : {}}
+            transition={{ delay: 0.85, duration: 0.6 }}
+            className="flex flex-wrap gap-2 max-w-2xl mb-12"
+          >
+            {services.map(({ slug, title, color, Icon }) => (
+              <a
+                key={slug}
+                href={`#${slug}`}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] text-white/65 hover:text-white transition-colors duration-200"
+                style={{ background: `${color}14`, border: `1px solid ${color}40` }}
+              >
+                <Icon size={12} style={{ color }} strokeWidth={2} />
+                {title}
+              </a>
+            ))}
+          </motion.nav>
 
           <div className="flex flex-wrap gap-3 sm:gap-4 max-w-2xl">
             <HeroStat value={500} suffix="+" label="Projects" color="#2E55E0" i={0} />
@@ -637,10 +506,14 @@ export default function ServicesPage() {
       </section>
 
       {/* ══════════════════════════════════
-          SERVICES — 3D horizontal carousel
+          SERVICES — all seven at a glance
       ══════════════════════════════════ */}
-      <NeuralServices />
-      <MobileServices />
+      <ServicesGrid />
+
+      {/* ══════════════════════════════════
+          HOW WE WORK
+      ══════════════════════════════════ */}
+      <ProcessStrip />
 
       {/* ══════════════════════════════════
           WHY CHOOSE US
@@ -738,6 +611,11 @@ export default function ServicesPage() {
           </div>
         </div>
       </section>
+
+      {/* ══════════════════════════════════
+          FAQ — pricing, timelines, location
+      ══════════════════════════════════ */}
+      <FAQ faqs={HOMEPAGE_FAQS} eyebrow="Before You Ask" heading="Services FAQs" />
 
       {/* ══════════════════════════════════
           CTA — hologram panel
