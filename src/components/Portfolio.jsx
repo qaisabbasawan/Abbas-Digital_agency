@@ -128,7 +128,7 @@ function StackCard({ p, i, total, progress }) {
                   href={p.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={`Visit ${p.title} website`}
+                  aria-label={`Visit Site: ${p.title}`}
                   className="ml-auto inline-flex items-center gap-2 text-[11px] tracking-[0.18em] uppercase font-semibold transition-all duration-300 hover:gap-3.5"
                   style={{ color: p.to }}
                 >

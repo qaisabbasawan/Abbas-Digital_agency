@@ -113,7 +113,7 @@ export default function Footer() {
 
           {/* Navigation */}
           <div>
-            <h4 className="text-white/35 text-[11px] uppercase tracking-[0.22em] mb-5">Navigation</h4>
+            <h2 className="text-white/55 text-[11px] uppercase tracking-[0.22em] mb-5">Navigation</h2>
             <ul className="space-y-2.5">
               {navLinks.map(l => (
                 <li key={l.label}>
@@ -128,7 +128,7 @@ export default function Footer() {
 
           {/* Services */}
           <div>
-            <h4 className="text-white/35 text-[11px] uppercase tracking-[0.22em] mb-5">Services</h4>
+            <h2 className="text-white/55 text-[11px] uppercase tracking-[0.22em] mb-5">Services</h2>
             <ul className="space-y-2.5">
               {services.map(s => (
                 <li key={s.label}>
@@ -143,7 +143,7 @@ export default function Footer() {
 
           {/* Addresses */}
           <div>
-            <h4 className="text-white/35 text-[11px] uppercase tracking-[0.22em] mb-5">Find Us</h4>
+            <h2 className="text-white/55 text-[11px] uppercase tracking-[0.22em] mb-5">Find Us</h2>
             {/* Email */}
             <div className="flex items-center gap-2 mb-5">
               <Mail size={12} className="text-brand-pink shrink-0" />

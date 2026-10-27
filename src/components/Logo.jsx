@@ -3,17 +3,21 @@ export default function Logo({ size = 'md' }) {
   const h = heights[size] ?? heights.md
   const w = Math.round(h * 3.2) // logo artwork is 1600×500 (3.2:1)
 
+  // WebP (~60% smaller) with the PNGs as fallback
   return (
-    <img
-      src="/logo-160.png"
-      srcSet="/logo-80.png 1x, /logo-160.png 2x, /logo-240.png 3x"
-      alt="Abbas Digital Agency"
-      width={w}
-      height={h}
-      decoding="async"
-      fetchPriority="high"
-      style={{ height: h, width: 'auto', display: 'block', userSelect: 'none' }}
-      draggable={false}
-    />
+    <picture style={{ display: 'contents' }}>
+      <source type="image/webp" srcSet="/logo-80.webp 1x, /logo-160.webp 2x, /logo-240.webp 3x" />
+      <img
+        src="/logo-160.png"
+        srcSet="/logo-80.png 1x, /logo-160.png 2x, /logo-240.png 3x"
+        alt="Abbas Digital Agency"
+        width={w}
+        height={h}
+        decoding="async"
+        fetchPriority="high"
+        style={{ height: h, width: 'auto', display: 'block', userSelect: 'none' }}
+        draggable={false}
+      />
+    </picture>
   )
 }

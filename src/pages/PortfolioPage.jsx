@@ -48,7 +48,7 @@ const catColors = {
 function CardShell({ url, title, children, ...rest }) {
   if (!url) return <div {...rest}>{children}</div>
   return (
-    <a href={url} target="_blank" rel="noopener noreferrer" aria-label={`Visit ${title} website`} {...rest}>
+    <a href={url} target="_blank" rel="noopener noreferrer" title={`Visit ${title} website`} {...rest}>
       {children}
     </a>
   )

@@ -184,6 +184,7 @@ export default function Contact() {
                 <div>
                   <select
                     name="service" value={form.service} onChange={onChange}
+                    aria-label="Service you're interested in"
                     className={`${inputCls('service')} ${!form.service ? 'text-white/30' : ''} appearance-none cursor-pointer`}
                   >
                     <option value="" className="bg-bg-dark2 text-white/50">Select a Service *</option>

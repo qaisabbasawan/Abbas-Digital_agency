@@ -1,5 +1,9 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { supabase } from '../../lib/supabase'
+import { useLocation } from 'react-router-dom'
+
+/* supabase-js (~50 KB) is loaded on demand so it stays out of the bundle
+   every public page needs before it can render */
+const getDb = () => import('../../lib/supabase').then(m => m.supabase)
 
 const AuthContext = createContext(null)
 
@@ -131,17 +135,41 @@ export function AuthProvider({ children, initialBlogs }) {
   const [users,   setUsers]   = useState(DEFAULT_USERS)
   const [blogs,   setBlogs]   = useState(seedBlogs)
   const [leads,   setLeads]   = useState([])
-  const [loading, setLoading] = useState(true)
+  const [adminLoaded, setAdminLoaded] = useState(false)
 
+  const { pathname } = useLocation()
+  const onAdmin = pathname.startsWith('/admin')
+  // Admin routes wait for their data; public pages never block on it
+  const loading = onAdmin && !adminLoaded
+
+  // Every page: restore the admin session, then refresh blogs with live data
+  // once the browser is idle (the prerendered seed covers the first paint)
   useEffect(() => {
+    let cancelled = false
     const init = async () => {
-      // Restore admin session
       try {
         const saved = localStorage.getItem('ada_admin_user')
         if (saved) setUser(JSON.parse(saved))
       } catch { localStorage.removeItem('ada_admin_user') }
+    }
+    init()
 
-      // Load all data from Supabase in parallel
+    const refreshBlogs = async () => {
+      const supabase = await getDb()
+      const { data } = await supabase.from('blogs').select('*').order('created_at', { ascending: false })
+      if (data && !cancelled) setBlogs(data.map(blogFromDb))
+    }
+    const idle = window.requestIdleCallback || (cb => setTimeout(cb, 2000))
+    const cancelIdle = window.cancelIdleCallback || clearTimeout
+    const id = idle(() => { refreshBlogs() })
+    return () => { cancelled = true; cancelIdle(id) }
+  }, [])
+
+  // Admin routes only: leads and admin users are never requested by public pages
+  useEffect(() => {
+    if (!onAdmin || adminLoaded) return
+    const load = async () => {
+      const supabase = await getDb()
       const [blogsRes, leadsRes, usersRes] = await Promise.all([
         supabase.from('blogs').select('*').order('created_at', { ascending: false }),
         supabase.from('leads').select('*').order('created_at', { ascending: false }),
@@ -159,15 +187,15 @@ export function AuthProvider({ children, initialBlogs }) {
         setUsers(DEFAULT_USERS)
       }
 
-      setLoading(false)
+      setAdminLoaded(true)
     }
-
-    init()
-  }, [])
+    load()
+  }, [onAdmin, adminLoaded])
 
   // ── blogs CRUD ────────────────────────────────────────────────────────────
 
   const persistBlogs = async (newBlogs) => {
+    const supabase = await getDb()
     // Optimistic update
     setBlogs(newBlogs)
 
@@ -188,6 +216,7 @@ export function AuthProvider({ children, initialBlogs }) {
   // ── leads CRUD ────────────────────────────────────────────────────────────
 
   const addLead = async (lead) => {
+    const supabase = await getDb()
     const newLead = {
       id:     Date.now().toString(),
       ...lead,
@@ -202,6 +231,7 @@ export function AuthProvider({ children, initialBlogs }) {
   }
 
   const persistLeads = async (newLeads) => {
+    const supabase = await getDb()
     setLeads(newLeads)
     if (newLeads.length > 0) {
       await supabase.from('leads').upsert(newLeads.map(leadToDb))
@@ -217,6 +247,7 @@ export function AuthProvider({ children, initialBlogs }) {
   // ── users CRUD ────────────────────────────────────────────────────────────
 
   const persistUsers = async (newUsers) => {
+    const supabase = await getDb()
     setUsers(newUsers)
     if (newUsers.length > 0) {
       await supabase.from('admin_users').upsert(newUsers.map(userToDb))
@@ -273,6 +304,7 @@ export function AuthProvider({ children, initialBlogs }) {
 
       // Update lastLogin in Supabase
       const today = new Date().toISOString().split('T')[0]
+      const supabase = await getDb()
       await supabase.from('admin_users').update({ last_login: today }).eq('email', normalised)
       setUsers(prev => prev.map(u => u.email.toLowerCase() === normalised ? { ...u, lastLogin: today } : u))
 
