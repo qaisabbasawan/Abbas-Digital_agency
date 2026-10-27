@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Eye, EyeOff, Lock, Mail, Shield, ChevronDown } from 'lucide-react'
+import { Eye, EyeOff, Lock, Mail, Shield } from 'lucide-react'
 import { useAuth } from './context/AuthContext'
 
 const ROLES = ['Super Admin', 'Admin', 'Editor', 'SEO Manager', 'Content Writer', 'Analyst', 'Viewer']
@@ -19,7 +19,6 @@ const roleColors = {
 export default function AdminLogin() {
   const [email,    setEmail]    = useState('')
   const [password, setPassword] = useState('')
-  const [role,     setRole]     = useState('')
   const [showPw,   setShowPw]   = useState(false)
   const [remember, setRemember] = useState(false)
   const [error,    setError]    = useState('')
@@ -31,14 +30,11 @@ export default function AdminLogin() {
     e.preventDefault()
     setError('')
     setLoading(true)
-    await new Promise(r => setTimeout(r, 700))
-    const res = await login(email, password, role || undefined)
+    const res = await login(email, password)
     setLoading(false)
     if (res.ok) navigate('/admin/dashboard', { replace: true })
     else setError(res.error)
   }
-
-  const selectedColor = role ? (roleColors[role] || '#6B7280') : null
 
   return (
     <div className="min-h-screen bg-[#070C1B] flex">
@@ -128,25 +124,6 @@ export default function AdminLogin() {
           <p className="text-white/40 text-[13px] mb-8">Sign in to your admin account</p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-
-            {/* Role selector */}
-            <div>
-              <label className="block text-white/50 text-[11px] tracking-widest uppercase mb-2">Your Role</label>
-              <div className="relative">
-                {selectedColor && (
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full"
-                    style={{ background: selectedColor }} />
-                )}
-                <select value={role} onChange={e => setRole(e.target.value)}
-                  className="w-full bg-white/4 border border-white/8 rounded-xl py-3 text-white text-[13px] focus:outline-hidden focus:border-white/20 focus:bg-white/6 transition-all appearance-none"
-                  style={{ paddingLeft: selectedColor ? '2.5rem' : '1rem', paddingRight: '2.5rem' }}>
-                  <option value="">Select your role (optional)</option>
-                  {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
-                </select>
-                <ChevronDown size={14} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none" />
-              </div>
-              <p className="text-white/20 text-[10px] mt-1">Select your role for role-specific access verification</p>
-            </div>
 
             {/* Email */}
             <div>

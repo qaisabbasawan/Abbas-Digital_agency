@@ -9,13 +9,16 @@ const roles = ['Super Admin', 'Admin', 'Editor', 'SEO Manager', 'Content Writer'
 const EMPTY_FORM = { name: '', email: '', password: '', role: 'Editor', status: 'Active' }
 
 export default function UserManagement() {
-  const { users, persistUsers, user: me } = useAuth()
+  const { users, saveTeamMember, deleteTeamMember, user: me } = useAuth()
+  const canManage = me?.role === 'Super Admin'   // also enforced server-side
   const [search, setSearch]     = useState('')
   const [modal, setModal]       = useState(false)
   const [editUser, setEditUser] = useState(null)
   const [form, setForm]         = useState(EMPTY_FORM)
   const [deleteId, setDeleteId] = useState(null)
   const [showPw, setShowPw]     = useState(false)
+  const [saving, setSaving]     = useState(false)
+  const [error, setError]       = useState('')
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
@@ -23,53 +26,47 @@ export default function UserManagement() {
     setForm(EMPTY_FORM)
     setEditUser(null)
     setShowPw(false)
+    setError('')
     setModal(true)
   }
 
+  // Passwords are never readable — the field is only for setting a new one
   const openEdit = (u) => {
-    setForm({ name: u.name, email: u.email, password: u.password || '', role: u.role, status: u.status })
+    setForm({ name: u.name, email: u.email, password: '', role: u.role, status: u.status })
     setEditUser(u)
     setShowPw(false)
+    setError('')
     setModal(true)
   }
 
-  const handleSave = () => {
-    if (!form.name || !form.email) return
-    if (!editUser && !form.password) return // password required for new users
-
-    const initials = form.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
-
-    if (editUser) {
-      const updated = {
-        ...editUser,
-        name: form.name,
-        email: form.email,
-        role: form.role,
-        status: form.status,
-        initials,
-        // only update password if a new one was typed
-        ...(form.password ? { password: form.password } : {}),
-      }
-      persistUsers(users.map(u => u.id === editUser.id ? updated : u))
-    } else {
-      const newUser = {
-        id: Date.now(),
-        ...form,
-        lastLogin: '—',
-        initials,
-      }
-      persistUsers([...users, newUser])
-    }
-    setModal(false)
+  const handleSave = async () => {
+    if (!canSave || saving) return
+    setSaving(true)
+    setError('')
+    const res = await saveTeamMember({
+      ...(editUser ? { id: editUser.id } : { email: form.email }),
+      name: form.name,
+      role: form.role,
+      status: form.status,
+      ...(form.password ? { password: form.password } : {}),
+    })
+    setSaving(false)
+    if (res.ok) setModal(false)
+    else setError(res.error)
   }
 
   const filtered = users.filter(u =>
     !search || u.name.toLowerCase().includes(search.toLowerCase()) || u.email.toLowerCase().includes(search.toLowerCase())
   )
 
-  const confirmDelete = (id) => { persistUsers(users.filter(u => u.id !== id)); setDeleteId(null) }
+  const confirmDelete = async (id) => {
+    const res = await deleteTeamMember(id)
+    setDeleteId(null)
+    if (!res.ok) window.alert(res.error)
+  }
 
-  const canSave = form.name && form.email && (editUser ? true : !!form.password)
+  const passwordOk = editUser ? (!form.password || form.password.length >= 10) : form.password.length >= 10
+  const canSave = form.name && form.email && passwordOk
 
   return (
     <div className="max-w-6xl mx-auto space-y-5">
@@ -80,11 +77,11 @@ export default function UserManagement() {
           <h1 className="text-white font-bold text-lg">User Management</h1>
           <p className="text-white/35 text-[12px] mt-0.5">{users.length} team members · Manage roles and permissions</p>
         </div>
-        <button onClick={openAdd}
+        {canManage && <button onClick={openAdd}
           className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-[12px] font-medium text-white hover:opacity-90 transition-opacity"
           style={{ background: 'linear-gradient(135deg,#2E55E0,#E8155A)' }}>
           <Plus size={14} /> Add User
-        </button>
+        </button>}
       </div>
 
       {/* Roles overview */}
@@ -133,13 +130,13 @@ export default function UserManagement() {
                 </div>
                 <div className="flex items-center gap-1.5">
                   {u.email === me?.email && <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-white/10 text-white/40">You</span>}
-                  {u.password ? (
-                    <span title="Password set" className="text-[9px] px-1.5 py-0.5 rounded-full bg-green-500/10 text-green-400 flex items-center gap-1">
+                  {u.hasLogin ? (
+                    <span title="Can sign in" className="text-[9px] px-1.5 py-0.5 rounded-full bg-green-500/10 text-green-400 flex items-center gap-1">
                       <KeyRound size={8} /> Login
                     </span>
                   ) : (
-                    <span title="No password set" className="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400">
-                      No pwd
+                    <span title="No login yet — set a password to create one" className="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400">
+                      No login
                     </span>
                   )}
                 </div>
@@ -156,7 +153,7 @@ export default function UserManagement() {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-white/30 text-[12px]">{u.lastLogin}</span>
-                <div className="flex gap-1.5">
+                {canManage && <div className="flex gap-1.5">
                   <button onClick={() => openEdit(u)}
                     className="w-7 h-7 rounded-lg bg-white/4 flex items-center justify-center text-white/30 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
                     <PenSquare size={12} />
@@ -167,7 +164,7 @@ export default function UserManagement() {
                       <Trash2 size={12} />
                     </button>
                   )}
-                </div>
+                </div>}
               </div>
             </motion.div>
           ))}
@@ -197,21 +194,23 @@ export default function UserManagement() {
                 <div key={f.key}>
                   <label className="block text-white/40 text-[11px] tracking-widest uppercase mb-2">{f.label}</label>
                   <input type={f.type} value={form[f.key]} onChange={e => set(f.key, e.target.value)} placeholder={f.placeholder}
-                    className="w-full bg-white/4 border border-white/8 rounded-xl px-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-hidden focus:border-white/20" />
+                    disabled={f.key === 'email' && !!editUser}
+                    className="w-full bg-white/4 border border-white/8 rounded-xl px-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-hidden focus:border-white/20 disabled:opacity-50" />
                 </div>
               ))}
 
               {/* Password */}
               <div>
                 <label className="block text-white/40 text-[11px] tracking-widest uppercase mb-2">
-                  Password {editUser && <span className="normal-case tracking-normal text-white/25">(leave blank to keep current)</span>}
+                  {editUser ? 'New Password' : 'Password'} {editUser && <span className="normal-case tracking-normal text-white/25">(leave blank to keep current)</span>}
                 </label>
                 <div className="relative">
                   <input
                     type={showPw ? 'text' : 'password'}
                     value={form.password}
                     onChange={e => set('password', e.target.value)}
-                    placeholder={editUser ? '••••••••' : 'Set login password'}
+                    placeholder={editUser ? 'Set a new password' : 'At least 10 characters'}
+                    autoComplete="new-password"
                     className="w-full bg-white/4 border border-white/8 rounded-xl px-4 py-3 pr-10 text-white text-[13px] placeholder:text-white/20 focus:outline-hidden focus:border-white/20"
                   />
                   <button type="button" onClick={() => setShowPw(v => !v)}
@@ -219,9 +218,9 @@ export default function UserManagement() {
                     {showPw ? <EyeOff size={14} /> : <Eye size={14} />}
                   </button>
                 </div>
-                {!editUser && (
-                  <p className="text-white/25 text-[10px] mt-1">This user will use this password to log into the admin panel.</p>
-                )}
+                <p className="text-white/25 text-[10px] mt-1">
+                  At least 10 characters. Stored securely by Supabase Auth — it can't be viewed later, only replaced.
+                </p>
               </div>
 
               {/* Role & Status */}
@@ -244,12 +243,14 @@ export default function UserManagement() {
               </div>
             </div>
 
+            {error && <p className="mt-4 text-red-400 text-[12px]">{error}</p>}
+
             <div className="flex gap-3 mt-6">
               <button onClick={() => setModal(false)} className="flex-1 py-3 rounded-xl text-[13px] text-white/50 border border-white/10 hover:border-white/25 hover:text-white transition-all">Cancel</button>
-              <button onClick={handleSave} disabled={!canSave}
+              <button onClick={handleSave} disabled={!canSave || saving}
                 className="flex-1 py-3 rounded-xl text-[13px] font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
                 style={{ background: 'linear-gradient(135deg,#2E55E0,#E8155A)' }}>
-                {editUser ? 'Save Changes' : 'Add User'}
+                {saving ? 'Saving…' : editUser ? 'Save Changes' : 'Add User'}
               </button>
             </div>
           </motion.div>
