@@ -248,9 +248,12 @@ export default function Hero() {
           </div>
 
           {/* Typewriter */}
+          {/* Hero copy is visible in the pre-rendered HTML (slide only, no fade
+              from opacity 0) so it paints straight away — the body paragraph
+              is the page's Largest Contentful Paint element. */}
           <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial={{ y: 10 }}
+            animate={{ y: 0 }}
             transition={{ delay: 0.55, duration: 0.5 }}
             className="text-white/50 text-base mb-3 flex items-center gap-2"
           >
@@ -262,8 +265,8 @@ export default function Hero() {
 
           {/* Body */}
           <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ y: 16 }}
+            animate={{ y: 0 }}
             transition={{ delay: 0.65, duration: 0.55 }}
             className="text-white/45 text-[15px] leading-relaxed max-w-md mb-10"
           >
@@ -274,8 +277,8 @@ export default function Hero() {
 
           {/* Buttons */}
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ y: 16 }}
+            animate={{ y: 0 }}
             transition={{ delay: 0.78, duration: 0.5 }}
             className="flex flex-wrap gap-3"
           >

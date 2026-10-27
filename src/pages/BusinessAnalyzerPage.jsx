@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from 'react'
+import { useState, useEffect, lazy } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import {
@@ -14,8 +14,9 @@ import Magnetic from '../components/anim/Magnetic'
 import RevealText from '../components/anim/RevealText'
 import { supabase } from '../lib/supabase'
 import { breadcrumbSchema } from '../lib/schema'
+import SceneGate, { SceneFallback } from '../components/SceneGate'
 
-/* three.js scene loads after the page is interactive — keeps ~900 KB out of the critical path */
+/* three.js scene: loaded only on GPU-capable devices, after the page is interactive (see SceneGate) */
 const AnalyzerScene = lazy(() => import('../components/AnalyzerScene'))
 
 // ── Scoring engine ────────────────────────────────────────────────────────────
@@ -385,7 +386,9 @@ function LoadingScreen() {
     <div className="min-h-screen bg-bg-dark pt-[72px] flex flex-col items-center justify-center overflow-hidden">
       <div className="text-center">
         <div className="relative w-72 h-72 sm:w-80 sm:h-80 mx-auto mb-2">
-          <Suspense fallback={null}><AnalyzerScene mode="loading" progress={(idx + 1) / 5} starCount={700} /></Suspense>
+          <SceneGate fallback={<SceneFallback size="55%" />}>
+            <AnalyzerScene mode="loading" progress={(idx + 1) / 5} starCount={700} />
+          </SceneGate>
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: 'radial-gradient(circle, rgba(232,21,90,0.18), transparent 70%)' }}>
               <BarChart2 size={22} className="text-brand-pink" />
@@ -485,7 +488,9 @@ function ReportScreen({ report, answers, onReset }) {
 
       {/* 3D growth engine — pillar nodes sized to the business's real scores */}
       <div className="absolute top-0 inset-x-0 h-[640px] pointer-events-none overflow-hidden opacity-60">
-        <Suspense fallback={null}><AnalyzerScene mode="report" scores={scores} starCount={1000} /></Suspense>
+        <SceneGate fallback={<SceneFallback size="min(40vw, 320px)" />}>
+          <AnalyzerScene mode="report" scores={scores} starCount={1000} />
+        </SceneGate>
       </div>
 
       <div className="relative max-w-4xl mx-auto px-5 sm:px-8 py-14">
@@ -891,7 +896,9 @@ export default function BusinessAnalyzerPage() {
 
       {/* 3D growth engine — pillar nodes light up as the form fills in */}
       <div className="fixed top-[72px] inset-x-0 h-[560px] pointer-events-none overflow-hidden opacity-50">
-        <Suspense fallback={null}><AnalyzerScene mode="intake" progress={step / 5} starCount={900} /></Suspense>
+        <SceneGate fallback={<SceneFallback size="min(40vw, 320px)" />}>
+          <AnalyzerScene mode="intake" progress={step / 5} starCount={900} />
+        </SceneGate>
       </div>
       <div className="fixed top-[72px] inset-x-0 h-[420px] pointer-events-none" style={{ background: 'linear-gradient(to bottom, transparent, #05091A 92%)' }} />
 

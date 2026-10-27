@@ -139,7 +139,7 @@ function CameraController() {
   return null
 }
 
-export default function ServicesScene() {
+export default function ServicesScene({ active = true }) {
   const isClient = useIsClient()
   if (!isClient) return null
   return (
@@ -148,6 +148,7 @@ export default function ServicesScene() {
       style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       dpr={[1, 1.75]}
+      frameloop={active ? 'always' : 'never'}
     >
       <Stars radius={110} depth={50} count={2800} factor={3.5} fade speed={0.5} />
       <Sparkles count={70} scale={[13, 8, 7]} size={2} speed={0.3} opacity={0.5} color="#9db4ff" />

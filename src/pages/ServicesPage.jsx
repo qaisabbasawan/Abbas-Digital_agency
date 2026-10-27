@@ -1,4 +1,4 @@
-import { useRef, useState, lazy, Suspense } from 'react'
+import { useRef, useState, lazy } from 'react'
 import SEO from '../components/SEO'
 import { serviceSchema, breadcrumbSchema, faqSchema, speakablePageSchema } from '../lib/schema'
 import { motion, useInView } from 'framer-motion'
@@ -15,8 +15,9 @@ import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
 import useCountUp from '../hooks/useCountUp'
 import { HOMEPAGE_FAQS } from '../data/faqs'
+import SceneGate, { SceneFallback } from '../components/SceneGate'
 
-/* three.js scene loads after the page is interactive — keeps ~900 KB out of the critical path */
+/* three.js scene: loaded only on GPU-capable devices, after the page is interactive (see SceneGate) */
 const ServicesScene = lazy(() => import('../components/ServicesScene'))
 
 /* ── Service data ──
@@ -476,7 +477,9 @@ export default function ServicesPage() {
       <section className="relative pt-20 pb-24 lg:pt-24 lg:pb-32 overflow-hidden min-h-[86vh]" ref={heroRef}>
 
         <div className="absolute inset-0 z-0 pointer-events-none">
-          <Suspense fallback={null}><ServicesScene /></Suspense>
+          <SceneGate fallback={<SceneFallback color="#2E55E0" accent="#7C3AED" className="left-[72%] top-[44%]" size="min(50vw, 380px)" />}>
+            <ServicesScene />
+          </SceneGate>
         </div>
 
         <div
@@ -507,9 +510,10 @@ export default function ServicesPage() {
             </RevealText>
           </h1>
 
+          {/* visible in the pre-rendered HTML (slide only, no fade) — this paragraph is the Largest Contentful Paint */}
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={heroInView ? { opacity: 1, y: 0 } : {}}
+            initial={{ y: 20 }}
+            animate={heroInView ? { y: 0 } : {}}
             transition={{ delay: 0.55, duration: 0.6 }}
             className="text-white/55 text-[16px] leading-relaxed max-w-lg mb-9"
           >

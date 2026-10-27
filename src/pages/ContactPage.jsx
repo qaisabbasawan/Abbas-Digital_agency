@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense } from 'react'
+import { useState, lazy } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { Mail, MapPin, Clock, Send, ArrowRight, Check, ChevronDown, MessageCircle } from 'lucide-react'
@@ -10,8 +10,9 @@ import Magnetic from '../components/anim/Magnetic'
 import { useAuth } from '../admin/context/AuthContext'
 import SEO from '../components/SEO'
 import { localBusinessPK, localBusinessUSA, breadcrumbSchema } from '../lib/schema'
+import SceneGate, { SceneFallback } from '../components/SceneGate'
 
-/* three.js scene loads after the page is interactive — keeps ~900 KB out of the critical path */
+/* three.js scene: loaded only on GPU-capable devices, after the page is interactive (see SceneGate) */
 const ContactScene = lazy(() => import('../components/ContactScene'))
 
 const svcList = [
@@ -92,6 +93,7 @@ function SelectField({ label, error, value, options, ...props }) {
           style={{ background: 'linear-gradient(90deg, #2E55E0, #E8155A)', filter: 'blur(5px)' }} />
         <select
           {...props}
+          aria-label={label.replace(/\s*\*$/, '')}
           value={value}
           className={`relative w-full appearance-none rounded-xl px-4 py-3.5 text-[14px] focus:outline-hidden transition-colors duration-300 ${value ? 'text-white' : 'text-white/30'}`}
           style={{
@@ -158,7 +160,9 @@ export default function ContactPage() {
       {/* ── 3D Hero ── */}
       <section className="relative min-h-[74vh] flex items-center overflow-hidden pt-[72px]">
         <div className="absolute inset-0">
-          <Suspense fallback={null}><ContactScene /></Suspense>
+          <SceneGate fallback={<SceneFallback color="#E8155A" accent="#2E55E0" className="left-1/2 top-1/2 lg:left-[68%]" size="min(52vw, 360px)" />}>
+            <ContactScene />
+          </SceneGate>
         </div>
         <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-bg-dark/85 via-bg-dark/35 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 h-40 pointer-events-none bg-linear-to-t from-bg-dark to-transparent" />
@@ -191,8 +195,9 @@ export default function ContactPage() {
             </div>
           </div>
 
+          {/* visible in the pre-rendered HTML (slide only, no fade) — this paragraph is the Largest Contentful Paint */}
           <motion.p
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.6 }}
+            initial={{ y: 20 }} animate={{ y: 0 }} transition={{ delay: 0.55, duration: 0.6 }}
             className="text-white/45 text-[16px] max-w-md leading-relaxed mb-9"
           >
             Have a project in mind? Send it through — every message reaches a real

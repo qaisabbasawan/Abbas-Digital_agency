@@ -276,7 +276,7 @@ function CoreGroup() {
   )
 }
 
-export default function HeroScene() {
+export default function HeroScene({ active = true }) {
   const isClient = useIsClient()
   if (!isClient) return null
   return (
@@ -285,6 +285,7 @@ export default function HeroScene() {
       style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       dpr={[1, 1.75]}
+      frameloop={active ? 'always' : 'never'}
     >
       <Stars radius={120} depth={60} count={3500} factor={4} fade speed={0.6} />
       <Sparkles count={90} scale={[14, 9, 8]} size={2.2} speed={0.35} opacity={0.55} color="#9db4ff" />

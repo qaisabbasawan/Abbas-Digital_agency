@@ -1,4 +1,4 @@
-import { useEffect, useRef, lazy, Suspense } from 'react'
+import { useEffect, useRef, lazy } from 'react'
 import SEO from '../components/SEO'
 import { organizationSchema, localBusinessPK, localBusinessUSA, homepageFaqSchema, speakablePageSchema } from '../lib/schema'
 import { motion, useScroll, useTransform } from 'framer-motion'
@@ -16,8 +16,9 @@ import FAQ          from '../components/FAQ'
 import Contact      from '../components/Contact'
 import Footer       from '../components/Footer'
 import '../styles/glass.css'
+import SceneGate, { SceneFallback } from '../components/SceneGate'
 
-/* three.js scene loads after the page is interactive — keeps ~900 KB out of the critical path */
+/* three.js scene: loaded only on GPU-capable devices, after the page is interactive (see SceneGate) */
 const HeroScene = lazy(() => import('../components/HeroScene'))
 
 /* Glass UI trial — set to false to restore the original homepage look */
@@ -54,6 +55,7 @@ function ScrollSection({ children }) {
 ───────────────────────────────────────────────────────────────────────── */
 export default function LandingPage() {
   const canvasRef = useRef(null)
+  const heroZoneRef = useRef(null)   // 3D scene pauses once the hero is scrolled past
 
   /* Flag the document so the navbar (rendered outside this page) picks up the glass styles */
   useEffect(() => {
@@ -98,13 +100,15 @@ export default function LandingPage() {
         ref={canvasRef}
         style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }}
       >
-        <Suspense fallback={null}><HeroScene /></Suspense>
+        <SceneGate watch={heroZoneRef} fallback={<SceneFallback color="#2E55E0" accent="#E8155A" className="left-1/2 top-[40%] lg:left-[66%] lg:top-1/2" size="min(78vw, 560px)" />}>
+          <HeroScene />
+        </SceneGate>
       </div>
 
       <div className={GLASS_UI ? 'glass-ui' : undefined} style={{ position: 'relative', zIndex: 10 }}>
 
         {/* Hero — sticky pin zone (hero stays on screen for 80 vh while zooming back) */}
-        <div style={{ height: '180vh', position: 'relative' }}>
+        <div ref={heroZoneRef} style={{ height: '180vh', position: 'relative' }}>
           <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden' }}>
             <Hero />
           </div>
