@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
   Globe, TrendingUp, Target, Users, ShoppingCart,
   Smartphone, Bot, Palette,
@@ -411,19 +411,16 @@ function FAQItem({ q, a, isOpen, toggle }) {
         </motion.div>
       </button>
 
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="overflow-hidden"
-          >
-            <p className="pb-5 text-white/55 text-[14px] leading-relaxed">{a}</p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Answers stay in the HTML when collapsed so search and AI crawlers read every one */}
+      <motion.div
+        initial={false}
+        animate={{ height: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
+        className="overflow-hidden"
+        aria-hidden={!isOpen}
+      >
+        <p className="pb-5 text-white/55 text-[14px] leading-relaxed">{a}</p>
+      </motion.div>
     </div>
   )
 }
@@ -521,7 +518,7 @@ function LocalAreaSection({ localContent, map }) {
   return (
     <section className="bg-bg-dark py-20">
       <div className="max-w-6xl mx-auto px-5 sm:px-8 lg:px-12">
-        <div className="grid lg:grid-cols-2 gap-12 items-start">
+        <div className={map ? 'grid lg:grid-cols-2 gap-12 items-start' : 'max-w-3xl'}>
           {localContent && (
             <motion.div
               initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={stagger}

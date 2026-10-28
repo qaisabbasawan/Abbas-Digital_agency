@@ -1,23 +1,31 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { supabase } from '../../lib/supabase'
+import { useLocation } from 'react-router-dom'
+
+/* supabase-js (~50 KB) is loaded on demand so it stays out of the bundle
+   every public page needs before it can render */
+const getDb = () => import('../../lib/supabase').then(m => m.supabase)
+
+/* The URL hash as the page first loaded. A password-reset link carries its
+   recovery session (or error) there, and the Supabase client clears it as
+   soon as it starts — this keeps a copy for /admin/reset-password. */
+const INITIAL_HASH = typeof window !== 'undefined' ? window.location.hash : ''
 
 const AuthContext = createContext(null)
 
-const SUPER_ADMIN = {
-  email:    'mqaisawan@gmail.com',
-  password: 'Admin@2025',
-  name:     'Qais Abbas',
-  role:     'Super Admin',
-  initials: 'QA',
-}
+const initialsOf = (name = '') =>
+  name.split(' ').filter(Boolean).map(n => n[0]).join('').toUpperCase().slice(0, 2)
 
-const DEFAULT_USERS = [
-  { id: '1', name: 'Qais Abbas',   email: 'mqaisawan@gmail.com',    role: 'Super Admin',    status: 'Active',   lastLogin: '2025-05-15', initials: 'QA', password: 'Admin@2025' },
-  { id: '2', name: 'Abbas Wali',   email: 'abbas@abbasdigital.com', role: 'Admin',          status: 'Active',   lastLogin: '2025-05-14', initials: 'AW', password: '' },
-  { id: '3', name: 'Sara Khan',    email: 'sara@abbasdigital.com',  role: 'Editor',         status: 'Active',   lastLogin: '2025-05-13', initials: 'SK', password: '' },
-  { id: '4', name: 'Usman Raza',   email: 'usman@abbasdigital.com', role: 'SEO Manager',    status: 'Active',   lastLogin: '2025-05-10', initials: 'UR', password: '' },
-  { id: '5', name: 'Fatima Malik', email: 'fatima@abbasdigital.com',role: 'Content Writer', status: 'Inactive', lastLogin: '2025-04-28', initials: 'FM', password: '' },
-]
+/* The signed-in admin, from a Supabase Auth session. Admin rights live in
+   app_metadata ({ admin_role, admin_active }), which only the server can set
+   (admin-users edge function / bootstrap_super_admin), so a browser can never
+   grant itself access. */
+function adminFromSession(session) {
+  const meta = session?.user?.app_metadata
+  if (!meta?.admin_active || !meta?.admin_role) return null
+  const email = session.user.email
+  const name = session.user.user_metadata?.name || email.split('@')[0]
+  return { id: session.user.id, email, name, role: meta.admin_role, initials: initialsOf(name) }
+}
 
 // ── mapping helpers ──────────────────────────────────────────────────────────
 
@@ -92,24 +100,11 @@ function userFromDb(u) {
     id:        u.id,
     name:      u.name,
     email:     u.email,
-    password:  u.password || '',
     role:      u.role,
     status:    u.status,
     lastLogin: u.last_login,
     initials:  u.initials,
-  }
-}
-
-function userToDb(u) {
-  return {
-    id:         u.id?.toString(),
-    name:       u.name,
-    email:      u.email,
-    password:   u.password || '',
-    role:       u.role,
-    status:     u.status,
-    last_login: u.lastLogin,
-    initials:   u.initials,
+    hasLogin:  !!u.auth_user_id,
   }
 }
 
@@ -128,46 +123,86 @@ function getSsgBlogs(initialBlogs) {
 export function AuthProvider({ children, initialBlogs }) {
   const seedBlogs = getSsgBlogs(initialBlogs)
   const [user,    setUser]    = useState(null)
-  const [users,   setUsers]   = useState(DEFAULT_USERS)
+  const [users,   setUsers]   = useState([])
   const [blogs,   setBlogs]   = useState(seedBlogs)
   const [leads,   setLeads]   = useState([])
-  const [loading, setLoading] = useState(true)
+  const [sessionChecked, setSessionChecked] = useState(false)
+  const [adminLoaded, setAdminLoaded] = useState(false)
 
+  const { pathname } = useLocation()
+  const onAdmin = pathname.startsWith('/admin')
+  // Admin routes wait for the session (and, once signed in, their data);
+  // public pages never block on either
+  const loading = onAdmin && (!sessionChecked || (!!user && !adminLoaded))
+
+  // Every page: refresh published blogs with live data once the browser is
+  // idle (the prerendered seed covers the first paint)
   useEffect(() => {
-    const init = async () => {
-      // Restore admin session
-      try {
-        const saved = localStorage.getItem('ada_admin_user')
-        if (saved) setUser(JSON.parse(saved))
-      } catch { localStorage.removeItem('ada_admin_user') }
+    let cancelled = false
+    // the old browser-side "session" is no longer used
+    try { localStorage.removeItem('ada_admin_user') } catch { /* storage unavailable */ }
 
-      // Load all data from Supabase in parallel
+    const refreshBlogs = async () => {
+      const supabase = await getDb()
+      const { data } = await supabase.from('blogs').select('*').order('created_at', { ascending: false })
+      if (data && !cancelled) setBlogs(data.map(blogFromDb))
+    }
+    const idle = window.requestIdleCallback || (cb => setTimeout(cb, 2000))
+    const cancelIdle = window.cancelIdleCallback || clearTimeout
+    const id = idle(() => { refreshBlogs() })
+    return () => { cancelled = true; cancelIdle(id) }
+  }, [])
+
+  // Admin routes only: restore the Supabase Auth session and follow changes
+  // (sign-in, sign-out, token refresh)
+  useEffect(() => {
+    if (!onAdmin) return
+    let unsubscribe = () => {}
+    let cancelled = false
+    const watch = async () => {
+      const supabase = await getDb()
+      const { data: { session } } = await supabase.auth.getSession()
+      if (cancelled) return
+      setUser(adminFromSession(session))
+      setSessionChecked(true)
+      const { data } = supabase.auth.onAuthStateChange((_event, next) => {
+        const admin = adminFromSession(next)
+        setUser(admin)
+        if (!admin) {   // signed out: drop everything only admins may see
+          setAdminLoaded(false)
+          setLeads([])
+          setUsers([])
+        }
+      })
+      unsubscribe = () => data.subscription.unsubscribe()
+    }
+    watch()
+    return () => { cancelled = true; unsubscribe() }
+  }, [onAdmin])
+
+  // Signed-in admins only: blogs (drafts included), leads and the team.
+  // Row Level Security returns nothing for anyone else.
+  useEffect(() => {
+    if (!user || adminLoaded) return
+    const load = async () => {
+      const supabase = await getDb()
       const [blogsRes, leadsRes, usersRes] = await Promise.all([
         supabase.from('blogs').select('*').order('created_at', { ascending: false }),
         supabase.from('leads').select('*').order('created_at', { ascending: false }),
         supabase.from('admin_users').select('*'),
       ])
-
       if (blogsRes.data) setBlogs(blogsRes.data.map(blogFromDb))
       if (leadsRes.data) setLeads(leadsRes.data.map(leadFromDb))
-
-      if (usersRes.data && usersRes.data.length > 0) {
-        setUsers(usersRes.data.map(userFromDb))
-      } else {
-        // Seed default users on first run
-        await supabase.from('admin_users').upsert(DEFAULT_USERS.map(userToDb))
-        setUsers(DEFAULT_USERS)
-      }
-
-      setLoading(false)
+      if (usersRes.data) setUsers(usersRes.data.map(userFromDb))
+      setAdminLoaded(true)
     }
-
-    init()
-  }, [])
+    load()
+  }, [user, adminLoaded])
 
   // ── blogs CRUD ────────────────────────────────────────────────────────────
 
   const persistBlogs = async (newBlogs) => {
+    const supabase = await getDb()
     // Optimistic update
     setBlogs(newBlogs)
 
@@ -188,6 +223,7 @@ export function AuthProvider({ children, initialBlogs }) {
   // ── leads CRUD ────────────────────────────────────────────────────────────
 
   const addLead = async (lead) => {
+    const supabase = await getDb()
     const newLead = {
       id:     Date.now().toString(),
       ...lead,
@@ -202,6 +238,7 @@ export function AuthProvider({ children, initialBlogs }) {
   }
 
   const persistLeads = async (newLeads) => {
+    const supabase = await getDb()
     setLeads(newLeads)
     if (newLeads.length > 0) {
       await supabase.from('leads').upsert(newLeads.map(leadToDb))
@@ -214,84 +251,137 @@ export function AuthProvider({ children, initialBlogs }) {
     }
   }
 
-  // ── users CRUD ────────────────────────────────────────────────────────────
+  // ── team (all changes go through the admin-users edge function) ─────────
 
-  const persistUsers = async (newUsers) => {
-    setUsers(newUsers)
-    if (newUsers.length > 0) {
-      await supabase.from('admin_users').upsert(newUsers.map(userToDb))
+  const reloadUsers = async () => {
+    const supabase = await getDb()
+    const { data } = await supabase.from('admin_users').select('*')
+    if (data) setUsers(data.map(userFromDb))
+  }
+
+  const callTeamFunction = async (body) => {
+    const supabase = await getDb()
+    const { error } = await supabase.functions.invoke('admin-users', { body })
+    if (error) {
+      let message = error.message
+      try {
+        const detail = await error.context?.json()
+        if (detail?.error) message = detail.error
+      } catch { /* keep the generic message */ }
+      return { ok: false, error: message }
     }
-    const deletedIds = users
-      .filter(u => !newUsers.find(n => n.id?.toString() === u.id?.toString()))
-      .map(u => u.id?.toString())
-    if (deletedIds.length > 0) {
-      await supabase.from('admin_users').delete().in('id', deletedIds)
+    await reloadUsers()
+    return { ok: true }
+  }
+
+  // { id?, name, email, password?, role, status } — creates when there is no id
+  const saveTeamMember = (member) =>
+    callTeamFunction({ action: member.id ? 'update' : 'create', ...member })
+
+  const deleteTeamMember = (id) => callTeamFunction({ action: 'delete', id })
+
+  const updateOwnProfile = async (name) => {
+    const res = await callTeamFunction({ action: 'update-self', name })
+    if (res.ok) {
+      const supabase = await getDb()
+      await supabase.auth.refreshSession()   // picks up the new name
     }
+    return res
+  }
+
+  const changePassword = async (current, next) => {
+    const supabase = await getDb()
+    const { error: wrong } = await supabase.auth.signInWithPassword({ email: user.email, password: current })
+    if (wrong) return { ok: false, error: 'Your current password is incorrect.' }
+    const { error } = await supabase.auth.updateUser({ password: next })
+    return error ? { ok: false, error: error.message } : { ok: true }
+  }
+
+  // ── password reset by email ───────────────────────────────────────────────
+
+  // Sends Supabase's reset email. Apart from rate limits, the result is the
+  // same whether or not the address has an account, so the form can't be used
+  // to discover admin emails.
+  const requestPasswordReset = async (email) => {
+    const supabase = await getDb()
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: `${window.location.origin}/admin/reset-password`,
+    })
+    if (error && (error.status === 429 || /rate limit|too many/i.test(error.message))) {
+      return { ok: false, error: 'Too many reset requests. Please wait a few minutes and try again.' }
+    }
+    if (error && (!error.status || error.status >= 500)) {
+      return { ok: false, error: 'We couldn’t send the email right now. Please try again in a moment.' }
+    }
+    return { ok: true }
+  }
+
+  // Called by /admin/reset-password: did the email link bring a valid
+  // recovery session, or an error such as an expired link?
+  const checkRecoveryLink = async () => {
+    const params = new URLSearchParams(INITIAL_HASH.slice(1))
+    if (params.get('error')) {
+      return {
+        ok: false,
+        error: params.get('error_code') === 'otp_expired'
+          ? 'This reset link has expired. Request a new one below.'
+          : 'This reset link is invalid. Request a new one below.',
+      }
+    }
+    const supabase = await getDb()
+    const { data: { session } } = await supabase.auth.getSession()
+    return session
+      ? { ok: true, email: session.user.email }
+      : { ok: false, error: 'This reset link is invalid or has already been used. Request a new one below.' }
+  }
+
+  const completePasswordReset = async (password) => {
+    const supabase = await getDb()
+    const { error } = await supabase.auth.updateUser({ password })
+    if (error) return { ok: false, error: error.message }
+    await supabase.auth.signOut()   // sign in again with the new password
+    return { ok: true }
   }
 
   // ── auth ──────────────────────────────────────────────────────────────────
 
-  const login = async (email, password, role) => {
-    const normalised = email.toLowerCase().trim()
-
-    // Super Admin — always works, hardcoded
-    if (normalised === SUPER_ADMIN.email && password === SUPER_ADMIN.password) {
-      if (role && role !== SUPER_ADMIN.role)
-        return { ok: false, error: `This account is ${SUPER_ADMIN.role}, not ${role}.` }
-      const sessionUser = {
-        email:    SUPER_ADMIN.email,
-        name:     SUPER_ADMIN.name,
-        role:     SUPER_ADMIN.role,
-        initials: SUPER_ADMIN.initials,
+  const login = async (email, password) => {
+    const supabase = await getDb()
+    const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
+    if (error) {
+      return {
+        ok: false,
+        error: /banned/i.test(error.message)
+          ? 'This account is inactive. Contact your Super Admin.'
+          : 'Invalid email or password.',
       }
-      setUser(sessionUser)
-      localStorage.setItem('ada_admin_user', JSON.stringify(sessionUser))
-      return { ok: true }
     }
 
-    // Find in users state (loaded from Supabase)
-    const match = users.find(u => u.email.toLowerCase() === normalised)
-
-    if (match) {
-      if (match.status === 'Inactive')
-        return { ok: false, error: 'This account is inactive. Contact your Super Admin.' }
-      if (!match.password)
-        return { ok: false, error: 'No password set for this account. Ask your Super Admin.' }
-      if (match.password !== password)
-        return { ok: false, error: 'Invalid email or password.' }
-      if (role && match.role !== role)
-        return { ok: false, error: `This account has role "${match.role}", not "${role}".` }
-
-      const sessionUser = {
-        email:    match.email,
-        name:     match.name,
-        role:     match.role,
-        initials: match.initials || match.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2),
-      }
-      setUser(sessionUser)
-      localStorage.setItem('ada_admin_user', JSON.stringify(sessionUser))
-
-      // Update lastLogin in Supabase
-      const today = new Date().toISOString().split('T')[0]
-      await supabase.from('admin_users').update({ last_login: today }).eq('email', normalised)
-      setUsers(prev => prev.map(u => u.email.toLowerCase() === normalised ? { ...u, lastLogin: today } : u))
-
-      return { ok: true }
+    const admin = adminFromSession(data.session)
+    if (!admin) {
+      await supabase.auth.signOut()
+      return { ok: false, error: 'This account does not have admin access.' }
     }
 
-    return { ok: false, error: 'Invalid email or password.' }
+    setUser(admin)
+    setSessionChecked(true)
+    await supabase.rpc('record_admin_login')
+    return { ok: true }
   }
 
-  const logout = () => {
+  const logout = async () => {
+    const supabase = await getDb()
+    await supabase.auth.signOut()
     setUser(null)
-    localStorage.removeItem('ada_admin_user')
   }
 
   return (
     <AuthContext.Provider value={{
       user, users, blogs, leads,
       login, logout,
-      persistBlogs, persistLeads, persistUsers,
+      persistBlogs, persistLeads,
+      saveTeamMember, deleteTeamMember, updateOwnProfile, changePassword,
+      requestPasswordReset, checkRecoveryLink, completePasswordReset,
       addLead,
       loading,
     }}>

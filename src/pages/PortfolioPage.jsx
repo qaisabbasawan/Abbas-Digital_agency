@@ -10,168 +10,30 @@ import RevealText from '../components/anim/RevealText'
 import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
 
-const caseStudies = [
-  {
-    id: 1,
-    title: 'TechCorp Solutions',
-    client: 'TechCorp Inc.',
-    cat: 'Web',
-    yr: '2024',
-    metric: '+40% Conv.',
-    desc: 'Corporate rebrand with custom CMS, multilingual support and performance-first Next.js architecture.',
-    tags: ['React', 'Next.js', 'Tailwind'],
-    from: '#1A3BBF',
-    to: '#2E55E0',
-    img: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=500&fit=crop&q=80',
-  },
-  {
-    id: 2,
-    title: 'GreenLeaf Organics',
-    client: 'GreenLeaf Farm',
-    cat: 'Web',
-    yr: '2024',
-    metric: '3× Traffic',
-    desc: 'Farm-to-table website featuring a recipe blog, seasonal menus and local delivery integration.',
-    tags: ['WordPress', 'WooCommerce', 'SEO'],
-    from: '#065F46',
-    to: '#059669',
-    img: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=500&fit=crop&q=80',
-  },
-  {
-    id: 3,
-    title: 'LuxeWear Fashion',
-    client: 'LuxeWear Ltd.',
-    cat: 'E-Commerce',
-    yr: '2024',
-    metric: '$2M Revenue',
-    desc: 'Shopify flagship store with virtual try-on technology, loyalty programme and AR product viewer.',
-    tags: ['Shopify', 'Liquid', 'AR'],
-    from: '#7C1D6F',
-    to: '#E8155A',
-    img: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&h=500&fit=crop&q=80',
-  },
-  {
-    id: 4,
-    title: 'ByteGadgets Store',
-    client: 'ByteGadgets',
-    cat: 'E-Commerce',
-    yr: '2023',
-    metric: '500+ SKUs',
-    desc: 'WooCommerce electronics store with a custom product configurator and Redis-powered search.',
-    tags: ['WooCommerce', 'PHP', 'Redis'],
-    from: '#1E3A8A',
-    to: '#0891B2',
-    img: 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=800&h=500&fit=crop&q=80',
-  },
-  {
-    id: 5,
-    title: 'FitPulse Fitness',
-    client: 'FitPulse Co.',
-    cat: 'Mobile',
-    yr: '2024',
-    metric: '50K Users',
-    desc: 'iOS & Android fitness app with AI-generated workout plans and a social accountability feed.',
-    tags: ['React Native', 'Firebase', 'AI'],
-    from: '#7C3AED',
-    to: '#A855F7',
-    img: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&h=500&fit=crop&q=80',
-  },
-  {
-    id: 6,
-    title: 'MediCare Health',
-    client: 'MediCare Clinic',
-    cat: 'Mobile',
-    yr: '2023',
-    metric: '10K Patients',
-    desc: 'Telemedicine app enabling online booking, HD video consultations and digital prescriptions.',
-    tags: ['Flutter', 'WebRTC', 'AWS'],
-    from: '#0E7490',
-    to: '#06B6D4',
-    img: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=500&fit=crop&q=80',
-  },
-  {
-    id: 7,
-    title: 'ShopBot AI',
-    client: 'ShopBot Technologies',
-    cat: 'AI',
-    yr: '2024',
-    metric: '80% Automated',
-    desc: 'WhatsApp + Messenger AI chatbot handling product orders, returns and customer queries 24/7.',
-    tags: ['GPT-4', 'Node.js', 'WhatsApp API'],
-    from: '#0C4A6E',
-    to: '#2E55E0',
-    img: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&h=500&fit=crop&q=80',
-  },
-  {
-    id: 8,
-    title: 'SupportAI Assistant',
-    client: 'TelecomPro',
-    cat: 'AI',
-    yr: '2024',
-    metric: '−65% Tickets',
-    desc: 'Custom GPT-powered support bot for a telecom provider, built with Langchain and RAG pipelines.',
-    tags: ['OpenAI', 'Python', 'Langchain'],
-    from: '#1E1B4B',
-    to: '#0891B2',
-    img: 'https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=800&h=500&fit=crop&q=80',
-  },
-  {
-    id: 9,
-    title: 'RealEstate360 SEO',
-    client: 'RealEstate360',
-    cat: 'Marketing',
-    yr: '2024',
-    metric: '3× Organic',
-    desc: 'Technical SEO audit plus a 6-month content strategy that tripled organic search traffic.',
-    tags: ['SEO', 'Ahrefs', 'Analytics'],
-    from: '#7C2D12',
-    to: '#E8155A',
-    img: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=500&fit=crop&q=80',
-  },
-  {
-    id: 10,
-    title: 'FoodieHub Ads',
-    client: 'FoodieHub',
-    cat: 'Marketing',
-    yr: '2023',
-    metric: '4.8× ROAS',
-    desc: 'Integrated Google and Meta ad campaigns for a food delivery app achieving 4.8× return on spend.',
-    tags: ['Google Ads', 'Meta Ads', 'Analytics'],
-    from: '#831843',
-    to: '#F97316',
-    img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=500&fit=crop&q=80',
-  },
-  {
-    id: 11,
-    title: 'NovaLabs Rebrand',
-    client: 'NovaLabs',
-    cat: 'Branding',
-    yr: '2024',
-    metric: 'Full System',
-    desc: 'Complete brand identity including logo, typography scale, colour system and detailed brand guidelines.',
-    tags: ['Brand Identity', 'Figma', 'Guidelines'],
-    from: '#4C1D95',
-    to: '#D97706',
-    img: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=800&h=500&fit=crop&q=80',
-  },
-  {
-    id: 12,
-    title: 'Bloom Spa Identity',
-    client: 'Bloom Luxury Spa',
-    cat: 'Branding',
-    yr: '2023',
-    metric: '100% Custom',
-    desc: 'Luxury spa brand from scratch — bespoke logo, packaging design, printed menus and social kit.',
-    tags: ['Logo', 'Packaging', 'Social Kit'],
-    from: '#831843',
-    to: '#7C3AED',
-    img: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&h=500&fit=crop&q=80',
-  },
-]
+/* Only real, live client work is listed — every card links to the site */
+const projects = clientSites
 
-const projects = [...clientSites, ...caseStudies]
+/* Filter tabs: "All" plus each category that actually has projects */
+const tabs = ['All', ...new Set(projects.map(p => p.cat))]
 
-const tabs = ['All', 'Web', 'E-Commerce', 'Mobile', 'AI', 'Marketing', 'Branding']
+/* ItemList of the live client sites, so search and AI engines can read the portfolio */
+const portfolioSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Abbas Digital Agency client websites',
+  itemListElement: projects.map((p, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    item: {
+      '@type': 'CreativeWork',
+      name: p.title,
+      url: p.url,
+      description: p.desc,
+      image: p.img,
+      creator: { '@type': 'Organization', name: 'Abbas Digital Agency' },
+    },
+  })),
+}
 
 const catColors = {
   Web: '#2E55E0',
@@ -186,7 +48,7 @@ const catColors = {
 function CardShell({ url, title, children, ...rest }) {
   if (!url) return <div {...rest}>{children}</div>
   return (
-    <a href={url} target="_blank" rel="noopener noreferrer" aria-label={`Visit ${title} website`} {...rest}>
+    <a href={url} target="_blank" rel="noopener noreferrer" title={`Visit ${title} website`} {...rest}>
       {children}
     </a>
   )
@@ -207,13 +69,14 @@ export default function PortfolioPage() {
     <div className="min-h-screen bg-bg-dark pt-[72px]">
       <SEO
         title="Our Work & Portfolio | Abbas Digital Agency Pakistan"
-        description="Explore Abbas Digital Agency's portfolio of web design, SEO and digital marketing projects for clients across Pakistan and the USA."
+        description="Live client websites built by Abbas Digital Agency: e-commerce stores, booking platforms and business sites for clients in the UK, Europe and Asia."
         keywords="Abbas Digital Agency portfolio, web design portfolio Pakistan, digital marketing projects Pakistan"
         path="/portfolio"
-        schema={breadcrumbSchema([
+        image="/og/portfolio.jpg"
+        schema={[portfolioSchema, breadcrumbSchema([
           { name: 'Home', path: '/' },
           { name: 'Portfolio', path: '/portfolio' },
-        ])}
+        ])]}
       />
 
       {/* Page hero */}
@@ -257,7 +120,7 @@ export default function PortfolioPage() {
             </RevealText>
           </h1>
           <motion.p {...fade(0.3)} className="text-white/50 text-[15px] max-w-md leading-relaxed">
-            {projects.length} featured projects, including live client websites, spanning web, mobile, AI, marketing and branding — a slice of 500+ delivered.
+            {projects.length} live client websites you can visit today — from e-commerce stores to booking platforms, across the UK, Europe, Pakistan and Indonesia.
           </motion.p>
         </div>
       </section>

@@ -1,10 +1,9 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, lazy } from 'react'
 import SEO from '../components/SEO'
-import { organizationSchema, localBusinessPK, localBusinessUSA, homepageFaqSchema } from '../lib/schema'
+import { organizationSchema, localBusinessPK, localBusinessUSA, homepageFaqSchema, speakablePageSchema } from '../lib/schema'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import HeroScene    from '../components/HeroScene'
 import Hero         from '../components/Hero'
 import Marquee      from '../components/Marquee'
 import Services     from '../components/Services'
@@ -17,6 +16,10 @@ import FAQ          from '../components/FAQ'
 import Contact      from '../components/Contact'
 import Footer       from '../components/Footer'
 import '../styles/glass.css'
+import SceneGate, { SceneFallback } from '../components/SceneGate'
+
+/* three.js scene: loaded only on GPU-capable devices, after the page is interactive (see SceneGate) */
+const HeroScene = lazy(() => import('../components/HeroScene'))
 
 /* Glass UI trial — set to false to restore the original homepage look */
 const GLASS_UI = true
@@ -52,6 +55,7 @@ function ScrollSection({ children }) {
 ───────────────────────────────────────────────────────────────────────── */
 export default function LandingPage() {
   const canvasRef = useRef(null)
+  const heroZoneRef = useRef(null)   // 3D scene pauses once the hero is scrolled past
 
   /* Flag the document so the navbar (rendered outside this page) picks up the glass styles */
   useEffect(() => {
@@ -78,11 +82,11 @@ export default function LandingPage() {
   return (
     <>
       <SEO
-        title="Digital Marketing Agency Islamabad & Montana USA | Abbas Digital Agency"
+        title="Digital Marketing Agency Islamabad & USA | Abbas Digital Agency"
         description="Abbas Digital Agency — digital marketing agency in Islamabad, Pakistan & Montana, USA. SEO, web design, mobile apps & branding. US-registered LLC. Free quote."
         keywords="digital marketing agency Islamabad, digital marketing agency Montana, SEO services Pakistan, seo agency montana usa, web design company Pakistan, web design montana, mobile app development Pakistan, branding agency Pakistan, best SEO company Pakistan"
         path="/"
-        schema={[organizationSchema(), localBusinessPK(), localBusinessUSA(), homepageFaqSchema()]}
+        schema={[organizationSchema(), localBusinessPK(), localBusinessUSA(), homepageFaqSchema(), speakablePageSchema('/', 'Abbas Digital Agency — Digital Marketing Agency in Islamabad & Montana USA')]}
       />
       {/* Glass UI: colour fields behind the frosted panels */}
       {GLASS_UI && (
@@ -96,13 +100,15 @@ export default function LandingPage() {
         ref={canvasRef}
         style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }}
       >
-        <HeroScene />
+        <SceneGate watch={heroZoneRef} fallback={<SceneFallback color="#2E55E0" accent="#E8155A" className="left-1/2 top-[40%] lg:left-[66%] lg:top-1/2" size="min(78vw, 560px)" />}>
+          <HeroScene />
+        </SceneGate>
       </div>
 
       <div className={GLASS_UI ? 'glass-ui' : undefined} style={{ position: 'relative', zIndex: 10 }}>
 
         {/* Hero — sticky pin zone (hero stays on screen for 80 vh while zooming back) */}
-        <div style={{ height: '180vh', position: 'relative' }}>
+        <div ref={heroZoneRef} style={{ height: '180vh', position: 'relative' }}>
           <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden' }}>
             <Hero />
           </div>

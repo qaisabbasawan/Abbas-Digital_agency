@@ -12,6 +12,7 @@ export default function NotFound() {
         title="Page Not Found (404) | Abbas Digital Agency"
         description="The page you're looking for doesn't exist or has moved. Explore our services or get in touch with Abbas Digital Agency."
         path="/404"
+        noindex
       />
       {/* The 404 HTTP status (served via Netlify _redirects) already signals
           crawlers not to index this page. */}

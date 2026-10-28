@@ -20,6 +20,12 @@ export default function RevealText({
   const units = per === 'char' ? [...text] : text.split(' ')
   const MotionTag = motion.create(Tag)
 
+  /* Accessible name: headings take an aria-label (allowed on headings) over
+     hidden spans. Other tags can't carry aria-label, so word-split text is
+     left readable as-is and char-split text gets a visually hidden copy. */
+  const isHeading = typeof Tag === 'string' && /^h[1-6]$/.test(Tag)
+  const hideUnits = isHeading || per === 'char'
+
   /* background-clip: text breaks on transformed children, so the gradient is
      applied per unit with an offset background-position to stay continuous */
   const gradientStyle = (i) => gradient
@@ -50,13 +56,14 @@ export default function RevealText({
     <MotionTag
       className={className}
       style={style}
-      aria-label={text}
+      aria-label={isHeading ? text : undefined}
       variants={container}
       initial="hidden"
       whileInView="show"
       viewport={{ once, margin: '-60px' }}
     >
-      <span aria-hidden style={{ display: 'inline-block', perspective: 900 }}>
+      {!isHeading && per === 'char' && <span className="sr-only">{text}</span>}
+      <span aria-hidden={hideUnits || undefined} style={{ display: 'inline-block', perspective: 900 }}>
         {units.map((u, i) => (
           <span
             key={i}

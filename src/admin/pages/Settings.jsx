@@ -27,7 +27,7 @@ function Input({ ...props }) {
 }
 
 export default function Settings() {
-  const { user, users, persistUsers } = useAuth()
+  const { user, users, updateOwnProfile, changePassword } = useAuth()
   const [tab, setTab]   = useState('profile')
   const [saved, setSaved] = useState('')
   const [showOld, setShowOld] = useState(false)
@@ -45,17 +45,23 @@ export default function Settings() {
   })
   const [notifs, setNotifs] = useState({ newLead: true, blogComment: true, userAdded: false, weeklyReport: true })
 
-  const flash = (msg) => { setSaved(msg); setTimeout(() => setSaved(''), 3000) }
+  const [failed, setFailed] = useState('')
+  const flash = (msg) => { setFailed(''); setSaved(msg); setTimeout(() => setSaved(''), 3000) }
+  const fail  = (msg) => { setSaved(''); setFailed(msg) }
 
-  const saveProfile = () => {
-    if (!profile.name || !profile.email) return
-    const updated = users.map(u => u.email === user?.email ? { ...u, ...profile, initials: profile.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2) } : u)
-    persistUsers(updated)
-    flash('Profile updated successfully')
+  // Only the display name is stored; the sign-in email is managed by a Super Admin
+  const saveProfile = async () => {
+    if (!profile.name) return
+    const res = await updateOwnProfile(profile.name)
+    if (res.ok) flash('Profile updated successfully')
+    else fail(res.error)
   }
 
-  const savePassword = () => {
+  const savePassword = async () => {
     if (!pwForm.old || !pwForm.new1 || pwForm.new1 !== pwForm.new2) return
+    if (pwForm.new1.length < 10) return fail('Use a new password of at least 10 characters.')
+    const res = await changePassword(pwForm.old, pwForm.new1)
+    if (!res.ok) return fail(res.error)
     flash('Password changed successfully')
     setPwForm({ old: '', new1: '', new2: '' })
   }
@@ -82,6 +88,12 @@ export default function Settings() {
           style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}>
           <Check size={14} /> {saved}
         </motion.div>
+      )}
+      {failed && (
+        <div className="px-4 py-3 rounded-xl text-[12px] text-red-400"
+          style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)' }}>
+          {failed}
+        </div>
       )}
 
       <div className="flex gap-5 flex-col lg:flex-row">
@@ -123,7 +135,7 @@ export default function Settings() {
                   <Input value={profile.name} onChange={e => sp('name', e.target.value)} placeholder="John Doe" />
                 </Field>
                 <Field label="Email Address">
-                  <Input value={profile.email} onChange={e => sp('email', e.target.value)} placeholder="john@example.com" type="email" />
+                  <Input value={profile.email} readOnly disabled placeholder="john@example.com" type="email" />
                 </Field>
                 <Field label="Phone Number">
                   <Input value={profile.phone} onChange={e => sp('phone', e.target.value)} placeholder="+1 234 567 8900" />
@@ -143,7 +155,7 @@ export default function Settings() {
                 <p className="text-white/30 text-[11px]">Your profile is visible to other admins in the panel.</p>
               </div>
 
-              <button onClick={saveProfile} disabled={!profile.name || !profile.email}
+              <button onClick={saveProfile} disabled={!profile.name}
                 className="px-5 py-2.5 rounded-xl text-[13px] font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
                 style={{ background: 'linear-gradient(135deg,#2E55E0,#E8155A)' }}>
                 Save Profile

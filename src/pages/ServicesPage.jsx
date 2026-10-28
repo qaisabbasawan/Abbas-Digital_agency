@@ -1,6 +1,6 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, lazy } from 'react'
 import SEO from '../components/SEO'
-import { serviceSchema, breadcrumbSchema, faqSchema } from '../lib/schema'
+import { serviceSchema, breadcrumbSchema, faqSchema, speakablePageSchema } from '../lib/schema'
 import { motion, useInView } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import {
@@ -10,12 +10,15 @@ import {
 } from 'lucide-react'
 import Footer from '../components/Footer'
 import FAQ from '../components/FAQ'
-import ServicesScene from '../components/ServicesScene'
 import RevealText from '../components/anim/RevealText'
 import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
 import useCountUp from '../hooks/useCountUp'
 import { HOMEPAGE_FAQS } from '../data/faqs'
+import SceneGate, { SceneFallback } from '../components/SceneGate'
+
+/* three.js scene: loaded only on GPU-capable devices, after the page is interactive (see SceneGate) */
+const ServicesScene = lazy(() => import('../components/ServicesScene'))
 
 /* ── Service data ──
    `includes` mirrors the feature list on each /services/:slug page;
@@ -312,6 +315,69 @@ function ServicesGrid() {
   )
 }
 
+/* ── Timelines & pricing at a glance — figures match the site FAQs ── */
+const AT_A_GLANCE = [
+  { slug: 'web-development',   time: '2–4 weeks',                 price: 'Fixed quote · business sites from around $500' },
+  { slug: 'ecommerce',         time: '2–10 weeks, by catalogue',  price: 'Fixed quote per store' },
+  { slug: 'mobile-apps',       time: '6–12 weeks',                price: 'Fixed quote per app' },
+  { slug: 'ai-chatbots',       time: 'Agreed at consultation',    price: 'Fixed quote per bot or workflow' },
+  { slug: 'digital-marketing', time: 'Ongoing',                   price: 'Monthly retainer' },
+  { slug: 'branding-design',   time: '1–3 weeks',                 price: 'Fixed quote per project' },
+  { slug: 'erp-solutions',     time: '6–12 weeks',                price: 'Priced per module' },
+]
+
+function AtAGlance() {
+  return (
+    <section className="py-20 lg:py-24 bg-bg-dark relative border-t border-white/6">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 lg:px-12">
+        <div className="text-center mb-10">
+          <p className="text-brand-pink text-[11px] tracking-[0.28em] uppercase mb-4">At a Glance</p>
+          <h2 className="font-bold leading-[1.08] text-white" style={{ fontSize: 'clamp(1.9rem, 3.8vw, 2.9rem)' }}>
+            How Long Does Each Service Take, and How Is It Priced?
+          </h2>
+          <p className="text-white/50 text-[15px] leading-relaxed max-w-xl mx-auto mt-4">
+            Every project starts with a free consultation and a fixed written quote before any work begins.
+          </p>
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.6 }}
+          className="overflow-x-auto rounded-2xl border border-white/10"
+        >
+          <table className="w-full min-w-[560px] text-left text-[14px]">
+            <caption className="sr-only">Typical timeline and pricing model for each Abbas Digital Agency service</caption>
+            <thead>
+              <tr className="bg-white/4 text-white/45 text-[11px] uppercase tracking-[0.16em]">
+                <th scope="col" className="px-5 py-4 font-semibold">Service</th>
+                <th scope="col" className="px-5 py-4 font-semibold">Typical timeline</th>
+                <th scope="col" className="px-5 py-4 font-semibold">Pricing</th>
+              </tr>
+            </thead>
+            <tbody>
+              {AT_A_GLANCE.map(row => {
+                const svc = services.find(x => x.slug === row.slug)
+                return (
+                  <tr key={row.slug} className="border-t border-white/8">
+                    <th scope="row" className="px-5 py-4 font-semibold text-white">
+                      <Link to={`/services/${svc.slug}`} className="inline-flex items-center gap-2.5 hover:underline">
+                        <span className="w-2 h-2 rounded-full shrink-0" style={{ background: svc.color }} />
+                        {svc.title}
+                      </Link>
+                    </th>
+                    <td className="px-5 py-4 text-white/70">{row.time}</td>
+                    <td className="px-5 py-4 text-white/70">{row.price}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
 /* ── How an engagement runs ── */
 const STEPS = [
   { Icon: Search,    color: '#2E55E0', title: 'Discover',       desc: 'A free consultation to understand your goals, audience and competitors.' },
@@ -389,6 +455,7 @@ export default function ServicesPage() {
         description="SEO, web design, social media marketing, PPC & branding services for businesses in Pakistan & USA. US-registered agency. Get a free quote today."
         keywords="digital marketing services Pakistan, SEO services Pakistan, web design company Pakistan, social media marketing Pakistan, PPC advertising Pakistan, branding agency Pakistan"
         path="/services"
+        image="/og/services.jpg"
         schema={[
           serviceSchema(
             'Digital Marketing Services',
@@ -400,6 +467,7 @@ export default function ServicesPage() {
             { name: 'Services', path: '/services' },
           ]),
           faqSchema(HOMEPAGE_FAQS),
+          speakablePageSchema('/services', 'Services — Abbas Digital Agency'),
         ]}
       />
 
@@ -409,7 +477,9 @@ export default function ServicesPage() {
       <section className="relative pt-20 pb-24 lg:pt-24 lg:pb-32 overflow-hidden min-h-[86vh]" ref={heroRef}>
 
         <div className="absolute inset-0 z-0 pointer-events-none">
-          <ServicesScene />
+          <SceneGate fallback={<SceneFallback color="#2E55E0" accent="#7C3AED" className="left-[72%] top-[44%]" size="min(50vw, 380px)" />}>
+            <ServicesScene />
+          </SceneGate>
         </div>
 
         <div
@@ -440,9 +510,10 @@ export default function ServicesPage() {
             </RevealText>
           </h1>
 
+          {/* visible in the pre-rendered HTML (slide only, no fade) — this paragraph is the Largest Contentful Paint */}
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={heroInView ? { opacity: 1, y: 0 } : {}}
+            initial={{ y: 20 }}
+            animate={heroInView ? { y: 0 } : {}}
             transition={{ delay: 0.55, duration: 0.6 }}
             className="text-white/55 text-[16px] leading-relaxed max-w-lg mb-9"
           >
@@ -509,6 +580,11 @@ export default function ServicesPage() {
           SERVICES — all seven at a glance
       ══════════════════════════════════ */}
       <ServicesGrid />
+
+      {/* ══════════════════════════════════
+          AT A GLANCE — timelines & pricing table
+      ══════════════════════════════════ */}
+      <AtAGlance />
 
       {/* ══════════════════════════════════
           HOW WE WORK

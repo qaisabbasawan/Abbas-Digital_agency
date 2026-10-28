@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 
+/* Starts at the real value so the pre-rendered HTML (what search engines and
+   AI crawlers read) shows "500+" rather than "0+". In the browser the value
+   drops to 0 while off-screen and counts up once it scrolls into view. */
 export default function useCountUp(target, duration = 2000) {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(target)
   const [triggered, setTriggered] = useState(false)
   const ref = useRef(null)
 
@@ -10,6 +13,8 @@ export default function useCountUp(target, duration = 2000) {
       ([entry]) => {
         if (entry.isIntersecting && !triggered) {
           setTriggered(true)
+        } else if (!triggered) {
+          setCount(0)
         }
       },
       { threshold: 0.3 }

@@ -1,7 +1,20 @@
+import { LOCAL_CONTENT } from './seoLocalContent.js'
+
 // ─── Factory helpers ──────────────────────────────────────────────────────────
 
-function servicePage(slug, service, opts = {}) {
+/* Per-page extras the factories don't build themselves: a custom hero block
+   (merged over the generated one), localContent and a map embed. */
+function withPageExtras(page, opts) {
   return {
+    ...page,
+    hero: { ...page.hero, ...opts.hero },
+    ...(opts.localContent && { localContent: opts.localContent }),
+    ...(opts.map && { map: opts.map }),
+  }
+}
+
+function servicePage(slug, service, opts = {}) {
+  return withPageExtras({
     slug,
     type: 'service',
     seo: {
@@ -15,11 +28,11 @@ function servicePage(slug, service, opts = {}) {
       subheadline: opts.subheadline || `Abbas Digital Agency provides world-class ${service.toLowerCase()} solutions tailored to your business goals. Trusted by 500+ clients across Pakistan, the USA and beyond.`,
     },
     faqs: opts.faqs || [],
-  }
+  }, opts)
 }
 
 function serviceCity(slug, service, city, country = 'Pakistan', opts = {}) {
-  return {
+  return withPageExtras({
     slug,
     type: 'service-city',
     seo: {
@@ -33,11 +46,11 @@ function serviceCity(slug, service, city, country = 'Pakistan', opts = {}) {
       subheadline: opts.subheadline || `Abbas Digital Agency is ${city}'s trusted partner for ${service.toLowerCase()}. We combine local market knowledge with global digital expertise to grow your business.`,
     },
     faqs: opts.faqs || [],
-  }
+  }, opts)
 }
 
 function locationPage(slug, city, country, opts = {}) {
-  return {
+  return withPageExtras({
     slug,
     type: opts.type || 'location-pk',
     seo: {
@@ -51,11 +64,11 @@ function locationPage(slug, city, country, opts = {}) {
       subheadline: opts.subheadline || `We help ${city} businesses grow online with data-driven digital marketing, custom web design, SEO and paid advertising. Results-guaranteed approach.`,
     },
     faqs: opts.faqs || [],
-  }
+  }, opts)
 }
 
 function industryPage(slug, industry, opts = {}) {
-  return {
+  return withPageExtras({
     slug,
     type: 'industry',
     seo: {
@@ -69,7 +82,7 @@ function industryPage(slug, industry, opts = {}) {
       subheadline: opts.subheadline || `Abbas Digital Agency specialises in digital growth for ${industry.toLowerCase()} businesses. From custom websites to Google Ads and SEO, we understand your industry.`,
     },
     faqs: opts.faqs || [],
-  }
+  }, opts)
 }
 
 // ─── Pages ────────────────────────────────────────────────────────────────────
@@ -570,7 +583,7 @@ export const SEO_PAGES = {
 
   'usa': locationPage('usa', 'the United States', 'USA', {
     type: 'location-us',
-    title: 'Web Design & Digital Marketing for US Clients | Abbas Digital Agency',
+    title: 'US Web Design & Digital Marketing | Abbas Digital Agency',
     description: 'Abbas Digital Agency serves US businesses with affordable, high-quality web design, SEO and digital marketing. USA-registered LLC. English-speaking team.',
     keywords: 'web design agency usa, digital marketing agency usa, affordable web design usa, web development company usa, seo agency usa',
     hero: {
@@ -905,7 +918,7 @@ export const SEO_PAGES = {
 
   'restaurant-marketing': industryPage('restaurant-marketing', 'Restaurants & F&B', {
     title: 'Digital Marketing for Restaurants | Abbas Digital Agency',
-    description: 'Restaurant marketing that fills tables and increases orders. Social media management, Google Ads, food photography and delivery platform optimisation for F&B businesses.',
+    description: 'Restaurant marketing that fills tables and lifts orders: social media, Google Ads, food photography and delivery-app optimisation for F&B businesses.',
     keywords: 'restaurant digital marketing, restaurant marketing pakistan, food delivery marketing, restaurant seo, restaurant social media pakistan',
     hero: {
       badge: 'Restaurant Marketing',
@@ -922,7 +935,7 @@ export const SEO_PAGES = {
   }),
 
   'construction-company-marketing': industryPage('construction-company-marketing', 'Construction Companies', {
-    title: 'Digital Marketing for Construction Companies | Abbas Digital Agency',
+    title: 'Construction Company Marketing | Abbas Digital Agency',
     description: 'Construction company marketing that generates project leads. Professional websites, Google Ads and SEO for builders, contractors and construction firms in Pakistan.',
     keywords: 'construction company marketing, construction digital marketing pakistan, contractor website, building company seo, construction firm marketing',
     hero: {
@@ -977,7 +990,7 @@ export const SEO_PAGES = {
 
   'school-marketing': industryPage('school-marketing', 'Schools & Academies', {
     title: 'Digital Marketing for Schools | Abbas Digital Agency',
-    description: 'School and academy digital marketing that fills classrooms. Admissions-focused websites, Google Ads, Facebook campaigns and SEO for educational institutions in Pakistan.',
+    description: 'Digital marketing that fills classrooms: admissions-focused websites, Google Ads, Facebook campaigns and SEO for schools and academies in Pakistan.',
     keywords: 'school digital marketing, school website pakistan, school admissions marketing, academy marketing pakistan, education seo pakistan',
     hero: {
       badge: 'School Marketing',
@@ -1012,7 +1025,7 @@ export const SEO_PAGES = {
   }),
 
   'automotive-marketing': industryPage('automotive-marketing', 'Automotive Businesses', {
-    title: 'Digital Marketing for Automotive Businesses | Abbas Digital Agency',
+    title: 'Automotive Digital Marketing | Abbas Digital Agency',
     description: 'Automotive digital marketing for dealerships, workshops and car rental businesses in Pakistan. Google Ads, Facebook lead gen and SEO for the auto industry.',
     keywords: 'automotive digital marketing, car dealership marketing pakistan, auto workshop website, car rental marketing, automobile seo pakistan',
     hero: {
@@ -1046,4 +1059,10 @@ export const SEO_PAGES = {
       { q: 'Can you run Facebook ads for international tour packages for Pakistani travellers?', a: 'Yes. We run Meta campaigns targeting Pakistani travel enthusiasts for international destinations — Turkey, Europe, Southeast Asia, USA. Carousel ads showcasing multiple destinations alongside testimonials from previous travellers perform particularly well.' },
     ],
   }),
+}
+
+// Page-specific copy (see seoLocalContent.js) for every page that doesn't
+// define its own localContent above.
+for (const [slug, content] of Object.entries(LOCAL_CONTENT)) {
+  if (SEO_PAGES[slug] && !SEO_PAGES[slug].localContent) SEO_PAGES[slug].localContent = content
 }

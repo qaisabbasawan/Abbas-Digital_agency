@@ -13,14 +13,16 @@ export default function SEO({
   schema = null,           // object or array of JSON-LD objects
   publishedTime,           // ISO date — articles
   modifiedTime,            // ISO date — articles
+  noindex = false,         // error pages: keep out of the index, no canonical
 }) {
   const url = `${BASE_URL}${path}`
   const ogImage = image && image.startsWith('http') ? image : `${BASE_URL}${image || ''}`
-  // Only the site default is guaranteed to be exactly 1200x630 — per-post
-  // images (Unsplash/Pexels URLs or admin uploads) vary in aspect ratio, and
-  // declaring wrong dimensions in og:image:width/height is worse than
-  // omitting them (crawlers just measure the file themselves).
-  const isDefaultImage = ogImage === DEFAULT_IMAGE
+  // Only the site default and the per-page images in /og/ are guaranteed to
+  // be exactly 1200x630 — per-post images (Unsplash/Pexels URLs or admin
+  // uploads) vary in aspect ratio, and declaring wrong dimensions in
+  // og:image:width/height is worse than omitting them (crawlers just measure
+  // the file themselves).
+  const isDefaultImage = ogImage === DEFAULT_IMAGE || ogImage.startsWith(`${BASE_URL}/og/`)
   const schemas = schema ? (Array.isArray(schema) ? schema : [schema]) : []
 
   // Serialise JSON-LD and guard against </script> breakouts. These scripts are
@@ -37,14 +39,14 @@ export default function SEO({
       <title>{title}</title>
       <meta name="description" content={description} />
       {keywords && <meta name="keywords" content={keywords} />}
-      <meta name="robots" content="index, follow" />
+      <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow'} />
       <meta name="author" content="Abbas Digital Agency" />
-      <link rel="canonical" href={url} />
+      {!noindex && <link rel="canonical" href={url} />}
 
       {/* hreflang — dual market (Pakistan + USA), English */}
-      <link rel="alternate" hrefLang="en-pk" href={url} />
-      <link rel="alternate" hrefLang="en-us" href={url} />
-      <link rel="alternate" hrefLang="x-default" href={url} />
+      {!noindex && <link rel="alternate" hrefLang="en-pk" href={url} />}
+      {!noindex && <link rel="alternate" hrefLang="en-us" href={url} />}
+      {!noindex && <link rel="alternate" hrefLang="x-default" href={url} />}
 
       {/* Open Graph */}
       <meta property="og:type" content={type} />

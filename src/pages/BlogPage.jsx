@@ -1,15 +1,18 @@
-import { useState } from 'react'
+import { useState, lazy } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { Search, Clock, ArrowRight, ArrowUpRight, BookOpen, Sparkles, PenTool, Layers } from 'lucide-react'
 import Footer from '../components/Footer'
-import BlogScene from '../components/BlogScene'
 import RevealText from '../components/anim/RevealText'
 import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
 import { useAuth } from '../admin/context/AuthContext'
 import SEO from '../components/SEO'
 import { breadcrumbSchema } from '../lib/schema'
+import SceneGate, { SceneFallback } from '../components/SceneGate'
+
+/* three.js scene: loaded only on GPU-capable devices, after the page is interactive (see SceneGate) */
+const BlogScene = lazy(() => import('../components/BlogScene'))
 
 const catColors = {
   'Web Development':   '#2E55E0',
@@ -237,6 +240,7 @@ export default function BlogPage() {
         description="Expert articles on web development, SEO, digital marketing, AI chatbots, and e-commerce growth strategies. Insights from Abbas Digital Agency Islamabad."
         keywords="digital marketing blog Pakistan, SEO tips Pakistan, web development blog, digital agency blog Islamabad"
         path="/blog"
+        image="/og/blog.jpg"
         schema={breadcrumbSchema([
           { name: 'Home', path: '/' },
           { name: 'Blog', path: '/blog' },
@@ -246,7 +250,9 @@ export default function BlogPage() {
       {/* ── 3D Hero ── */}
       <section className="relative min-h-[82vh] flex items-center overflow-hidden pt-[72px]">
         <div className="absolute inset-0">
-          <BlogScene />
+          <SceneGate fallback={<SceneFallback color="#7C3AED" accent="#2E55E0" className="left-1/2 top-1/2 lg:left-[70%]" size="min(52vw, 380px)" />}>
+            <BlogScene />
+          </SceneGate>
         </div>
         {/* readability gradients */}
         <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-bg-dark/85 via-bg-dark/35 to-transparent" />
@@ -278,8 +284,9 @@ export default function BlogPage() {
             </RevealText>
           </h1>
 
+          {/* visible in the pre-rendered HTML (slide only, no fade) — this paragraph is the Largest Contentful Paint */}
           <motion.p
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.6 }}
+            initial={{ y: 20 }} animate={{ y: 0 }} transition={{ delay: 0.5, duration: 0.6 }}
             className="text-white/45 text-[16px] max-w-xl leading-relaxed mb-9"
           >
             Expert articles on web development, digital marketing, AI, and growing

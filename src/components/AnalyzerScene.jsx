@@ -170,7 +170,7 @@ function CameraController() {
  *       user fills the form), 'loading' (fast scan, all pillars pulse in),
  *       'report' (all pillars lit, sized by the user's real computed scores).
  */
-export default function AnalyzerScene({ mode = 'intake', progress = 0, scores = null, starCount = 1400 }) {
+export default function AnalyzerScene({ mode = 'intake', progress = 0, scores = null, starCount = 1400, active = true }) {
   const isClient = useIsClient()
   if (!isClient) return null
 
@@ -184,6 +184,7 @@ export default function AnalyzerScene({ mode = 'intake', progress = 0, scores = 
       style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       dpr={[1, 1.75]}
+      frameloop={active ? 'always' : 'never'}
     >
       <Stars radius={90} depth={45} count={starCount} factor={3.2} fade speed={0.4} />
       <Sparkles count={45} scale={[10, 7, 6]} size={2} speed={0.3} opacity={0.4} color="#9db4ff" />

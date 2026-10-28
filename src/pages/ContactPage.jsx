@@ -1,16 +1,19 @@
-import { useState } from 'react'
+import { useState, lazy } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { Mail, MapPin, Clock, Send, ArrowRight, Check, ChevronDown, MessageCircle } from 'lucide-react'
 import Footer from '../components/Footer'
 import { EmailText } from '../components/EmailLink'
-import ContactScene from '../components/ContactScene'
 import RevealText from '../components/anim/RevealText'
 import TiltCard from '../components/anim/TiltCard'
 import Magnetic from '../components/anim/Magnetic'
 import { useAuth } from '../admin/context/AuthContext'
 import SEO from '../components/SEO'
 import { localBusinessPK, localBusinessUSA, breadcrumbSchema } from '../lib/schema'
+import SceneGate, { SceneFallback } from '../components/SceneGate'
+
+/* three.js scene: loaded only on GPU-capable devices, after the page is interactive (see SceneGate) */
+const ContactScene = lazy(() => import('../components/ContactScene'))
 
 const svcList = [
   'Web Development', 'E-Commerce', 'Mobile Apps',
@@ -90,6 +93,7 @@ function SelectField({ label, error, value, options, ...props }) {
           style={{ background: 'linear-gradient(90deg, #2E55E0, #E8155A)', filter: 'blur(5px)' }} />
         <select
           {...props}
+          aria-label={label.replace(/\s*\*$/, '')}
           value={value}
           className={`relative w-full appearance-none rounded-xl px-4 py-3.5 text-[14px] focus:outline-hidden transition-colors duration-300 ${value ? 'text-white' : 'text-white/30'}`}
           style={{
@@ -142,6 +146,7 @@ export default function ContactPage() {
         description="Get in touch with Abbas Digital Agency. Contact our offices in Islamabad, Pakistan or Montana, USA. Free consultation for SEO, web design & digital marketing."
         keywords="contact Abbas Digital Agency, digital marketing agency Islamabad contact, SEO agency Pakistan contact"
         path="/contact"
+        image="/og/contact.jpg"
         schema={[
           localBusinessPK(),
           localBusinessUSA(),
@@ -155,7 +160,9 @@ export default function ContactPage() {
       {/* ── 3D Hero ── */}
       <section className="relative min-h-[74vh] flex items-center overflow-hidden pt-[72px]">
         <div className="absolute inset-0">
-          <ContactScene />
+          <SceneGate fallback={<SceneFallback color="#E8155A" accent="#2E55E0" className="left-1/2 top-1/2 lg:left-[68%]" size="min(52vw, 360px)" />}>
+            <ContactScene />
+          </SceneGate>
         </div>
         <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-bg-dark/85 via-bg-dark/35 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 h-40 pointer-events-none bg-linear-to-t from-bg-dark to-transparent" />
@@ -170,24 +177,27 @@ export default function ContactPage() {
             <span className="text-brand-pink text-[11px] tracking-[0.28em] uppercase">Get In Touch</span>
           </motion.div>
 
-          {/* One <h1> for SEO; an sr-only phrase carries the primary keyword
-              while the animated lines stay as the visible headline. */}
-          <h1 className="mb-6">
-            <span className="sr-only">Contact Abbas Digital Agency — Islamabad &amp; Montana USA</span>
-            <RevealText as="span" delay={0.15} stagger={0.08}
-              className="block font-bold text-white leading-[1.04] mb-3"
-              style={{ fontSize: 'clamp(3rem,7vw,6rem)' }}>
-              Your signal,
-            </RevealText>
-            <RevealText as="span" delay={0.35} stagger={0.08} gradient
-              className="block font-bold leading-[1.04]"
-              style={{ fontSize: 'clamp(3rem,7vw,6rem)' }}>
-              our mission
-            </RevealText>
-          </h1>
+          {/* One <h1> for SEO, holding only the keyword phrase; the animated
+              lines sit outside it (hidden from screen readers). */}
+          <div className="mb-6">
+            <h1 className="sr-only">Contact Abbas Digital Agency — Islamabad &amp; Montana USA</h1>
+            <div aria-hidden="true">
+              <RevealText as="span" delay={0.15} stagger={0.08}
+                className="block font-bold text-white leading-[1.04] mb-3"
+                style={{ fontSize: 'clamp(3rem,7vw,6rem)' }}>
+                Your signal,
+              </RevealText>
+              <RevealText as="span" delay={0.35} stagger={0.08} gradient
+                className="block font-bold leading-[1.04]"
+                style={{ fontSize: 'clamp(3rem,7vw,6rem)' }}>
+                our mission
+              </RevealText>
+            </div>
+          </div>
 
+          {/* visible in the pre-rendered HTML (slide only, no fade) — this paragraph is the Largest Contentful Paint */}
           <motion.p
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.6 }}
+            initial={{ y: 20 }} animate={{ y: 0 }} transition={{ delay: 0.55, duration: 0.6 }}
             className="text-white/45 text-[16px] max-w-md leading-relaxed mb-9"
           >
             Have a project in mind? Send it through — every message reaches a real
