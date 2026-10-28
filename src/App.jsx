@@ -31,6 +31,7 @@ const TermsConditionsPage  = lazy(() => import('./pages/TermsConditionsPage'))
 const NotFound             = lazy(() => import('./pages/NotFound'))
 
 const AdminLogin     = lazy(() => import('./admin/AdminLogin'))
+const ResetPassword  = lazy(() => import('./admin/ResetPassword'))
 const AdminLayout    = lazy(() => import('./admin/AdminLayout'))
 const Dashboard      = lazy(() => import('./admin/pages/Dashboard'))
 const BlogCreate     = lazy(() => import('./admin/pages/BlogCreate'))
@@ -106,6 +107,7 @@ export default function App({ ssrData } = {}) {
 
           {/* Admin login — public, outside protected layout */}
           <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/reset-password" element={<ResetPassword />} />
 
           {/* Protected admin pages */}
           <Route path="/admin/*" element={

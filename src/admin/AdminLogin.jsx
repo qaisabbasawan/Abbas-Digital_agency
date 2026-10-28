@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Eye, EyeOff, Lock, Mail, Shield } from 'lucide-react'
+import { Eye, EyeOff, Lock, Mail, Shield, ArrowLeft, CheckCircle2 } from 'lucide-react'
 import { useAuth } from './context/AuthContext'
 
 const ROLES = ['Super Admin', 'Admin', 'Editor', 'SEO Manager', 'Content Writer', 'Analyst', 'Viewer']
@@ -16,6 +16,78 @@ const roleColors = {
   'Viewer':         '#6B7280',
 }
 
+const inputCls = 'w-full bg-white/4 border border-white/8 rounded-xl pl-10 pr-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-hidden focus:border-white/20 focus:bg-white/6 transition-all'
+
+/* "Forgot password?" — asks Supabase to email a reset link */
+export function ForgotPassword({ initialEmail = '', onBack }) {
+  const { requestPasswordReset } = useAuth()
+  const [email,   setEmail]   = useState(initialEmail)
+  const [sending, setSending] = useState(false)
+  const [sent,    setSent]    = useState(false)
+  const [error,   setError]   = useState('')
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setError('')
+    setSending(true)
+    const res = await requestPasswordReset(email)
+    setSending(false)
+    if (res.ok) setSent(true)
+    else setError(res.error)
+  }
+
+  return (
+    <div>
+      <h2 className="text-white font-bold text-2xl mb-1">Reset your password</h2>
+      <p className="text-white/40 text-[13px] mb-8">
+        Enter your admin email and we'll send you a link to set a new password.
+      </p>
+
+      {sent ? (
+        <div className="flex items-start gap-3 px-4 py-3.5 rounded-xl text-[13px] text-green-300 mb-6"
+          style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.25)' }}>
+          <CheckCircle2 size={16} className="mt-0.5 shrink-0" />
+          <span>
+            If <strong className="text-white">{email.trim()}</strong> has an admin account, a reset link is on its
+            way. It expires after one hour — check your spam folder if it doesn't arrive.
+          </span>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-4 mb-6">
+          <div>
+            <label htmlFor="reset-email" className="block text-white/50 text-[11px] tracking-widest uppercase mb-2">Email Address</label>
+            <div className="relative">
+              <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/25" />
+              <input id="reset-email" type="email" required autoFocus value={email} onChange={e => setEmail(e.target.value)}
+                placeholder="admin@example.com" className={inputCls} />
+            </div>
+          </div>
+
+          {error && (
+            <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-[12px] text-red-400"
+              style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)' }}>
+              <span>⚠</span> {error}
+            </div>
+          )}
+
+          <button type="submit" disabled={sending}
+            className="w-full py-3.5 rounded-xl text-white text-[13px] font-semibold tracking-wide transition-opacity hover:opacity-90 disabled:opacity-60 flex items-center justify-center gap-2"
+            style={{ background: 'linear-gradient(135deg,#2E55E0,#E8155A)' }}>
+            {sending
+              ? <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Sending...</>
+              : 'Send Reset Link'}
+          </button>
+        </form>
+      )}
+
+      <button type="button" onClick={onBack}
+        className="inline-flex items-center gap-1.5 text-white/45 text-[12px] hover:text-white/75 transition-colors">
+        <ArrowLeft size={13} /> Back to sign in
+      </button>
+    </div>
+  )
+}
+
 export default function AdminLogin() {
   const [email,    setEmail]    = useState('')
   const [password, setPassword] = useState('')
@@ -25,6 +97,9 @@ export default function AdminLogin() {
   const [loading,  setLoading]  = useState(false)
   const { login } = useAuth()
   const navigate  = useNavigate()
+  const location  = useLocation()
+  const [mode, setMode] = useState(location.state?.forgot ? 'forgot' : 'login')
+  const notice = location.state?.notice   // e.g. after a password reset
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -120,66 +195,79 @@ export default function AdminLogin() {
             <span className="text-white font-bold">Abbas Digital Agency</span>
           </div>
 
-          <h2 className="text-white font-bold text-2xl mb-1">Welcome back</h2>
-          <p className="text-white/40 text-[13px] mb-8">Sign in to your admin account</p>
+          {mode === 'forgot' ? (
+            <ForgotPassword initialEmail={email} onBack={() => setMode('login')} />
+          ) : (
+          <>
+            <h2 className="text-white font-bold text-2xl mb-1">Welcome back</h2>
+            <p className="text-white/40 text-[13px] mb-8">Sign in to your admin account</p>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-
-            {/* Email */}
-            <div>
-              <label className="block text-white/50 text-[11px] tracking-widest uppercase mb-2">Email Address</label>
-              <div className="relative">
-                <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/25" />
-                <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
-                  placeholder="admin@example.com"
-                  className="w-full bg-white/4 border border-white/8 rounded-xl pl-10 pr-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-hidden focus:border-white/20 focus:bg-white/6 transition-all" />
+            {notice && (
+              <div className="flex items-center gap-2 px-3.5 py-2.5 mb-4 rounded-xl text-[12px] text-green-300"
+                style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.25)' }}>
+                <CheckCircle2 size={14} /> {notice}
               </div>
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="block text-white/50 text-[11px] tracking-widest uppercase mb-2">Password</label>
-              <div className="relative">
-                <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/25" />
-                <input type={showPw ? 'text' : 'password'} required value={password} onChange={e => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full bg-white/4 border border-white/8 rounded-xl pl-10 pr-10 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-hidden focus:border-white/20 focus:bg-white/6 transition-all" />
-                <button type="button" onClick={() => setShowPw(v => !v)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors">
-                  {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
-                </button>
-              </div>
-            </div>
-
-            {/* Remember + Forgot */}
-            <div className="flex items-center justify-between">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={remember} onChange={e => setRemember(e.target.checked)}
-                  className="w-3.5 h-3.5 rounded-sm accent-brand-pink" />
-                <span className="text-white/40 text-[12px]">Remember me</span>
-              </label>
-              <button type="button" className="text-white/40 text-[12px] hover:text-white/70 transition-colors">Forgot password?</button>
-            </div>
-
-            {/* Error */}
-            {error && (
-              <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-[12px] text-red-400"
-                style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)' }}>
-                <span>⚠</span> {error}
-              </motion.div>
             )}
 
-            {/* Submit */}
-            <button type="submit" disabled={loading}
-              className="w-full py-3.5 rounded-xl text-white text-[13px] font-semibold tracking-wide transition-opacity hover:opacity-90 disabled:opacity-60 flex items-center justify-center gap-2"
-              style={{ background: 'linear-gradient(135deg,#2E55E0,#E8155A)' }}>
-              {loading
-                ? <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Signing in...</>
-                : 'Sign In to Dashboard'
-              }
-            </button>
-          </form>
+            <form onSubmit={handleSubmit} className="space-y-4">
+
+              {/* Email */}
+              <div>
+                <label className="block text-white/50 text-[11px] tracking-widest uppercase mb-2">Email Address</label>
+                <div className="relative">
+                  <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/25" />
+                  <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
+                    placeholder="admin@example.com"
+                    className="w-full bg-white/4 border border-white/8 rounded-xl pl-10 pr-4 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-hidden focus:border-white/20 focus:bg-white/6 transition-all" />
+                </div>
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className="block text-white/50 text-[11px] tracking-widest uppercase mb-2">Password</label>
+                <div className="relative">
+                  <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/25" />
+                  <input type={showPw ? 'text' : 'password'} required value={password} onChange={e => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full bg-white/4 border border-white/8 rounded-xl pl-10 pr-10 py-3 text-white text-[13px] placeholder:text-white/20 focus:outline-hidden focus:border-white/20 focus:bg-white/6 transition-all" />
+                  <button type="button" onClick={() => setShowPw(v => !v)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors">
+                    {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Remember + Forgot */}
+              <div className="flex items-center justify-between">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" checked={remember} onChange={e => setRemember(e.target.checked)}
+                    className="w-3.5 h-3.5 rounded-sm accent-brand-pink" />
+                  <span className="text-white/40 text-[12px]">Remember me</span>
+                </label>
+                <button type="button" onClick={() => setMode('forgot')} className="text-white/40 text-[12px] hover:text-white/70 transition-colors">Forgot password?</button>
+              </div>
+
+              {/* Error */}
+              {error && (
+                <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-[12px] text-red-400"
+                  style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)' }}>
+                  <span>⚠</span> {error}
+                </motion.div>
+              )}
+
+              {/* Submit */}
+              <button type="submit" disabled={loading}
+                className="w-full py-3.5 rounded-xl text-white text-[13px] font-semibold tracking-wide transition-opacity hover:opacity-90 disabled:opacity-60 flex items-center justify-center gap-2"
+                style={{ background: 'linear-gradient(135deg,#2E55E0,#E8155A)' }}>
+                {loading
+                  ? <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Signing in...</>
+                  : 'Sign In to Dashboard'
+                }
+              </button>
+            </form>
+          </>
+          )}
 
           <p className="text-center text-white/20 text-[11px] mt-8">
             Restricted access. Authorised personnel only.

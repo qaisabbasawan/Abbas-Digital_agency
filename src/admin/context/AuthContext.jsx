@@ -5,6 +5,11 @@ import { useLocation } from 'react-router-dom'
    every public page needs before it can render */
 const getDb = () => import('../../lib/supabase').then(m => m.supabase)
 
+/* The URL hash as the page first loaded. A password-reset link carries its
+   recovery session (or error) there, and the Supabase client clears it as
+   soon as it starts — this keeps a copy for /admin/reset-password. */
+const INITIAL_HASH = typeof window !== 'undefined' ? window.location.hash : ''
+
 const AuthContext = createContext(null)
 
 const initialsOf = (name = '') =>
@@ -292,6 +297,52 @@ export function AuthProvider({ children, initialBlogs }) {
     return error ? { ok: false, error: error.message } : { ok: true }
   }
 
+  // ── password reset by email ───────────────────────────────────────────────
+
+  // Sends Supabase's reset email. Apart from rate limits, the result is the
+  // same whether or not the address has an account, so the form can't be used
+  // to discover admin emails.
+  const requestPasswordReset = async (email) => {
+    const supabase = await getDb()
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: `${window.location.origin}/admin/reset-password`,
+    })
+    if (error && (error.status === 429 || /rate limit|too many/i.test(error.message))) {
+      return { ok: false, error: 'Too many reset requests. Please wait a few minutes and try again.' }
+    }
+    if (error && (!error.status || error.status >= 500)) {
+      return { ok: false, error: 'We couldn’t send the email right now. Please try again in a moment.' }
+    }
+    return { ok: true }
+  }
+
+  // Called by /admin/reset-password: did the email link bring a valid
+  // recovery session, or an error such as an expired link?
+  const checkRecoveryLink = async () => {
+    const params = new URLSearchParams(INITIAL_HASH.slice(1))
+    if (params.get('error')) {
+      return {
+        ok: false,
+        error: params.get('error_code') === 'otp_expired'
+          ? 'This reset link has expired. Request a new one below.'
+          : 'This reset link is invalid. Request a new one below.',
+      }
+    }
+    const supabase = await getDb()
+    const { data: { session } } = await supabase.auth.getSession()
+    return session
+      ? { ok: true, email: session.user.email }
+      : { ok: false, error: 'This reset link is invalid or has already been used. Request a new one below.' }
+  }
+
+  const completePasswordReset = async (password) => {
+    const supabase = await getDb()
+    const { error } = await supabase.auth.updateUser({ password })
+    if (error) return { ok: false, error: error.message }
+    await supabase.auth.signOut()   // sign in again with the new password
+    return { ok: true }
+  }
+
   // ── auth ──────────────────────────────────────────────────────────────────
 
   const login = async (email, password) => {
@@ -330,6 +381,7 @@ export function AuthProvider({ children, initialBlogs }) {
       login, logout,
       persistBlogs, persistLeads,
       saveTeamMember, deleteTeamMember, updateOwnProfile, changePassword,
+      requestPasswordReset, checkRecoveryLink, completePasswordReset,
       addLead,
       loading,
     }}>
